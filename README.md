@@ -1,6 +1,3 @@
-#489 GR-JCI 
+#489 GR-JCI
 
 Grand Rapids repository 
-
-blah blah 
-test test
