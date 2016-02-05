@@ -1,3 +1,3 @@
 #489 GR-JCI
 
-Grand Rapids repository 
+Grand Rapids FSU repository 
