@@ -1,40 +1,271 @@
-body {
-  text-align:
-  center; padding: 75px;
-  font: 20px Helvetica, sans-serif;
-  color: #333;
+/*
+* @File Name:     style.css
+* @Description:   Contains all general site styles
+* @Author(s):     Jacob Cole <colej28@ferris.edu>
+* @Organization:  Ferris State University
+* @Last updated:  02/05/2016
+*/
+
+/* 
+ * The purpose of this file is to contain all general 
+ * site styles that can be applied to every page. 
+ */
+
+html, body, div, span,
+h1, h2, h3, h4, h5, h6, p, blockquote,
+em, img, strong,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+aside, footer, header, menu, nav, section,
+audio, video {
+  margin:0;
+  padding:0;
+  border:0;
+  outline:0;
+  font-size:100%;
+  vertical-align:baseline;
+  background:transparent;
 }
 
-h1 {
-  font-size: 50px;
+nav ul, nav li { margin: 0; }
+nav ul, ul { list-style:none; }
+
+.span1, .span2, .span3, .span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11, .span12{
+    float:left;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
 }
 
+aside{
+  margin-left: 1%;
+  padding: 20px 5% 0 3%;
+}
+
+.span1{
+  width: 7.41666666667%;
+  
+}
+.span2{
+  width: 15.8333333333%;
+  
+}
+.span3{
+  width: 24.25%;
+  
+}
+.span4{
+  width: 32.6666666667%;
+  
+}
+.span5{
+  width: 41.0833333333%;
+  
+}
+.span6{
+  width: 49.5%;
+  
+}
+.span7{
+  width: 57.9166666667%;
+  
+}
+.span8{
+  width: 66.3333333333%;
+  
+}
+.span9{
+  width: 74.75%;
+  
+}
+.span10{
+  width: 83.1666666667%;
+  
+}
+.span11{
+  width: 91.5833333333%;
+  
+}
+.span12{
+  width: 100%;
+  margin-left: 0;
+}
 footer {
-  padding-top: 100px;
+  background:#262f37;
+  color: white;
+  text-align: center;
+  width:100%;
+  position:absolute;
+  bottom:0;
+  left:0;
 }
 
-article {
+body{
+  font-size: 87.5%;
+  color: #252e35;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5em;
+  background: #f6f6f6;
+}
+
+h1{
+    font-size: 1.714285714em;
+    line-height: 1.5em;
+}
+
+h2{
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+
+p{
+    font-size: 1em;
+    line-height: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+header{
+  min-height:75px;
+  padding-left: 25px;
+}
+
+header h1{
+  margin: 35px 0 0 0;
+}
+
+#main{
+  clear: both;
+  padding: 20px 5% 0 5%;
+}
+
+.black{
+  color: black;
+  letter-spacing: 0.05em;
+}
+
+.white{
+  color: white;
+  letter-spacing: 0.05em;
+}
+
+/* NAVIGATION */
+nav{
+  margin: 7px 0 7px 0;
+}
+
+nav ul{
+  width: 100%;
+}
+
+nav ul li{
+  margin: 7px 0 7px 0;
+  text-align: center;
+  overflow: auto;
+  float: left;
+  width: 25%;
+}
+
+nav{
+  background-color: #262f37;
+}
+
+nav a{
+  text-decoration: none;
   display: block;
-  text-align: left;
-  width: 650px;
-  margin: 0 auto;
+  padding: 7px 0 7px 5%;
+  margin: 0 2% 0 2%;
+  background-color: #3b434b;
 }
 
-a {
-  color: #82bc00;
-  text-decoration: none;
+nav a:active{
+  background-color: #262f37;
 }
 
-a:hover {
-  color: #333;
-  text-decoration: none;
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 768px){
+  nav .span4{
+    width: 100%;
+  }
+
+  .span8{
+    width: 100%;
+  }
+
+  .span4, aside{
+    width: 100%;
+    margin-left: 0;
+  }
+
+  #main{
+    width: 90%;
+    padding: 0 5% 0 5%;
+  }
 }
 
-.map{
-  float:left;
-  margin-right: 25px;
+@media screen and (max-width: 480px){
+  nav ul li{
+    width: 100%;
+    margin: 0 0 5px 0;
+  }
+
+  nav a{
+    margin: 0;
+    padding: 14px 0 14px 0;
+  }
 }
 
-.input{
-  margin-bottom: 30px;
+.logo{
+  height:75px; 
+  float: right;
+}
+
+/*Elements of the logo*/
+img.jci_logo_yellow {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: -10;
+    height: 50px;
+}
+
+img.jci_logo_blue {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    z-index: -5;
+    height: 50px;
+}
+
+img.jci_logo_red {
+    position: absolute;
+    right: 35px;
+    top: 35px;
+    z-index: -1;
+    height: 50px;
+}
+
+div#logo {
+    position: absolute;
+    top: -10px;
+    right: 0;
+}
+label {
+    display: inline-block;
+    width: 150px;
+    text-align: left;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.required{
+  color:red;
 }
