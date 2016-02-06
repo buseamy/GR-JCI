@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 * @File Name:       submit_case.php
 * @Description:     Home page for JCI website
@@ -9,11 +9,11 @@
 */
 
 /*
- * The purpose of this file is to allow the authors 
- * to submit a case with all required materials. 
+ * The purpose of this file is to allow the authors
+ * to submit a case with all required materials.
  */
 
-//Title to be displayed for the page    
+//Title to be displayed for the page
 $page_title = 'JCI Website - Submit a case';
 
 // Call to the site header
@@ -31,12 +31,10 @@ include ('./includes/header.php');
             <p><label for="memberCode">Member Code: </label> <input type="text" name="memberCode" id="memberCode" size="30" maxlength="60"></p>
             <p><label for="title">Title: <span class="required">*</span> </label> <input type="text" name="title" id="title" size="30" maxlength="100"></p>
             <div id="dynamicAuthor">
-                <p>
-                    <label for="author">Author: <span class="required">*</span> </label> <input type="text" id="author" size="30" maxlength="100" name="authors"> 
-                    <input type="button" value="Add another author" onClick="addInput('dynamicAuthor');">
-                </p>
+                <p><label for="author">Author: <span class="required">*</span> </label> <input type="text" id="author" size="30" maxlength="100" name="authors"></p>
             </div>
-            
+            <p><input type="button" value="Add another author" onClick="addInput('dynamicAuthor');"><p>
+
             <h3>Please provide all the following documents:</h3><br>
             <p><label for="coverLetter">Cover Letter: <span class="required">*</span> </label> <input type="file" class="inputFile" name="coverLetter" id="coverLetter"></p>
             <p><label for="case">Case: <span class="required">*</span> </label> <input type="file" class="inputFile" name="case" id="case"></p>
@@ -47,11 +45,11 @@ include ('./includes/header.php');
         </form>
         <script type="text/javascript"> var formValidator  = new Validator("submit_case");
             formValidator.EnableMsgsTogether();
-            
+
             formValidator.addValidation("title", "req", "Please enter a title");//Title required
             formValidator.addValidation("author", "req", "Please enter an author");//author required
 
-            
+
             //Cover Letter validation
             formValidator.addValidation("coverLetter","file_extn=pdf;doc;docx","Allowed files types for cover letter are: .doc, .docx, and .pdf");//check file type
             formValidator.addValidation("coverLetter","req_file","Cover Letter is required");//Cover letter required
@@ -90,4 +88,3 @@ include ('./includes/header.php');
 </aside>
 
 <?php include 'includes/footer.php'; ?>
-
