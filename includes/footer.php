@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 * @File Name:		footer.php
 * @Description: 	Footer for JCI website
@@ -9,14 +9,14 @@
 */
 
 /*
- * The purpose of this file is to hold footer  
+ * The purpose of this file is to hold footer
  * content as well as links to script files.
  */
 ?>
 			</div> <!-- end of #container -->
 		</body>
 	</div>
-    
+
 
     <!--Site scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

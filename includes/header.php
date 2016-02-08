@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<?php 
+<?php
 /*
 * @File Name:		header.php
 * @Description: 	Header for the site
@@ -10,17 +10,16 @@
 */
 
 /*
- * The purpose of this file is to display page title, meta information, include links to 
- * style sheets, and contain the site navigation. 
+ * The purpose of this file is to display page title, meta information, include links to
+ * style sheets, and contain the site navigation.
  */
  ?>
-<!doctype html>  
 <html>
     <head>
         <!--Meta information-->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
-        
+
         <!--Page title for header file-->
         <title><?php echo $page_title; ?></title>
 
@@ -46,4 +45,4 @@
 			</ul>
         </nav>
         <body>
-            <div id="main">  
+            <div id="main">
