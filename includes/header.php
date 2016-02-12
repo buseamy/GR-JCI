@@ -20,11 +20,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
 
-        <!--Page title for header file-->
+        <!--Page title from page-->
         <title><?php echo $page_title; ?></title>
 
         <!--Stylesheets-->
        	<link rel="stylesheet" href="css/style.css">
+        <!--Scripts-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     </head>
     <div id="container">
