@@ -50,7 +50,7 @@ END//
 
 CREATE PROCEDURE GetFileList ()
 BEGIN
-    SELECT files_name FROM Files;
+    SELECT F.files_name, FT.filetype_name, F.files_size FROM Files AS F INNER JOIN FileType AS FT ON (F.files_type = FT.filetype_id);
 END//
 
 CREATE PROCEDURE GetFile (

@@ -123,7 +123,9 @@ $q_FileList = "CALL GetFileList();";
 $r_FileList = mysqli_query($dbc, $q_FileList);
 while ($row_FileList = mysqli_fetch_array($r_FileList, MYSQLI_ASSOC)) {
     $filename = $row_FileList["files_name"];
-    echo '<p><a target="_blank" href="file_upload_view_download.php?fn=' . $filename . '">' . $filename . '</a></p>';
+    $filemime = $row_FileList["filetype_name"];
+    $filesize = $row_FileList["files_size"];
+    echo '<p><a target="_blank" href="file_upload_view_download.php?fn=' . $filename . '">' . $filename . '</a> MIME:' . $filemime . ' Size:' . $filesize . 'B</p>';
 }
 // clear stored procedure results from the connection
 while (mysqli_more_results($dbc)) {
