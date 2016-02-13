@@ -1,7 +1,7 @@
 <?php
 /*
 * @File Name:       submit_case.php
-* @Description:     Home page for JCI website
+* @Description:     Author case submission for JCI website
 * @PHP version:     Currently Unknown
 * @Author(s):       Jacob Cole <colej28@ferris.edu>
 * @Organization:    Ferris State University
