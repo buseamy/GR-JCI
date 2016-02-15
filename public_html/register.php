@@ -9,12 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 	$errors = array(); // Initialize an error array.
 
-	// Check for a username:
-	if (empty($_POST['username'])) {
-		$errors[] = 'You forgot to enter your username.';
-	} else {
-		$username = mysqli_real_escape_string($dbc, trim($_POST['username']));
-	}
+
 	// modified from http://stackoverflow.com/questions/20910762/return-values-from-a-mysql-database-that-match-a-specific-php-variable
 	// checks if username already exists
 	/* Doesn't work
