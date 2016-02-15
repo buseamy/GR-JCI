@@ -17,6 +17,8 @@ If %SrcDir%==" " (
 
 SET SrcDir=%SrcDir:\scripts=%
 
+SET SrcDir=%SrcDir%\public_html
+
 ECHO %SrcDir% %HostDir%
 ROBOCOPY %SrcDir% %HostDir% *.* /E /SL
 PAUSE
