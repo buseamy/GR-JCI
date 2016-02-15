@@ -15,9 +15,9 @@ IF %SrcDir%==" " (
 If %SrcDir%==" " (
 	ECHO "This can't happen - ~dp0 gets the execution directory" )
 
-SET SrcDir=%SrcDir:\scripts=%
-
-SET SrcDir=%SrcDir%\public_html
+REM remembering the bug/feature noted at the top, replace the expected execution directory
+REM using the host-public directory in the repo
+SET SrcDir=%SrcDir:\scripts=\public_html%
 
 ECHO %SrcDir% %HostDir%
 ROBOCOPY %SrcDir% %HostDir% *.* /E /SL
