@@ -1,11 +1,11 @@
 <?php
 /*
 * @File Name:       submit_case.php
-* @Description:     Home page for JCI website
+* @Description:     Author case submission for JCI website
 * @PHP version:     Currently Unknown
 * @Author(s):       Jacob Cole <colej28@ferris.edu>
 * @Organization:    Ferris State University
-* @Last updated:    02/05/2016
+* @Last updated:    02/12/2016
 */
 
 /*
@@ -20,7 +20,7 @@ $page_title = 'JCI Website - Submit a case';
 include ('./includes/header.php');
 ?>
 <!--Form scripts-->
-<script src="js/addAuthor.js" language="Javascript" type="text/javascript"></script>
+<script src="js/formJS.js" language="Javascript" type="text/javascript"></script>
 <script type="text/javascript" src="js/form_validator.js"></script>
 
 <div id="home-body" class="span8">
@@ -41,6 +41,9 @@ include ('./includes/header.php');
             <p><label for="teachingNotes">Teaching Notes: <span class="required">*</span> </label> <input type="file" class="inputFile" name="teachingNotes" id="teachingNotes"></p>
             <p><label for="memo">Memo: <span class="required">*</span> </label> <input type="file" class="inputFile" name="memo" id="memo"></p>
             <p><label for="summary">Summary: <span class="required">*</span> </label> <input type="file" class="inputFile" name="summary" id="summary"></p>
+            <p><label for="abstract">Abstract: <span class="required">*</span></label><br>
+            <textarea class="abstract" name="abstract" id="abstract" rows="10" cols="50" maxlength="300"></textarea><br>
+            <span id="remaining_characters">There is a 300 Character limit</span><p>
             <p><input type="submit" value="submit"></p>
         </form>
         <script type="text/javascript"> var formValidator  = new Validator("submit_case");
@@ -48,43 +51,27 @@ include ('./includes/header.php');
 
             formValidator.addValidation("title", "req", "Please enter a title");//Title required
             formValidator.addValidation("author", "req", "Please enter an author");//author required
-
+            formValidator.addValidation("abstract", "req", "Please enter an abstract");//abstract required
 
             //Cover Letter validation
-            formValidator.addValidation("coverLetter","file_extn=pdf;doc;docx","Allowed files types for cover letter are: .doc, .docx, and .pdf");//check file type
+            formValidator.addValidation("coverLetter","file_extn=pdf;doc;docx;rtf","Allowed files types for cover letter are: .doc, .docx, .rtf, and .pdf");//check file type
             formValidator.addValidation("coverLetter","req_file","Cover Letter is required");//Cover letter required
             //Case validation
-            formValidator.addValidation("case","file_extn=pdf;doc;docx","Allowed files types for case are: .doc, .docx, and .pdf");//Check file type
+            formValidator.addValidation("case","file_extn=pdf;doc;docx;rtf","Allowed files types for case are: .doc, .docx, .rtf, and .pdf");//Check file type
             formValidator.addValidation("case","req_file","Case is required");//Case required
             //Teaching notes validation
-            formValidator.addValidation("teachingNotes","file_extn=pdf;doc;docx","Allowed files types for Teaching notes are: .doc, .docx, and .pdf");//Check file type
+            formValidator.addValidation("teachingNotes","file_extn=pdf;doc;docx;rtf","Allowed files types for Teaching notes are: .doc, .docx, .rtf, and .pdf");//Check file type
             formValidator.addValidation("teachingNotes","req_file","Teaching Notes are required");//teachingNotes required
             //Memo validation
-            formValidator.addValidation("memo","file_extn=pdf;doc;docx","Allowed files types for Memo are: .doc, .docx, and .pdf");//Check file type
+            formValidator.addValidation("memo","file_extn=pdf;doc;docx;rtf","Allowed files types for Memo are: .doc, .docx, .rtf, and .pdf");//Check file type
             formValidator.addValidation("memo","req_file","Memo is required");//memo required
             //summary validation
-            formValidator.addValidation("summary","file_extn=pdf;doc;docx","Allowed files types for summary are: .doc, .docx, and .pdf");//Check file type
+            formValidator.addValidation("summary","file_extn=pdf;doc;docx;rtf","Allowed files types for summary are: .doc, .docx, .rtf, and .pdf");//Check file type
             formValidator.addValidation("summary","req_file","Summary is required");//summary required
         </script>
     </div>
 </div>
-<!--Side bar-->
-<aside class="span4">
-	<h2>Resources</h2>
-    <ul>
-        <li><a href="#">Resource 1</a></li>
-        <li><a href="#">Resource 2</a></li>
-        <li><a href="#">Resource 3</a></li>
-        <li><a href="#">Resource 4</a></li>
-        <li><a href="#">Resource 5</a></li>
-    </ul>
-    <br>
-    <h2>Important Dates:</h2>
-    <p>Submission Deadline: September 1st</p>
-    <p>Journal Publication: October 31st</p>
-    <br>
-    <h2>Important Information</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-</aside>
-
+<!--Sidebar-->
+<?php include 'includes/sidebar.php'; ?>
+<!--Footer-->
 <?php include 'includes/footer.php'; ?>

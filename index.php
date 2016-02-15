@@ -35,23 +35,7 @@ include ('./includes/header.php');
         <p>*Source: <a href="http://www.sfcr.org/jci">sfcr.org/jci</a></p>
     </div>
 </div>
-<!--Side bar-->
-<aside class="span4">
-	<h2>Resources</h2>
-    <ul>
-        <li><a href="submit_case.php">Submit a case</a></li>
-        <li><a href="#">Resource 2</a></li>
-        <li><a href="#">Resource 3</a></li>
-        <li><a href="#">Resource 4</a></li>
-        <li><a href="#">Resource 5</a></li>
-    </ul>
-    <br>
-    <h2>Important Dates:</h2>
-    <p>Submission Deadline: September 1st</p>
-    <p>Journal Publication: October 31st</p>
-    <br>
-    <h2>Important Information</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-</aside>
-
+<!--Sidebar-->
+<?php  include 'includes/sidebar.php';?>
+<!--Footer-->
 <?php include 'includes/footer.php'; ?>
