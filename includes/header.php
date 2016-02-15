@@ -42,6 +42,13 @@
                 <li><a class="white" href="#">Register</a></li> <!--Register page-->
                 <li><a class="white" href="#">Contact us</a></li> <!--Contact page-->
                 <li><a class="white" href="#">Login</a></li> <!--Login page-->
+
+				<!--This section of code will make the Editor tab visible when the Editor logs in.
+Can be changed to detect any session variable. It must be placed in the list for tabs.-->
+
+				if($_SESSION['iseditor'] > -1) {
+					<li><a class="white" href="editor_index.php">Editor</a></li> <!--Editor page-->
+				}
 			</ul>
         </nav>
         <body>
