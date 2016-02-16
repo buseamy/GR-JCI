@@ -11,20 +11,15 @@
  * general scripts to be used on JCI forms.
  */
 
-//Add aditional authors
-var counter = 1; //Starting Number
-var limit = 5; //Author limit
-function addInput(pName){
-     if (counter == limit)  { //If limit is reached
-          alert("You have reached the limit of " + counter + " authors"); //Limit reached message
-     }
-     else { //Add author
-          var newp = document.createElement('p');
-          newp.innerHTML = "<label for='author'> Author " + (counter + 1) + ": <span class='required'>*</span></label> <input type='text' id='author" + counter + "' size='30' maxlength='100'  name='authors[]'>";
-          document.getElementById(pName).appendChild(newp); //Place after last author
-          counter++;
-     }
-}
+ //Add aditional authors
+ var counter = 1; //Starting Number
+ function addInput(dName){
+ //Add author
+ var newd = document.createElement('div');
+ newd.innerHTML = "<h3>Author " + (counter + 1) + "</h3><p><label for='memberCode" + (counter + 1) + "'>Member Code: </label> <input type='text' name='memberCode" + (counter + 1) + "' id='memberCode" + (counter + 1) + "' size='30' maxlength='60'></p><p><label for='email" + (counter + 1) + "'>Email: <span class='required'>*</span> </label> <input type='text' id='email" + (counter + 1) + "' size='30' maxlength='100' name='email" + (counter + 1) + "'></p><p><label for='authorFirst" + (counter + 1) + "'>Author First Name: <span class='required'>*</span> </label> <input type='text' id='authorFirst" + (counter + 1) + "' size='30' maxlength='100' name='authorFirst" + (counter + 1) + "'></p><p><label for='authorLast" + (counter + 1) + "'>Author Last Name: <span class='required'>*</span> </label> <input type='text' id='authorLast" + (counter + 1) + "' size='30' maxlength='100' name='authorLast" + (counter + 1) + "'></p>"
+           document.getElementById(dName).appendChild(newd); //Place after last author
+           counter++;
+ };
 
 //Count and display remaining characters
 $(document).ready(function() {
