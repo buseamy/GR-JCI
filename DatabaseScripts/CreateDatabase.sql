@@ -171,6 +171,7 @@ CREATE TABLE Submissions
 SubmissionID int NOT NULL AUTO_INCREMENT,
 EditorUserID int,
 CaseTitle varchar(150) NOT NULL,
+Abstract varchar(5000),
 SubmissionDate date NOT NULL,
 SubmissionStatusID int NOT NULL,
 PreviousSubmissionID int,

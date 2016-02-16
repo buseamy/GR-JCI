@@ -4,7 +4,7 @@ DELIMITER $$
 
 /* Gets the list of types of addresses */
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`$$
-CREATE PROCEDURE `spGetAddressTypes`(IN _UserID int)
+CREATE PROCEDURE `spGetAddressTypes`()
 DETERMINISTIC
 BEGIN
   Select AddressTypeID, AddressType

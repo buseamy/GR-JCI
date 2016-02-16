@@ -4,7 +4,7 @@ DELIMITER $$
 
 /* Gets the list of types of phone numbers */
 DROP PROCEDURE IF EXISTS `spGetPhoneTypes`$$
-CREATE PROCEDURE `spGetPhoneTypes`(IN _UserID int)
+CREATE PROCEDURE `spGetPhoneTypes`()
 DETERMINISTIC
 BEGIN
   Select PhoneTypeID, PhoneType
