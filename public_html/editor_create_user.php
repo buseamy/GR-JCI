@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'You forgot to enter an E-mail address.';
 	}
 	// checks if email already exists
-	$checkquery1=("SELECT EmailAddress FROM Users WHERE EmailAddress = $_POST[email]");
+	$checkquery1=("SELECT EmailAddress FROM Users WHERE EmailAddress = '$email'");
 	$result1=mysqli_query($checkquery1);
 	if (!$result1) {
 		$errors[] = 'username or E-mail already exists.';
@@ -144,7 +144,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} // End of if ($r) IF.
 		
 		mysqli_close($dbc); // Close the database connection.
+		
+		
+		
+		// Send welcome E-mail for verification
+		$to = '$email';
+		$subject = 'Welcome to JCI';
+		$msg = "Welcome to the Jurnal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration.";
+		$msg = wordwrap($msg,70);
+		
+		mail($to, $subject, $msg);
 
+		
         //quit the script:
 		exit();
 		
