@@ -223,7 +223,8 @@ FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 CREATE TABLE Files
 (
 FileID int NOT NULL AUTO_INCREMENT,
-FileContents LONGBLOB NOT NULL,
+SequenceNumber tinyint NOT NULL,
+FileContents BLOB NOT NULL,
 PRIMARY KEY (FileID)
 );
 
