@@ -94,7 +94,7 @@ PRIMARY KEY (AddressTypeID)
 CREATE TABLE Users
 (
 UserID int NOT NULL AUTO_INCREMENT,
-EmailAddress varchar(200) NOT NULL,
+EmailAddress varchar(200) NOT NULL UNIQUE,
 PasswordHash varchar(200) NOT NULL,
 FirstName varchar(15) NOT NULL,
 LastName varchar(30) NOT NULL,
@@ -219,13 +219,15 @@ FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
 FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
-/*Create Files table*/
-CREATE TABLE Files
+/*Create FileData table*/
+CREATE TABLE FileData
 (
-FileID int NOT NULL AUTO_INCREMENT,
+FileDataID int NOT NULL AUTO_INCREMENT,
+FileMetaDataID int NOT NULL,
 SequenceNumber tinyint NOT NULL,
 FileContents BLOB NOT NULL,
-PRIMARY KEY (FileID)
+PRIMARY KEY (FileDataID),
+FOREIGN KEY (FileDataID) REFERENCES FileMetaData(FileDataID)
 );
 
 /*Create FileTypes table*/
@@ -239,16 +241,14 @@ FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
 );
 
 /*Create FileData table*/
-CREATE TABLE FileData
+CREATE TABLE FileMetaData
 (
-FileDataID int NOT NULL AUTO_INCREMENT,
+FileMetaDataID int NOT NULL AUTO_INCREMENT,
 FileTypeID int NOT NULL,
-FileID int NOT NULL,
 FileMime varchar(200) NOT NULL,
 FileName varchar(200) NOT NULL,
 FileSize int NOT NULL,
-PRIMARY KEY (FileDataID),
-FOREIGN KEY (FileID) REFERENCES Files(FileID),
+PRIMARY KEY (FileMetaDataID),
 FOREIGN KEY (FileTypeID) REFERENCES FileTypes(FileTypeID)
 );
 

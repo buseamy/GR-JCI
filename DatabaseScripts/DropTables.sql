@@ -1,14 +1,12 @@
 USE gr_jci;
 
-DROP PROCEDURE IF EXISTS `spGetUserID`;
-DROP PROCEDURE IF EXISTS `spGetUserRoles`;
-
 DROP TABLE IF EXISTS `SystemSettings_Email`;
 DROP TABLE IF EXISTS `SystemSettings_CaseDates`;
 DROP TABLE IF EXISTS `SubmissionFiles`;
 DROP TABLE IF EXISTS `ReviewerFiles`;
-DROP TABLE IF EXISTS `FileData`;
+DROP TABLE IF EXISTS `FileMetaData`;
 DROP TABLE IF EXISTS `FileTypes`;
+DROP TABLE IF EXISTS `FileData`;
 DROP TABLE IF EXISTS `Files`;
 DROP TABLE IF EXISTS `SubmissionCategories`;
 DROP TABLE IF EXISTS `Reviewers`;
