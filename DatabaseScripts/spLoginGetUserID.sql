@@ -14,7 +14,7 @@ BEGIN
   Where u.EmailAddress = _EmailAddress
     And u.PasswordHash = SHA1(_Password)
 	And u.Active = 1
-	And e.EmailStatus = 3;
+	And u.EmailStatusID = 3;
 	
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
