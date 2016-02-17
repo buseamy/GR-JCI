@@ -7,7 +7,7 @@
 DEFINE ('DB_USER', 'DB_USER_PLACEHOLDER'); // db_user
 DEFINE ('DB_PASSWORD', 'DB_PASSWORD_PLACEHOLDER'); // db_password
 DEFINE ('DB_HOST', 'localhost'); // localhost, 127.0.0.1
-DEFINE ('DB_NAME', 'DB_NAME_PLACEHOLDER'); // db_name
+DEFINE ('DB_NAME', 'gr_jci'); // db_name
 
 // Make the connection:
 $dbc = @mysqli_connect (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
