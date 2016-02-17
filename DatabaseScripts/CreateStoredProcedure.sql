@@ -96,4 +96,101 @@ BEGIN
 		   u.UserID;
 END$$
 
+/* Inserts a new user then returns the userid */
+DROP PROCEDURE IF EXISTS `spCreateUser`$$
+CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200), IN _Password varchar(50), IN _FirstName varchar(15), IN _LastName varchar(30))
+DETERMINISTIC
+BEGIN
+  Declare _UserID int;
+
+  /* Make sure the email address doesn't already exist */
+  If(Select Exists(Select 1 From Users Where EmailAddress = _EmailAddress)) Then
+    Select 'Email address already exists' As 'Error';
+  Else
+    /* Insert the new User record */
+    Insert Into Users (EmailAddress,PasswordHash,FirstName,LastName,EmailStatusID,EmailVerificationGUID,Active,CreateDate)
+    Values (_EmailAddress,SHA1(_Password),_FirstName,_LastName,1,REPLACE(UUID(),'-',''),1,CURRENT_DATE);
+    
+    /* Get the new UserID */
+    Set _UserID = last_insert_id();
+    
+    /* Set the new user to Role: Author */
+    Insert Into UserRoles (UserID, RoleID)
+    Values (_UserID,1);
+    
+    /* Return the new UserID and GUID for password verification */
+    Select u.UserID,
+           u.EmailVerificationGUID
+    From Users u
+    Where u.UserID = _UserID;
+  End If;
+END$$
+
+/* Inserts a new address for a user */
+DROP PROCEDURE IF EXISTS `spCreateAddress`$$
+CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
+                                   IN _AddressTypeID int,
+                                   IN _AddressLn1 varchar(100),
+								   IN _AddressLn2 varchar(100),
+								   IN _City varchar(30),
+								   IN _StateID int,
+								   IN _PostCode char(5),
+								   IN _PrimaryAddress tinyint
+) DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    /* Make sure the AddressTypeID exists */
+    If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
+	  /* Make sure the StateID exists */
+	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
+	    /* Default _PrimaryAddress to 0 if null is passed in */
+        Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
+	    
+        /* Insert the new address record */
+        Insert Into Addresses (UserID,AddressTypeID,AddressLn1,AddressLn2,City,StateID,PostCode,PrimaryAddress,CreateDate)
+        Values (_UserID,_AddressTypeID,_AddressLn1,_AddressLn2,_City,_StateID,_PostCode,_PrimaryAddress,CURRENT_DATE);
+          
+        /* Get the new AddressID */
+        Select last_insert_id() As 'AddressID';
+	  Else
+	    Select 'Invalid StateID' As 'Error';
+	  End If;
+	Else
+	  Select 'Invalid AddressTypeID' As 'Error';
+	End If;
+  Else
+    Select 'User doesn''t exist' As 'Error';
+  End If;  
+END$$
+
+/* Inserts a new address for a user */
+DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
+CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
+                                       IN _PhoneTypeID int,
+                                       IN _PhoneNumber char(10),
+								       IN _PrimaryPhone tinyint
+) DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    /* Make sure the PhoneTypeID exists */
+    If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
+	  /* Default _PrimaryPhone to 0 if null is passed in */
+      Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
+	  
+      /* Insert the new address record */
+      Insert Into PhoneNumbers (UserID,PhoneTypeID,PhoneNumber,PrimaryPhone,CreateDate)
+      Values (_UserID,_PhoneTypeID,_PhoneNumber,_PrimaryPhone,CURRENT_DATE);
+        
+      /* Get the new AddressID */
+      Select last_insert_id() As 'PhoneNumberID';
+	Else
+	  Select 'Invalid PhoneTypeID' As 'Error';
+	End If;
+  Else
+    Select 'User doesn''t exist' As 'Error';
+  End If; 
+END$$
+
 DELIMITER ;
