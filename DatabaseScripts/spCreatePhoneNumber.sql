@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new address for a user */
+/* Inserts a new phone number for a user */
 DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
 CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
                                        IN _PhoneTypeID int,

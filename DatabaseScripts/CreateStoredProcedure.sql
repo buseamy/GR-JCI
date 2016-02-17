@@ -193,4 +193,36 @@ BEGIN
   End If; 
 END$$
 
+/* Inserts a new phone number type */
+DROP PROCEDURE IF EXISTS `spCreatePhoneType`$$
+CREATE PROCEDURE `spCreatePhoneType`(IN _PhoneType varchar(20))
+DETERMINISTIC
+BEGIN
+  /* Make sure the Phone Type doesn't exist */
+  If(Select Exists(Select 1 From PhoneTypes Where PhoneType = _PhoneType)) Then
+    Select 'Phone type already exists' As 'Error';
+  Else
+    Insert Into PhoneTypes(PhoneType)
+	Values (_PhoneType);
+	
+	Select last_insert_id() As 'PhoneTypeID';
+  End If; 
+END$$
+
+/* Inserts a new phone number type */
+DROP PROCEDURE IF EXISTS `spCreateAddressType`$$
+CREATE PROCEDURE `spCreateAddressType`(IN _AddressType varchar(20))
+DETERMINISTIC
+BEGIN
+  /* Make sure the Phone Type doesn't exist */
+  If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
+    Select 'Address type already exists' As 'Error';
+  Else
+    Insert Into AddressTypes(AddressType)
+	Values (_AddressType);
+	
+	Select last_insert_id() As 'AddressTypeID';
+  End If; 
+END$$
+
 DELIMITER ;
