@@ -209,12 +209,12 @@ BEGIN
   End If; 
 END$$
 
-/* Inserts a new phone number type */
+/* Inserts a new address type */
 DROP PROCEDURE IF EXISTS `spCreateAddressType`$$
 CREATE PROCEDURE `spCreateAddressType`(IN _AddressType varchar(20))
 DETERMINISTIC
 BEGIN
-  /* Make sure the Phone Type doesn't exist */
+  /* Make sure the address type doesn't exist */
   If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
     Select 'Address type already exists' As 'Error';
   Else
@@ -223,6 +223,74 @@ BEGIN
 	
 	Select last_insert_id() As 'AddressTypeID';
   End If; 
+END$$
+
+/* Updates the user's account to mark them as disabled */
+DROP PROCEDURE IF EXISTS `spDisableUser`$$
+CREATE PROCEDURE `spDisableUser`(IN _UserID int, IN _NonActiveNote varchar(5000))
+DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set Active = 0, NonActiveNote = _NonActiveNote
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If; 
+END$$
+
+/* Updates the user's account to re-enable them */
+DROP PROCEDURE IF EXISTS `spEnableUser`$$
+CREATE PROCEDURE `spEnableUser`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set Active = 1, NonActiveNote = Null
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If; 
+END$$
+
+/* Deletes a user's address */
+DROP PROCEDURE IF EXISTS `spDeleteAddress`$$
+CREATE PROCEDURE `spDeleteAddress`(IN _AddressID int)
+DETERMINISTIC
+BEGIN
+  Delete From Addresses
+  Where AddressID = _AddressID;
+END$$
+
+/* Deletes a user's phone number */
+DROP PROCEDURE IF EXISTS `spDeletePhoneNumber`$$
+CREATE PROCEDURE `spDeletePhoneNumber`(IN _PhoneNumberID int)
+DETERMINISTIC
+BEGIN
+  Delete From PhoneNumbers
+  Where PhoneNumberID = _PhoneNumberID;
+END$$
+
+/* Marks a user's email address as valid */
+DROP PROCEDURE IF EXISTS `spUpdateAcceptEmailAddress`$$
+CREATE PROCEDURE `spUpdateAcceptEmailAddress`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Update Users
+  Set EmailStatusID = 3
+  Where UserID = _UserID;
+END$$
+
+/* Marks a user's email address as invalid */
+DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`$$
+CREATE PROCEDURE `spUpdateRejectEmailAddress`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Update Users
+  Set EmailStatusID = 2
+  Where UserID = _UserID;
 END$$
 
 DELIMITER ;
