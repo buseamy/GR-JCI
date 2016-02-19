@@ -4,8 +4,8 @@
 // and selects the database.
 
 // Set the database access information as constants:
-DEFINE ('DB_USER', 'DB_USER_PLACEHOLDER'); // db_user
-DEFINE ('DB_PASSWORD', 'DB_PASSWORD_PLACEHOLDER'); // db_password
+DEFINE ('DB_USER', 'XamppUser'); // db_user
+DEFINE ('DB_PASSWORD', 'XamppPassword'); // db_password
 DEFINE ('DB_HOST', 'localhost'); // localhost, 127.0.0.1
 DEFINE ('DB_NAME', 'gr_jci'); // db_name
 
