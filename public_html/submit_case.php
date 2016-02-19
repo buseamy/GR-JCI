@@ -1,11 +1,11 @@
 <?php
 /*
 * @File Name:       submit_case.php
-* @Description:     Author case submission for JCI website
+* @Description:     Author submit case page for JCI website
 * @PHP version:     Currently Unknown
 * @Author(s):       Jacob Cole <colej28@ferris.edu>
 * @Organization:    Ferris State University
-* @Last updated:    02/12/2016
+* @Last updated:    02/14/2016
 */
 
 /*
@@ -28,10 +28,15 @@ include ('./includes/header.php');
     <!--Page main body-->
     <div id="registration-form">
         <form id="submit_case" action="">
-            <p><label for="memberCode">Member Code: </label> <input type="text" name="memberCode" id="memberCode" size="30" maxlength="60"></p>
             <p><label for="title">Title: <span class="required">*</span> </label> <input type="text" name="title" id="title" size="30" maxlength="100"></p>
             <div id="dynamicAuthor">
-                <p><label for="author">Author: <span class="required">*</span> </label> <input type="text" id="author" size="30" maxlength="100" name="authors"></p>
+                <div>
+                    <h3>Author</h3>
+                    <p><label for="memberCode">Member Code: </label> <input type="text" name="memberCode" id="memberCode" size="30" maxlength="60"></p>
+                    <p><label for="email">Email: <span class="required">*</span></label> <input type="text" id="email" size="30" maxlength="100" name="email"></p>
+                    <p><label for="authorFirst">First Name: <span class="required">*</span> </label> <input type="text" id="authorFirst" size="30" maxlength="100" name="authorFirst"></p>
+                    <p><label for="authorLast">Last Name: <span class="required">*</span></label><input type="text" id="authorLast" size="30" maxlength="100" name="authorLast"></p>
+                </div>
             </div>
             <p><input type="button" value="Add another author" onClick="addInput('dynamicAuthor');"><p>
 
@@ -50,23 +55,25 @@ include ('./includes/header.php');
             formValidator.EnableMsgsTogether();
 
             formValidator.addValidation("title", "req", "Please enter a title");//Title required
-            formValidator.addValidation("author", "req", "Please enter an author");//author required
+            formValidator.addValidation("email", "req", "Please enter an email");//author required
+            formValidator.addValidation("authorFirst", "req", "Please enter an author first name");//author required
+            formValidator.addValidation("authorLast", "req", "Please enter an author last name");//author required
             formValidator.addValidation("abstract", "req", "Please enter an abstract");//abstract required
 
             //Cover Letter validation
-            formValidator.addValidation("coverLetter","file_extn=pdf;doc;docx;rtf","Allowed files types for cover letter are: .doc, .docx, .rtf, and .pdf");//check file type
+            formValidator.addValidation("coverLetter","file_extn=doc;docx;rtf","Allowed files types for cover letter are: .doc, .docx, and .rtf");//check file type
             formValidator.addValidation("coverLetter","req_file","Cover Letter is required");//Cover letter required
             //Case validation
-            formValidator.addValidation("case","file_extn=pdf;doc;docx;rtf","Allowed files types for case are: .doc, .docx, .rtf, and .pdf");//Check file type
+            formValidator.addValidation("case","file_extn=doc;docx;rtf","Allowed files types for case are: .doc, .docx, and .rtf");//Check file type
             formValidator.addValidation("case","req_file","Case is required");//Case required
             //Teaching notes validation
-            formValidator.addValidation("teachingNotes","file_extn=pdf;doc;docx;rtf","Allowed files types for Teaching notes are: .doc, .docx, .rtf, and .pdf");//Check file type
+            formValidator.addValidation("teachingNotes","file_extn=doc;docx;rtf","Allowed files types for Teaching notes are: .doc, .docx, and .rtf");//Check file type
             formValidator.addValidation("teachingNotes","req_file","Teaching Notes are required");//teachingNotes required
             //Memo validation
-            formValidator.addValidation("memo","file_extn=pdf;doc;docx;rtf","Allowed files types for Memo are: .doc, .docx, .rtf, and .pdf");//Check file type
+            formValidator.addValidation("memo","file_extn=doc;docx;rtf","Allowed files types for Memo are: .doc, .docx, and .rtf");//Check file type
             formValidator.addValidation("memo","req_file","Memo is required");//memo required
             //summary validation
-            formValidator.addValidation("summary","file_extn=pdf;doc;docx;rtf","Allowed files types for summary are: .doc, .docx, .rtf, and .pdf");//Check file type
+            formValidator.addValidation("summary","file_extn=doc;docx;rtf","Allowed files types for summary are: .doc, .docx, and .rtf");//Check file type
             formValidator.addValidation("summary","req_file","Summary is required");//summary required
         </script>
     </div>
