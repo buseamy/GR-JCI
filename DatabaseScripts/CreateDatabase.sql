@@ -4,6 +4,9 @@ CREATE DATABASE gr_jci;
 
 USE gr_jci;
 
+CREATE USER 'XamppUser'@'localhost' IDENTIFIED BY 'XamppPassword';
+GRANT EXECUTE ON gr_jci.* TO 'XamppUser'@'localhost';
+
 /*Create Roles Table*/
 CREATE TABLE Roles
 (
@@ -219,17 +222,6 @@ FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
 FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
-/*Create FileData table*/
-CREATE TABLE FileData
-(
-FileDataID int NOT NULL AUTO_INCREMENT,
-FileMetaDataID int NOT NULL,
-SequenceNumber tinyint NOT NULL,
-FileContents BLOB NOT NULL,
-PRIMARY KEY (FileDataID),
-FOREIGN KEY (FileDataID) REFERENCES FileMetaData(FileDataID)
-);
-
 /*Create FileTypes table*/
 CREATE TABLE FileTypes
 (
@@ -250,6 +242,17 @@ FileName varchar(200) NOT NULL,
 FileSize int NOT NULL,
 PRIMARY KEY (FileMetaDataID),
 FOREIGN KEY (FileTypeID) REFERENCES FileTypes(FileTypeID)
+);
+
+/*Create FileData table*/
+CREATE TABLE FileData
+(
+FileDataID int NOT NULL AUTO_INCREMENT,
+FileMetaDataID int NOT NULL,
+SequenceNumber tinyint NOT NULL,
+FileContents BLOB NOT NULL,
+PRIMARY KEY (FileDataID),
+FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
 );
 
 /*Create ReviewerFiles table*/
