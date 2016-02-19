@@ -28,7 +28,7 @@ if (isset($_GET["fid"])) {
         $errors.push("Invalid input in link: <$fid>");
     }
     
-    $q_FileInfo = "CALL GetFileInfo('$fid')";
+    $q_FileInfo = "CALL spGetFileInfo('$fid')";
     if (!$error && !$r_FileInfo = mysqli_query($dbc, $q_FileInfo)) {
         $error = true;
         $errors.push("Unable to get file information.");
@@ -49,7 +49,7 @@ if (isset($_GET["fid"])) {
         complete_procedure($dbc);
         
         // check query before sending header information
-        $q_FileSegments = "CALL GetFileSegments('$fid')";
+        $q_FileSegments = "CALL spGetFileSegments('$fid')";
         if (!$r_FileSegments = mysqli_query($dbc, $q_FileSegments)) {
             $error = true;
             $errors.push("Unable to get file content.");
