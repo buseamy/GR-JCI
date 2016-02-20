@@ -1,11 +1,11 @@
-<? // Registration for all users written by Jamal Ahmed code referred to was from Isys288 register.php
+<?php // Registration for all users written by Jamal Ahmed code referred to was from Isys288 register.php
 
 $page_title = 'Register';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
-	require ('mysqli_connect.php');
+	require ('../..mysqli_connect.php');
 		
 	$errors = array(); // Initialize an error array.
 
