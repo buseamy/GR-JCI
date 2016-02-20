@@ -4,7 +4,7 @@
 // ignore_remaining_output - expects mysqli query result
 // ignores remaining output of a query, such as when a single record is expected
 function ignore_remaining_output ($r) {
-    while (mysqli_fetch_array($r, MYSQLI_ASSOC) {
+    while (mysqli_fetch_array($r, MYSQLI_ASSOC)) {
     }
 }
 

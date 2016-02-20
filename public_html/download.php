@@ -23,19 +23,19 @@ if (isset($_GET["fid"])) {
     require('./include_utils/procedures.php');
     
     $fid = mysqli_real_escape_string($dbc, $_GET["fid"]);
-    if (!isnumeric($fid)) {
+    if (!is_numeric($fid)) {
         $error = true;
-        $errors.push("Invalid input in link: <$fid>");
+        array_push($errors, "Invalid input in link: <$fid>");
     }
     
     $q_FileInfo = "CALL spGetFileInfo('$fid')";
     if (!$error && !$r_FileInfo = mysqli_query($dbc, $q_FileInfo)) {
         $error = true;
-        $errors.push("Unable to get file information.");
+        array_push($errors, "Unable to get file information.");
     }
     if (!$error && mysqli_num_rows($r_FileInfo) != 1) {
         $error = true;
-        $errors.push("Expecting one record, none or multiple found.");
+        array_push($errors, "Expecting one record, none or multiple found.");
     }
     
     if (!$error)
@@ -52,11 +52,11 @@ if (isset($_GET["fid"])) {
         $q_FileSegments = "CALL spGetFileSegments('$fid')";
         if (!$r_FileSegments = mysqli_query($dbc, $q_FileSegments)) {
             $error = true;
-            $errors.push("Unable to get file content.");
+            array_push($errors, "Unable to get file content.");
         }
         if (!$error && mysqli_num_rows($r_FileSegments) < 1) {
-            $error = truel
-            $errors.push("No content found for file.");
+            $error = true;
+            array_push($errors, "No content found for file.");
         }
         
         if (!$error) {
