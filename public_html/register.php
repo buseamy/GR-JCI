@@ -5,14 +5,14 @@ $page_title = 'Register';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
-	require ('../..mysqli_connect.php');
+	require ('mysqli_connect.php');
 		
 	$errors = array(); // Initialize an error array.
 
 		// taken from jon's editor_create_user page
 	if (strlen($_POST['pass1']) < 6 ) {
 		$errors[] = 'The password must be at least 6 characters long.';
-		
+		}	
 	// checks if password matches
 	if (!empty($_POST['pass1'])) {
 	if ($_POST['pass1'] != $_POST['pass2']) {
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 		// Make the query:
 		$q = "INSERT INTO Users (EmailAddress, PasswordHash, FirstName, LastName, MemberCode, InstitutionAffiliation, CreateDate ) 
-		VALUES ('$email', SHA1('$password'), '$firstname', '$lastname', '$code', '$association' , NOW() );	
+		VALUES ('$email', SHA1('$password'), '$firstname', '$lastname', '$code', '$association' , NOW() );
 		INSERT INTO PhoneNumbers (PhoneNumber) VALUES ('$phone');
 		INSERT INTO PhoneTypes (PhoneType) VALUES ('$PhoneType');
 		INSERT INTO Addresses (AddressLn1, AddressLn2, City, PostCode, CreateDate)
