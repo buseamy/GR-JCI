@@ -11,7 +11,7 @@ BEGIN
 
   Select u.UserID Into _UserID
   From Users u
-  Where u.EmailAddress = _EmailAddress
+  Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password);
 	
   Select IfNull(_UserID, -1) As 'UserID';

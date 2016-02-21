@@ -41,7 +41,7 @@ BEGIN
 
   Select u.UserID Into _UserID
   From Users u
-  Where u.EmailAddress = _EmailAddress
+  Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password);
 	
   Select IfNull(_UserID, -1) As 'UserID';
@@ -68,10 +68,10 @@ BEGIN
 
   Select u.UserID Into _UserID
   From Users u
-  Where u.EmailAddress = _EmailAddress
+  Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password)
 	And u.Active = 1
-	And u.EmailStatusID = 3;
+	And u.EmailStatusID != 2;
 	
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
@@ -96,9 +96,12 @@ BEGIN
 		   u.UserID;
 END$$
 
-/* Inserts a new user then returns the userid */
+/* Inserts a new user then returns the UserID & EmailVerificationGUID */
 DROP PROCEDURE IF EXISTS `spCreateUser`$$
-CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200), IN _Password varchar(50), IN _FirstName varchar(15), IN _LastName varchar(30))
+CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
+                                IN _Password varchar(50),
+								IN _FirstName varchar(15),
+								IN _LastName varchar(30))
 DETERMINISTIC
 BEGIN
   Declare _UserID int;
@@ -108,14 +111,32 @@ BEGIN
     Select 'Email address already exists' As 'Error';
   Else
     /* Insert the new User record */
-    Insert Into Users (EmailAddress,PasswordHash,FirstName,LastName,EmailStatusID,EmailVerificationGUID,Active,CreateDate)
-    Values (_EmailAddress,SHA1(_Password),_FirstName,_LastName,1,REPLACE(UUID(),'-',''),1,CURRENT_DATE);
+    Insert Into Users (EmailAddress,
+					   NewEmailAddress,
+	                   PasswordHash,
+					   FirstName,
+					   LastName,
+					   EmailStatusID,
+					   EmailVerificationGUID,
+					   NewEmailAddressCreateDate,
+					   Active,
+					   CreateDate)
+    Values (LOWER(_EmailAddress),
+			LOWER(_EmailAddress),
+	        SHA1(_Password),
+			_FirstName,
+			_LastName,
+			1,
+			REPLACE(UUID(),'-',''),
+			CURRENT_DATE,
+			1,
+			CURRENT_DATE);
     
     /* Get the new UserID */
     Set _UserID = last_insert_id();
     
     /* Set the new user to Role: Author */
-    Insert Into UserRoles (UserID, RoleID)
+    Insert Into UserRoles (UserID,RoleID)
     Values (_UserID,1);
     
     /* Return the new UserID and GUID for password verification */
@@ -123,7 +144,7 @@ BEGIN
            u.EmailVerificationGUID
     From Users u
     Where u.UserID = _UserID;
-  End If;
+  End If;  
 END$$
 
 /* Inserts a new address for a user */
@@ -291,6 +312,106 @@ BEGIN
   Update Users
   Set EmailStatusID = 2
   Where UserID = _UserID;
+END$$
+
+/* Gets the List of available roles */
+DROP PROCEDURE IF EXISTS `spGetRoles`$$
+CREATE PROCEDURE `spGetRoles`()
+DETERMINISTIC
+BEGIN
+  Select RoleID,
+         RoleTitle
+  From Roles
+  Order By RoleTitle;
+END$$
+
+/* Connects a UserID with a RoleID */
+DROP PROCEDURE IF EXISTS `spUserAddRole`$$
+CREATE PROCEDURE `spUserAddRole`(IN _UserID int, IN _RoleID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    /* Make sure RoleID exists */
+    If(Select Exists(Select 1 From Roles Where RoleID = _RoleID)) Then
+	  /* Make sure UserID and RoleID combination doesn't exist */
+      If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = _RoleID)) Then
+        Select 'User already has that role' As 'Error';
+      Else
+	    /* Make the connection */
+        Insert Into UserRoles (UserID,RoleID)
+	    Values (_UserID,_RoleID);
+      End If;
+	Else
+	  Select 'RoleID doesn''t exist' As 'Error';
+	End If;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* For every user create membership history record */
+DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
+CREATE PROCEDURE `spYearlyAddMembershipHistory`()
+DETERMINISTIC
+BEGIN
+  /* Delete the current year's entries */
+  Delete From UserMembershipHistory
+  Where Year = YEAR(CURRENT_DATE);
+  
+  /* Insert the new records for every user for this year */
+  Insert Into UserMembershipHistory (UserID,Year,ValidMembership)
+  Select UserID, YEAR(CURRENT_DATE), ValidMembership
+  From Users;
+END$$
+
+/* Update the password for a UserID */
+DROP PROCEDURE IF EXISTS `spUpdateUserPassword`$$
+CREATE PROCEDURE `spUpdateUserPassword`(IN _UserID int, IN _Password varchar(50))
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set PasswordHash = SHA1(_Password)
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Update the EmailAddress for a UserID */
+DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`$$
+CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(50))
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set NewEmailAddress = LOWER(_EmailAddress),
+	    EmailVerificationGUID = REPLACE(UUID(),'-',''),
+		NewEmailAddressCreateDate = CURRENT_DATE,
+		EmailStatusID = 1
+	Where UserID = _UserID;
+	
+	/* Get the new GUID for email verification */
+	Select EmailVerificationGUID
+    From Users
+    Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Expire user's EmailAddress change attempts */
+DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`$$
+CREATE PROCEDURE `spUpdateExpireUsersEmailAddressChange`()
+DETERMINISTIC
+BEGIN
+  Update Users
+  Set EmailStatusID = 2
+  Where EmailStatusID = 1
+    And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 3 DAY;
 END$$
 
 DELIMITER ;

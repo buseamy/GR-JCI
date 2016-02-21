@@ -11,10 +11,10 @@ BEGIN
 
   Select u.UserID Into _UserID
   From Users u
-  Where u.EmailAddress = _EmailAddress
+  Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password)
 	And u.Active = 1
-	And u.EmailStatusID = 3;
+	And u.EmailStatusID != 2;
 	
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
