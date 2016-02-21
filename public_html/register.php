@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (strlen($_POST['pass1']) < 6 ) {
 		$errors[] = 'The password must be at least 6 characters long.';
 	}
-	// checks if password matches
+	// if passwords not empty checks if password matches
 	if (!empty($_POST['pass1'])) {
 	if ($_POST['pass1'] != $_POST['pass2']) {
 		$errors[] = 'Your password did not match the confirmed password.';
@@ -73,27 +73,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (empty($_POST['city'])) {
 		$city = null;
-	} else {
+	} else if (Is_numeric($_POST['city'])) {
+		$errors[] = 'Your city should not contain numbers.';
+	}  else {
 		$city = mysqli_real_escape_string($dbc, trim($_POST['city']));
 	}	
 
 	if (empty($_POST['state'])) {
 		$state = null;
+	} else if (Is_numeric($_POST['state'])) {
+		$errors[] = 'Your state should not contain numbers.';
 	} else {
 		$state = mysqli_real_escape_string($dbc, trim($_POST['state']));
 	}	
 
+	// only accepts numbers for input displays an error if anything else is entered
 	if (empty($_POST['zip'])) {
 		$zip = null;
-	} else {
+	} else if (Is_numeric($_POST['zip'])){
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}	
+	  else (!Is_numeric($_POST['zip'])){
+		$errors[] = 'Your zip code should only contain numbers.';
+	  }
 
 	if (empty($_POST['phone'])) {
 		$phone = null;
-	} else {
+	} else if (Is_numeric($_POST['phone'])) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
 	}
+	  else (!Is_numeric($_POST['phone'])){
+		$errors[] = 'Your phone number should only contain numbers.';
+	  }
 	
 	// grabs the selection from the drop down box 
 	$PhoneType = mysqli_real_escape_string($dbc, trim($_POST['PhoneType']));
@@ -114,19 +125,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 		// Register the user in the database...
 		
-		// Make the query:
+		// Make the queries:
 		$q = "INSERT INTO Users (EmailAddress, PasswordHash, FirstName, LastName, MemberCode, InstitutionAffiliation, CreateDate ) 
-		VALUES ('$email', SHA1('$password'), '$firstname', '$lastname', '$code', '$association' , NOW() )";
-		/*
+		VALUES ('$email', SHA1('$password'), '$firstname', '$lastname', '$code', '$association' , NOW() );
 		INSERT INTO PhoneNumbers (PhoneNumber) VALUES ('$phone');
 		INSERT INTO PhoneTypes (PhoneType) VALUES ('$PhoneType');
-		INSERT INTO Addresses (AddressLn1, AddressLn2, City, PostCode, CreateDate)
-		VALUES ('$address', '$address1', '$city', '$zip', NOW() );
-		INSERT INTO AddressTypes (AddressType) VALUES ('$addressType');
-		INSERT INTO States (Name) VALUES ('$state');
-			*/
-		$r = @mysqli_query ($dbc, $q); // Run the query.
-		if ($r) { // If it ran OK.
+		INSERT INTO Addresses (AddressLn1, AddressLn2, City, PostCode, CreateDate) VALUES ('$address', '$address1', '$city', '$zip', NOW() );
+		INSERT INTO AddressTypes (AddressType) VALUES ('$addressType') ;
+		INSERT INTO States (Name) VALUES ('$state')";
+		// source http://stackoverflow.com/questions/30466422/insert-data-into-multiple-tables-using-one-form
+		$r = mysqli_multi_query ($dbc, $q); // Run the query.
+		if ($r ) { // If it ran OK.
 		
 			// Print a message:
 			echo '
@@ -175,7 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Street Address Line 1: <input type="text" name="address" size="25" maxlength="50" value="<?php if (isset($_POST['address'])) echo $_POST['address']; ?>" /></p>
 	<p>Street Address Line 2: <input type="text" name="address1" size="25" maxlength="50" value="<?php if (isset($_POST['address1'])) echo $_POST['address1']; ?>" /></p>
 			<p>Address Type:
-		<select name="Address Type">
+		<select name="AddressType">
+			<option value="<?php if (isset($_POST['AddressType'])) echo $_POST['AddressType']; ?>"> </option>
 			<option value="<?php if (isset($_POST['AddressType'])) echo $_POST['AddressType']; ?>">Home</option>
 			<option value="<?php if (isset($_POST['AddressType'])) echo $_POST['AddressType']; ?>">Work</option>
 		</select> </p>
@@ -185,7 +195,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Zip: <input type="text" name="zip" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" /></p>
 	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])) echo $_POST['phone']; ?>" /></p>
 		<p>Phone Type:
-		<select name="Phone Type">
+		<select name="PhoneType">
+			<option value="<?php if (isset($_POST['PhoneType'])) echo $_POST['PhoneType']; ?>"> </option>
 			<option value="<?php if (isset($_POST['PhoneType'])) echo $_POST['PhoneType']; ?>">Home</option>
 			<option value="<?php if (isset($_POST['PhoneType'])) echo $_POST['PhoneType']; ?>">Work</option>
 			<option value="<?php if (isset($_POST['PhoneType'])) echo $_POST['PhoneType']; ?>">Cell</option>

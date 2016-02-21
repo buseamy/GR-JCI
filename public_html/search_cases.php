@@ -1,6 +1,15 @@
-<?php // search cases.php
-
-	// if nothing is entered in to the field 
+<?php // search cases.php Written by Jamal Ahmed
+	
+	$errors = array(); // Initialize an error array.
+	
+	// if nothing is entered give an error message
+	if (!isset($_POST['case_ID'])) && (!isset($_POST['case_title'])) && (!isset($_POST['keyword']))
+		&& (!isset($_POST['author'])) && (!isset($_POST['category'])) {
+			$errors[] = 'You forgot to enter a search criteria please enter one.';
+		}
+	
+	
+	// if nothing is entered in to the field put in a wildcard operator which allows any value to be selected
 	if (empty($_POST['case_ID'])) {
 		$case_ID = '%';
 	} else {
@@ -31,8 +40,15 @@
 		$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
 	}
 
-	// not actual selct statement it will require a join
-	$q = select cases from cases where case_ID like $case_ID AND case_title like $case_title AND keyword like $keyword AND author like $author AND category like $category
+	// run only if one or more fields has been entered
+	if (empty($errors)) {
+	// select statement joining user table to submission and category table 
+	// using like instead of = because it allows the wildcard to be used
+	$q = "select Abstract from Users u INNER JOIN AuthorsSubmission asub ON u.UserID = asub.UserID 
+	INNER JOIN Submissions s ON asub.SubmissionID = s.SubmissionID INNER JOIN SubmissionCategories sc ON s.SubmissionID = sc.SubmissionID 
+	INNER JOIN Categories c ON sc.CategoryID = c.CategoryID
+	where SubmissionID like $case_ID AND CaseTitle like $case_title
+	AND Keywords like $keyword AND (select FirstName, LastName from Users) like $author AND Category like $category"
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	$r = @mysqli_query ($dbc, $q); // Run the query.
 	//dispay results
@@ -41,9 +57,18 @@
 
 		}
 
-
+	} else { // Report the errors.
+	
+		echo '<h1>Error!</h1>
+		<p class="error">The following error(s) occurred:<br />';
+		foreach ($errors as $msg) { // Print each error.
+			echo " - $msg<br />\n";
+		}
+		echo '</p><p>Please try Searching again.</p>';
+		
+	}
 ?>
-<h1>Register</h1>
+<h1>Search cases</h1>
 <form action="search cases.php" method="post">
 	<p>Case ID: <input type="text" name="case_ID" size="15" maxlength="20" value="<?php if (isset($_POST['case_ID'])) echo $_POST['case_ID']; ?>" /></p>
 	<p>Case Title: <input type="text" name="case_title" size="15" maxlength="40" value="<?php if (isset($_POST['case_title'])) echo $_POST['case_title']; ?>" /></p>
