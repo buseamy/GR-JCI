@@ -20,5 +20,11 @@ REM using the host-public directory in the repo
 SET SrcDir=%SrcDir:\scripts=\public_html%
 
 ECHO %SrcDir% %HostDir%
-ROBOCOPY %SrcDir% %HostDir% *.* /E /SL
+ROBOCOPY %SrcDir% %HostDir% *.* /E /SL /XD .git
+
+REM copy testing files for developers
+SET SrcDir=%SrcDir:\public_html=\test_files%
+SET HostDir=%HostDir:\htdocs=\htdocs\test_files%
+ECHO %SrcDir% %HostDir%
+ROBOCOPY %SrcDir% %HostDir% *.* /E /SL /XD .git
 PAUSE

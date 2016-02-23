@@ -53,6 +53,7 @@ while (isset($_FILES["$ONFILE"]))
     if (file_exists($SrcFilePath)) {
         // Insert into the filedata table
         $fp = fopen($SrcFilePath, "rb");
+        $segment = 1;
         while (!feof($fp)) {
             // temporarily raise PHP memory limit, due to potentially large filesize
             // ini_set('memory_limit', '2048M');
@@ -69,8 +70,8 @@ while (isset($_FILES["$ONFILE"]))
             
             // Make the data mysql insert safe
             $binarydata = addslashes(fread($fp, 65535));
-            $SQL = "CALL UploadFile ('$DstFileName', '$SrcFileType', $FileSize, '$binarydata');";
-            echo "<p>$DstFileName $SrcFileType $FileSize</p>";
+            $SQL = "CALL UploadFileSegment ('$DstFileName', '$SrcFileType', $FileSize, $segment, '$binarydata');";
+            echo "<p>$DstFileName $SrcFileType $FileSize $segment</p>";
             if (!$result = mysqli_query($dbc, $SQL)) {
                 echo '<p>' . $dbc->error . '</p>';
                 die("Failure to insert binary inode data row!");
@@ -79,6 +80,7 @@ while (isset($_FILES["$ONFILE"]))
             while (mysqli_more_results($dbc)) {
                 mysqli_next_result($dbc);
             }
+            $segment ++;
         }
         fclose($fp);
     }
@@ -90,33 +92,63 @@ clearstatcache();
 
 if (isset($_GET["fn"])) {
     $fileName = mysqli_real_escape_string($dbc, $_GET["fn"]);
-    $q_FileData = "CALL GetFile('$fileName')";
-    if (!$r_FileData = mysqli_query($dbc, $q_FileData)) {
+    $q_FileInfo = "CALL GetFileInfo('$fileName')";
+    if (!$r_FileInfo = mysqli_query($dbc, $q_FileInfo)) {
         echo '<p>' . $dbc->error . '</p>';
         die("Failed to retrieve file $fileName");
     }
-    if (mysqli_num_rows($r_FileData) != 1) {
+    if (mysqli_num_rows($r_FileInfo) != 1) {
         echo '<p>' . $dbc->error . '</p>';
         die("Invalid file $fileName");
     }
-    $row_FileData = mysqli_fetch_array($r_FileData, MYSQLI_ASSOC);
-    $recName = $row_FileData["files_name"];
-    $recMime = $row_FileData["filetype_name"];
-    $recSize = $row_FileData["files_size"];
-    $recData = $row_FileData["files_data"];
-    
-    // Send down the header to the client
-    Header("Content-Type: $recMime", false);
-    Header("Content-Length: $recSize", false);
-    Header("Content-Disposition: attachment; filename=$recName", false);
-    echo $recData;
+    $row_FileInfo = mysqli_fetch_array($r_FileInfo, MYSQLI_ASSOC);
+    $fileID = $row_FileInfo["files_id"];
+    $recName = $row_FileInfo["files_name"];
+    $recMime = $row_FileInfo["filetype_name"];
+    $recSize = $row_FileInfo["files_size"];
     // clear stored procedure results from the connection
-    while ($row_FileData = mysqli_fetch_array($r_FileData, MYSQLI_ASSOC)) {
+    while ($row_FileInfo = mysqli_fetch_array($r_FileInfo, MYSQLI_ASSOC)) {
         // do nothing - placeholder for if DB-design segments the file
     }
     while (mysqli_more_results($dbc)) {
         mysqli_next_result($dbc);
     }
+    
+    // check query before sending header information
+    $q_FileSegments = "CALL GetFileSegments('$fileID')";
+    $r_FileSegments = mysqli_query($dbc, $q_FileSegments);
+    if (mysqli_num_rows($r_FileSegments) < 1) {
+        echo '<p>' . $dbc->error . '</p>';
+        die("Failed to retrieve file segments for file $fileName");
+    }
+    
+    // Send down the header to the client
+    Header("Content-Type: $recMime", false);
+    Header("Content-Length: $recSize", false);
+    Header("Content-Disposition: attachment; filename=$recName", false);
+    
+    // echo each segment in order (ordered by ORDER BY)
+    while ($row_FileSegments = mysqli_fetch_array($r_FileSegments, MYSQLI_ASSOC)) {
+        $recData = $row_FileSegments["filedata"];
+        echo $recData;
+    }
+    while (mysqli_more_results($dbc)) {
+        mysqli_next_result($dbc);
+    }
+    // send the page data to the client, depends on browser
+    // may be best to have download functionality at the end of scripts
+    // where there is no page content remaining
+    // also, the page will be automatically closing anyways
+    ob_flush();
+    flush();
+    
+    //http://php.net/manual/en/function.header-remove.php
+    //header_remove(string) removes specified header
+    //header_remove() removes all PHP-set headers
+    //header(string:val) must be used if PHP version is before 5.3
+    header_remove("Content-Type");
+    header_remove("Content-Length");
+    header_remove("Content-Disposition");
 }
 
 $q_FileList = "CALL GetFileList();";
