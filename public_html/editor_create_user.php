@@ -1,13 +1,5 @@
 <? // This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
 
-/* TO-DO
-- fix db query
-- check if email exists
-- conect/disconect from db
-- send E-mail? welcome email
-*/
-
-
 $page_title = 'Create User';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -49,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'username or E-mail already exists.';
 	}
 	
-	
 	// check for first name
 	if (empty($_POST['first_name'])) {
 		$errors[] = 'You forgot to enter a first name.';
@@ -68,14 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$lastname = mysqli_real_escape_string($dbc, trim($_POST['last_name']));
 	}
 	
+	$stateID = mysqli_real_escape_string($dbc, trim($_POST['state']));
+		
 	// if no value is entered into box null value is inserted
 	if (empty($_POST['address1'])) {
-		$address2 = null;
+		$address1 = null;
 	} else {
 		$address1 = mysqli_real_escape_string($dbc, trim($_POST['address1']));
 	}	
 	
-	// if no value is entered into box null value is inserted
 	if (empty($_POST['address2'])) {
 		$address2 = null;
 	} else {
@@ -87,13 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$city = mysqli_real_escape_string($dbc, trim($_POST['city']));
 	}	
-
-	if (empty($_POST['state'])) {
-		$state = null;
-	} else {
-		$state = mysqli_real_escape_string($dbc, trim($_POST['state']));
-	}	
-
+	
 	if (empty($_POST['zip'])) {
 		$zip = null;
 	} else {
@@ -116,21 +102,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$association = null;
 	} else {
 		$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
-	}	
+	}
+	
+	// check to see if address or phone number are primary.
+	if ($_POST['atype'] = 2){
+		$aprime = 1;
+	}
+	if ($_POST['ptype'] = 2){
+		$pprime = 1;
+	}
 	
 	if (empty($errors)) { // If everything's OK.
 	
 		// Add the user in the database...
 		
 		// Make the query:
-		$q = "INSERT INTO Users (EmailAddress, PasswordHash, FirstName, Lastname, MemberCode, Phone, InstitutionAffiliation, AddressLn1, AddressLn2, City, StateID, PostCode, CreateDate) 
-		VALUES ('$email', SHA1('$pass1'), '$firstname', '$lastname', '$code', '$phone', '$association', '$address1', '$address2', '$city', '$state', '$zip', NOW() )";		
-		$r = @mysqli_query ($dbc, $q); // Run the query.
-		if ($r) { // If it ran OK.
+		$q_users = "CALL spCreateUser('$email', '$pass1', '$firstname', '$lastname')";
+				
+		// Run the query.
+		if ($r_users = mysqli_query ($dbc, $q_users)) { // If it ran OK.
 		
-			// Print a message:
-			echo '
-		<p>You have successfully created the user.</p><p><br /></p>';	
+			// Finish sending data to database and print a success message:
+			
+			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
+			$r_userID = $row_verify["UserID"];
+			$r_everify = $row_verify["EmailVerificationGUID"];
+			if (!empty($_post['address1'])) {
+				$q_address = "CALL spCreateAddress('$r_userID', '$_post['atype']', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
+				mysqli_query ($dbc, $q_address);
+			}
+			if (!empty($_post['phone'])){
+				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$_POST['ptype']', '$phone', '$pprime')";
+				mysqli_query ($dbc, $q_phone);
+			}
+		
+			echo '<p>You have successfully created the user.</p><p><br /></p>';	
 		
 		} else { // If it did not run OK.
 			
@@ -144,13 +150,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} // End of if ($r) IF.
 		
 		mysqli_close($dbc); // Close the database connection.
-		
-		
+
 		
 		// Send welcome E-mail for verification
 		$to = '$email';
 		$subject = 'Welcome to JCI';
-		$msg = "Welcome to the Jurnal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration.";
+		$msg = "Welcome to the Journal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
+		{$r_everify}";
 		$msg = wordwrap($msg,70);
 		
 		mail($to, $subject, $msg);
@@ -177,16 +183,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- create the form-->
 <h1>Create User</h1>
 <form action="editor_create_user.php" method="post">
-	<p>Email Address: <input type="text" name="email" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  /> </p>
-	<p>Confirm Email Address: <input type="text" name="email2" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  /> </p>
-	<p>Password: <input type="password" name="pass1" size="10" maxlength="20"  /></p>
-	<p>Confirm Password: <input type="password" name="pass2" size="10" maxlength="20"  /></p>
-	<p>First Name: <input type="text" name="first_name" size="15" maxlength="40" value="<?php if (isset($_POST['first_name'])) echo $_POST['first_name']; ?>" /></p>
-	<p>Last Name: <input type="text" name="last_name" size="15" maxlength="40" value="<?php if (isset($_POST['last_name'])) echo $_POST['last_name']; ?>" /></p>
+	<p>Email Address*: <input type="text" name="email" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  /> </p>
+	<p>Confirm Email Address*: <input type="text" name="email2" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  /> </p>
+	<p>Password*: <input type="password" name="pass1" size="10" maxlength="20"  /></p>
+	<p>Confirm Password*: <input type="password" name="pass2" size="10" maxlength="20"  /></p>
+	<p>First Name*: <input type="text" name="first_name" size="15" maxlength="40" value="<?php if (isset($_POST['first_name'])) echo $_POST['first_name']; ?>" /></p>
+	<p>Last Name*: <input type="text" name="last_name" size="15" maxlength="40" value="<?php if (isset($_POST['last_name'])) echo $_POST['last_name']; ?>" /></p>
 	<p>Street Address Line 1: <input type="text" name="address1" size="25" maxlength="50" value="<?php if (isset($_POST['address1'])) echo $_POST['address1']; ?>" /></p>
 	<p>Street Address Line 2: <input type="text" name="address2" size="25" maxlength="50" value="<?php if (isset($_POST['address2'])) echo $_POST['address2']; ?>" /></p>
 	<p>City: <input type="text" name="city" size="15" maxlength="40" value="<?php if (isset($_POST['city'])) echo $_POST['city']; ?>" /></p>
 	<p>State/province: <input type="text" name="state" size="15" maxlength="40" value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>" /></p>
+	<p>State/province: <select name="state"> 
+		<option value="1">Alabama</option>
+		<option value="2">Alaska</option>
+		<option value="3">Arizona</option>
+		<option value="4">Arkansas</option>
+		<option value="5">California</option>
+		<option value="6">Colorado</option>
+		<option value="7">Connecticut</option>
+		<option value="8">Delaware</option>
+		<option value="9">Florida</option>
+		<option value="10">Georgia</option>
+		<option value="11">Hawaii</option>
+		<option value="12">Idaho</option>
+		<option value="13">Illinois</option>
+		<option value="14">Indiana</option>
+		<option value="15">Iowa</option>
+		<option value="16">Kansas</option>
+		<option value="17">Kentucky</option>
+		<option value="18">Louisiana</option>
+		<option value="19">Maine</option>
+		<option value="20">Maryland</option>
+		<option value="21">Massachusetts</option>
+		<option value="22">Michigan</option>
+		<option value="23">Minnesota</option>
+		<option value="24">Mississippi</option>
+		<option value="25">Missouri</option>
+		<option value="26">Montana</option>
+		<option value="27">Nebraska</option>
+		<option value="28">Nevada</option>
+		<option value="29">New Hampshire</option>
+		<option value="30">New Jersey</option>
+		<option value="31">New Mexico</option>
+		<option value="32">New York</option>
+		<option value="33">North Carolina</option>
+		<option value="34">North Dakota</option>
+		<option value="35">Ohio</option>
+		<option value="36">Oklahoma</option>
+		<option value="37">Oregon</option>
+		<option value="38">Pennsylvania</option>
+		<option value="39">Rhode Island</option>
+		<option value="40">South Carolina</option>
+		<option value="41">South Dakota</option>
+		<option value="42">Tennessee</option>
+		<option value="43">Texas</option>
+		<option value="44">Utah</option>
+		<option value="45">Vermont</option>
+		<option value="46">Virginia</option>
+		<option value="47">Washington</option>
+		<option value="48">West Virginia</option>
+		<option value="49">Wisconsin</option>
+		<option value="50">Wyoming</option>
+	</select>
 	<p>Country: <select name="country"> 
 		<option value="--">none</option>
 		<option value="Afghanistan">Afghanistan</option>
@@ -431,18 +489,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	</select>
 	<p>Postal code (zip) : <input type="text" name="zip" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" /></p>
 	<p>Address Type:<select name="atype">
-		<option value="Home">Home</option>
-		<option value="Work">Work</option>
-		<option value="School">School</option>
+		<option value="2">Main</option>
+		<option value="1">Home</option>
+		<option value="3">Work</option>
 	</select> </p>
 	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])) echo $_POST['phone']; ?>" /></p>
 	<p>Phone Type:<select name="ptype">
-		<option value="Home">Home</option>
-		<option value="Work">Work</option>
-		<option value="Cell">Cell</option>
+		<option value="2">Main</option>
+		<option value="1">Home</option>
+		<option value="3">Mobile</option>
+		<option value="4">Work</option>
 	</select> </p>
 	<p>SCR Member ID: <input type="text" name="code" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" /></p>
 	<p>Professional Association (Univercity/Firm): <input type="association" name="last_name" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
+	<p>*asterisk indicates a required field </p>
 	<p><input type="submit" name="submit" value="Create User" /></p>
 </form>
 <a href="editor_index.php" class="button">Return</a>
