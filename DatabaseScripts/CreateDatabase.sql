@@ -4,6 +4,7 @@ CREATE DATABASE gr_jci;
 
 USE gr_jci;
 
+DROP USER IF EXISTS XamppUser@localhost;
 CREATE USER 'XamppUser'@'localhost' IDENTIFIED BY 'XamppPassword';
 GRANT EXECUTE ON gr_jci.* TO 'XamppUser'@'localhost';
 
@@ -52,7 +53,7 @@ PRIMARY KEY (CategoryID)
 CREATE TABLE Announcements
 (
 AnnouncementID int NOT NULL AUTO_INCREMENT,
-Title varchar(100),
+Title varchar(100) NOT NULL UNIQUE,
 Message varchar(10000) NOT NULL,
 CreateDate date NOT NULL,
 ExpireDate date,
@@ -107,6 +108,7 @@ ReviewerNumber varchar(3),
 InstitutionAffiliation varchar(100),
 EmailStatusID int NOT NULL,
 NewEmailAddress varchar(200),
+NewEmailAddressCreateDate date,
 EmailVerificationGUID varchar(32),
 Active tinyint(1) NOT NULL DEFAULT '1',
 NonActiveNote varchar(500) NULL,
@@ -119,7 +121,7 @@ FOREIGN KEY (EmailStatusID) REFERENCES EmailStatus(EmailStatusID)
 CREATE TABLE UserMembershipHistory
 (
 UserID int NOT NULL AUTO_INCREMENT,
-Year TINYINT NOT NULL,
+Year int NOT NULL,
 ValidMembership tinyint(1) NOT NULL,
 PRIMARY KEY (UserID,Year),
 FOREIGN KEY (UserID) REFERENCES Users(UserID)
@@ -173,7 +175,7 @@ CREATE TABLE Submissions
 (
 SubmissionID int NOT NULL AUTO_INCREMENT,
 EditorUserID int,
-CaseTitle varchar(150) NOT NULL,
+IncidentTitle varchar(150) NOT NULL,
 Abstract varchar(5000),
 SubmissionDate date NOT NULL,
 SubmissionStatusID int NOT NULL,

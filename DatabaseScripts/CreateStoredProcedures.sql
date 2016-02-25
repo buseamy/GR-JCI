@@ -623,4 +623,170 @@ BEGIN
   End If;
 END$$
 
+/* Updates an existing phone type */
+DROP PROCEDURE IF EXISTS `spUpdatePhoneType`$$
+CREATE PROCEDURE `spUpdatePhoneType`(IN _PhoneTypeID int,
+                                     IN _PhoneType varchar(20)
+) DETERMINISTIC
+BEGIN
+  /* Make sure the PhoneTypeID exists */
+  If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
+    /* Make sure the new PhoneType doesn't already exist */
+    If(Select Exists(Select 1 From PhoneTypes Where PhoneType = _PhoneType)) Then
+	  Select 'PhoneType already exists' As 'Error';
+	Else
+      /* Update the phone number record */
+	  Update PhoneTypes
+	  Set PhoneType = _PhoneType
+	  Where PhoneTypeID = _PhoneTypeID;
+	End If;
+  Else
+    Select 'PhoneTypeID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing address type */
+DROP PROCEDURE IF EXISTS `spUpdateAddressType`$$
+CREATE PROCEDURE `spUpdateAddressType`(IN _AddressTypeID int,
+                                       IN _AddressType varchar(20)
+) DETERMINISTIC
+BEGIN
+  /* Make sure the AddressTypeID exists */
+  If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
+    /* Make sure the new PhoneType doesn't already exist */
+    If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
+	  Select 'AddressType already exists' As 'Error';
+	Else
+      /* Update the phone number record */
+	  Update AddressTypes
+	  Set AddressType = _AddressType
+	  Where AddressTypeID = _AddressTypeID;
+	End If;
+  Else
+    Select 'AddressTypeID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing Submissions' status */
+DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`$$
+CREATE PROCEDURE `spUpdateSubmissionStatus`(IN _SubmissionID int,
+                                            IN _SubmissionStatusID int
+) DETERMINISTIC
+BEGIN
+  /* Make sure the SubmissionID exists */
+  If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+    /* Make sure the SubmissionStatusID exists */
+    If(Select Exists(Select 1 From SubmissionStatus Where SubmissionStatusID = _SubmissionStatusID)) Then
+      /* Update the Submission record */
+	  Update Submissions
+	  Set SubmissionStatusID = _SubmissionStatusID
+	  Where SubmissionID = _SubmissionID;
+    Else
+      Select 'SubmissionStatusID doesn''t exist' As 'Error';
+    End If;
+  Else
+    Select 'SubmissionID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Creates a new announcement */
+DROP PROCEDURE IF EXISTS `spCreateAnnouncement`$$
+CREATE PROCEDURE `spCreateAnnouncement`(IN _Title varchar(100),
+                                        IN _Message varchar(10000),
+										IN _ExpireDate date
+) DETERMINISTIC
+BEGIN
+  /* Make sure the Title doesn't exist */
+  If(Select Exists(Select 1 From Announcements Where Title = _Title)) Then
+    Select 'Title already exists' As 'Error';
+  Else
+    /* Create the announcement record */
+    Insert Into Announcements (Title,
+	                           Message,
+							   CreateDate,
+							   ExpireDate)
+    Values (_Title,
+	        _Message,
+			CURRENT_DATE,
+			_ExpireDate);
+
+	/* Return the new AnnouncementID */
+    Select last_insert_id() As 'AnnouncementID';
+  End If;
+END$$
+
+/* Updates an existing announcement */
+DROP PROCEDURE IF EXISTS `spUpdateAnnouncement`$$
+CREATE PROCEDURE `spUpdateAnnouncement`(IN _AnnouncementID int,
+                                        IN _Title varchar(100),
+                                        IN _Message varchar(10000),
+										IN _ExpireDate date
+) DETERMINISTIC
+BEGIN
+  /* Make sure the AnnouncementID exists */
+  If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
+    /* Make sure the Title doesn't exists, omitting the current ID */
+    If(Select Exists(Select 1 From Announcements Where Title = _Title And AnnouncementID != _AnnouncementID)) Then
+      Select 'Title already exists' As 'Error';
+    Else
+      /* Create the announcement record */
+      Update Announcements
+      Set Title = _Title,
+	      Message = _Message,
+		  ExpireDate = _ExpireDate
+	  Where AnnouncementID = _AnnouncementID;
+    End If;
+  Else
+    Select 'AnnouncementID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Deletes an existing announcement */
+DROP PROCEDURE IF EXISTS `spRemoveAnnouncement`$$
+CREATE PROCEDURE `spRemoveAnnouncement`(IN _AnnouncementID int) DETERMINISTIC
+BEGIN
+  /* Remove the Accouncement from the roles */
+  Delete From AccouncementRoles
+  Where AnnouncementID = _AnnouncementID;
+  
+  /* Remove the Accouncement itself */
+  Delete From Announcements
+  Where AnnouncementID = _AnnouncementID;
+END$$
+
+/* Connects an AnnouncementID with a RoleID */
+DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`$$
+CREATE PROCEDURE `spAnnouncementAddRole`(IN _AnnouncementID int, IN _RoleID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure AnnouncementID exists */
+  If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
+    /* Make sure RoleID exists */
+    If(Select Exists(Select 1 From Roles Where RoleID = _RoleID)) Then
+	  /* Make sure AnnouncementID and RoleID combination doesn't exist */
+      If(Select Exists(Select 1 From AccouncementRoles Where AnnouncementID = _AnnouncementID And RoleID = _RoleID)) Then
+        Select 'User already has that role' As 'Error';
+      Else
+	    /* Make the connection */
+        Insert Into AccouncementRoles (AnnouncementID,RoleID)
+	    Values (_AnnouncementID,_RoleID);
+      End If;
+	Else
+	  Select 'RoleID doesn''t exist' As 'Error';
+	End If;
+  Else
+    Select 'AnnouncementID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Removes an AnnouncementID with a RoleID */
+DROP PROCEDURE IF EXISTS `spAnnouncementRemoveRole`$$
+CREATE PROCEDURE `spAnnouncementRemoveRole`(IN _AnnouncementID int, IN _RoleID int)
+DETERMINISTIC
+BEGIN
+  Delete From AccouncementRoles
+  Where AnnouncementID = _AnnouncementID
+    And RoleID = _RoleID;
+END$$
+
 DELIMITER ;
