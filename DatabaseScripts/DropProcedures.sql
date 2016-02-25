@@ -24,3 +24,8 @@ DROP PROCEDURE IF EXISTS `spUserRemoveRole`;
 DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`;
 DROP PROCEDURE IF EXISTS `spUpdateUserPassword`;
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`;
+DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`;
+DROP PROCEDURE IF EXISTS `spAuthorAddToSubmission`;
+DROP PROCEDURE IF EXISTS `spUpdateUserInfo`;
+DROP PROCEDURE IF EXISTS `spUpdateAddress`;
+DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`;

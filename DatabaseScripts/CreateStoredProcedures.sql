@@ -167,7 +167,14 @@ BEGIN
 	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
 	    /* Default _PrimaryAddress to 0 if null is passed in */
         Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
-	    
+		
+		/* New PrimaryAddress, set others for user to 0 */
+	    If (_PrimaryAddress = 1) Then
+		  Update Addresses
+		  Set PrimaryAddress = 0
+		  Where UserID = _UserID;
+		End If;
+		
         /* Insert the new address record */
         Insert Into Addresses (UserID,AddressTypeID,AddressLn1,AddressLn2,City,StateID,PostCode,PrimaryAddress,CreateDate)
         Values (_UserID,_AddressTypeID,_AddressLn1,_AddressLn2,_City,_StateID,_PostCode,_PrimaryAddress,CURRENT_DATE);
@@ -182,10 +189,10 @@ BEGIN
 	End If;
   Else
     Select 'User doesn''t exist' As 'Error';
-  End If;  
+  End If;
 END$$
 
-/* Inserts a new address for a user */
+/* Inserts a new phone number for a user */
 DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
 CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
                                        IN _PhoneTypeID int,
@@ -200,11 +207,18 @@ BEGIN
 	  /* Default _PrimaryPhone to 0 if null is passed in */
       Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
 	  
-      /* Insert the new address record */
+	  /* New PrimaryAddress, set others for user to 0 */
+	  If (_PrimaryPhone = 1) Then
+		Update PhoneNumbers
+		Set PrimaryPhone = 0
+		Where UserID = _UserID;
+	  End If;
+	  
+      /* Insert the new phone number record */
       Insert Into PhoneNumbers (UserID,PhoneTypeID,PhoneNumber,PrimaryPhone,CreateDate)
       Values (_UserID,_PhoneTypeID,_PhoneNumber,_PrimaryPhone,CURRENT_DATE);
         
-      /* Get the new AddressID */
+      /* Get the new PhoneNumberID */
       Select last_insert_id() As 'PhoneNumberID';
 	Else
 	  Select 'Invalid PhoneTypeID' As 'Error';
@@ -431,6 +445,182 @@ BEGIN
   Delete From UserRoles
   Where UserID = _UserID
     And RoleID = _RoleID;
+END$$
+
+/* Creates a new submission record and links the author to it */
+DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`$$
+CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
+                                            IN _IncidentTitle varchar(150),
+											IN _Abstract varchar(5000),
+											IN _KeyWords varchar(5000),
+											IN _PreviousSubmissionID int)
+DETERMINISTIC
+BEGIN
+
+  Declare _SubmissionID int;
+  Declare _InstitutionAffiliation varchar(100);
+	
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+  
+	/* Create the actual submission record */
+    Insert Into Submissions (IncidentTitle,
+	                         Abstract,
+							 Keywords,
+							 PreviousSubmissionID,
+							 SubmissionDate,
+							 SubmissionStatusID)
+	Values (_IncidentTitle,
+	        _Abstract,
+			_KeyWords,
+			_PreviousSubmissionID,
+			CURRENT_DATE,
+			1);
+	
+	Set _SubmissionID = last_insert_id();
+	
+	Select InstitutionAffiliation Into _InstitutionAffiliation
+	From Users
+	Where UserID = _UserID;
+	
+	Insert Into AuthorsSubmission (UserID,
+	                               SubmissionID,
+	                               InstitutionAffiliation,
+								   PrimaryContact,
+								   AuthorSeniority)
+	Values (_UserID,
+	        _SubmissionID,
+			_InstitutionAffiliation,
+			1,
+			1);
+	
+	Select _SubmissionID As 'SubmissionID';
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates the info for a UserID */
+DROP PROCEDURE IF EXISTS `spUpdateUserInfo`$$
+CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
+                                    IN _FirstName varchar(15),
+									IN _LastName varchar(30),
+									IN _MemberCode varchar(20),
+									IN _InstitutionAffiliation varchar(100))
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set FirstName = _FirstName,
+	    LastName = _LastName,
+		MemberCode = _MemberCode,
+		InstitutionAffiliation = _InstitutionAffiliation
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing address */
+DROP PROCEDURE IF EXISTS `spUpdateAddress`$$
+CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
+                                   IN _AddressTypeID int,
+                                   IN _AddressLn1 varchar(100),
+								   IN _AddressLn2 varchar(100),
+								   IN _City varchar(30),
+								   IN _StateID int,
+								   IN _PostCode char(5),
+								   IN _PrimaryAddress tinyint
+) DETERMINISTIC
+BEGIN
+
+  Declare _UserID int;
+  
+  /* Make sure the AddressID exists */
+  If(Select Exists(Select 1 From Addresses Where AddressID = _AddressID)) Then
+    /* Make sure the AddressTypeID exists */
+    If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
+	  /* Make sure the StateID exists */
+	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
+	    /* Default _PrimaryAddress to 0 if null is passed in */
+        Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
+		
+		/* Get the UserID for this address */
+		Select UserID Into _UserID
+		From Addresses
+		Where AddressID = _AddressID;
+		
+	    /* New PrimaryAddress, set others for user to 0 */
+	    If (_PrimaryAddress = 1) Then
+		  Update Addresses
+		  Set PrimaryAddress = 0
+		  Where UserID = _UserID;
+		End If;
+		
+        /* Updates the address record */
+		Update Addresses
+		Set AddressTypeID = _AddressTypeID,
+		    AddressLn1 = _AddressLn1,
+			AddressLn2 = _AddressLn2,
+			City = _City,
+			StateID = _StateID,
+			PostCode = _PostCode,
+			PrimaryAddress = _PrimaryAddress
+		Where AddressID = _AddressID;
+	  Else
+	    Select 'Invalid StateID' As 'Error';
+	  End If;
+	Else
+	  Select 'Invalid AddressTypeID' As 'Error';
+	End If;
+  Else
+    Select 'Address doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing phone number for a user */
+DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`$$
+CREATE PROCEDURE `spUpdatePhoneNumber`(IN _PhoneNumberID int,
+                                       IN _PhoneTypeID int,
+                                       IN _PhoneNumber char(10),
+								       IN _PrimaryPhone tinyint
+) DETERMINISTIC
+BEGIN
+
+  Declare _UserID int;
+  
+  /* Make sure the PhoneNumberID exists */
+  If(Select Exists(Select 1 From PhoneNumbers Where PhoneNumberID = _PhoneNumberID)) Then
+    /* Make sure the PhoneTypeID exists */
+    If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
+	  /* Default _PrimaryPhone to 0 if null is passed in */
+      Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
+		
+		/* Get the UserID for this phone number */
+		Select UserID Into _UserID
+		From PhoneNumbers
+		Where PhoneNumberID = _PhoneNumberID;
+	  
+	  /* New PrimaryPhone, set others for user to 0 */
+	  If (_PrimaryPhone = 1) Then
+		Update PhoneNumbers
+		Set PrimaryPhone = 0
+		Where UserID = _UserID;
+	  End If;
+	  
+      /* Update the phone number record */
+	  Update PhoneNumbers
+	  Set PhoneTypeID = _PhoneTypeID,
+	      PhoneNumber = _PhoneNumber,
+		  PrimaryPhone = _PrimaryPhone
+	  Where PhoneNumberID = _PhoneNumberID;
+	Else
+	  Select 'Invalid PhoneTypeID' As 'Error';
+	End If;
+  Else
+    Select 'Phone Number doesn''t exist' As 'Error';
+  End If;
 END$$
 
 DELIMITER ;

@@ -2,9 +2,9 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new address for a user */
-DROP PROCEDURE IF EXISTS `spCreateAddress`$$
-CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
+/* Updates an existing address */
+DROP PROCEDURE IF EXISTS `spUpdateAddress`$$
+CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
                                    IN _AddressTypeID int,
                                    IN _AddressLn1 varchar(100),
 								   IN _AddressLn2 varchar(100),
@@ -14,8 +14,11 @@ CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
 								   IN _PrimaryAddress tinyint
 ) DETERMINISTIC
 BEGIN
-  /* Make sure the UserID exists */
-  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+
+  Declare _UserID int;
+  
+  /* Make sure the AddressID exists */
+  If(Select Exists(Select 1 From Addresses Where AddressID = _AddressID)) Then
     /* Make sure the AddressTypeID exists */
     If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
 	  /* Make sure the StateID exists */
@@ -23,19 +26,28 @@ BEGIN
 	    /* Default _PrimaryAddress to 0 if null is passed in */
         Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
 		
-		/* New PrimaryAddress, set others for user to 0 */
+		/* Get the UserID for this address */
+		Select UserID Into _UserID
+		From Addresses
+		Where AddressID = _AddressID;
+		
+	    /* New PrimaryAddress, set others for user to 0 */
 	    If (_PrimaryAddress = 1) Then
 		  Update Addresses
 		  Set PrimaryAddress = 0
 		  Where UserID = _UserID;
 		End If;
 		
-        /* Insert the new address record */
-        Insert Into Addresses (UserID,AddressTypeID,AddressLn1,AddressLn2,City,StateID,PostCode,PrimaryAddress,CreateDate)
-        Values (_UserID,_AddressTypeID,_AddressLn1,_AddressLn2,_City,_StateID,_PostCode,_PrimaryAddress,CURRENT_DATE);
-          
-        /* Get the new AddressID */
-        Select last_insert_id() As 'AddressID';
+        /* Updates the address record */
+		Update Addresses
+		Set AddressTypeID = _AddressTypeID,
+		    AddressLn1 = _AddressLn1,
+			AddressLn2 = _AddressLn2,
+			City = _City,
+			StateID = _StateID,
+			PostCode = _PostCode,
+			PrimaryAddress = _PrimaryAddress
+		Where AddressID = _AddressID;
 	  Else
 	    Select 'Invalid StateID' As 'Error';
 	  End If;
@@ -43,7 +55,7 @@ BEGIN
 	  Select 'Invalid AddressTypeID' As 'Error';
 	End If;
   Else
-    Select 'User doesn''t exist' As 'Error';
+    Select 'Address doesn''t exist' As 'Error';
   End If;
 END$$
 
