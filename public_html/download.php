@@ -80,12 +80,12 @@ if ($display || $error) {
     // TODO: display a prettified page for notifying the user of issues
     
     // print errors
-    echo '<h1>Download Canceled</h1>
-    <p class="error">The following issues prevented download:<br />';
+    echo "<div class=\"error\"><h1>Download Canceled</h1>\n";
+    echo "\t<p class=\"error\">The following issues prevented download:<br />";
     foreach ($errors as $msg) {
         echo " - $msg<br />\n";
     }
-    echo '</p><p>Please try again.</p><p><br /></p>';
+    echo "\t</p><p>Please try again.</p><p><br /></p></div>\n";
 }
 
 ?>
