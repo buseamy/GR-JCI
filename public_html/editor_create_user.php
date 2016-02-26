@@ -34,12 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$errors[] = 'You forgot to enter an E-mail address.';
 	}
-	// checks if email already exists
-	$checkquery1=("SELECT EmailAddress FROM Users WHERE EmailAddress = '$email'");
-	$result1=mysqli_query($checkquery1);
-	if (!$result1) {
-		$errors[] = 'username or E-mail already exists.';
-	}
 	
 	// check for first name
 	if (empty($_POST['first_name'])) {
@@ -136,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				mysqli_query ($dbc, $q_phone);
 			}
 		
-			echo '<p>You have successfully created the user.</p><p><br /></p>';	
+			echo '<p>You have successfully created the user.</p><p><br /></p>';
 		
 		} else { // If it did not run OK.
 			
@@ -155,11 +149,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Send welcome E-mail for verification
 		$to = '$email';
 		$subject = 'Welcome to JCI';
-		$msg = "Welcome to the Journal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
+		$body = "Welcome to the Journal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
 		{$r_everify}";
-		$msg = wordwrap($msg,70);
+		$body = wordwrap($body,70);
 		
-		mail($to, $subject, $msg);
+		mail($to, $subject, $body);
 
 		
         //quit the script:
@@ -194,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>City: <input type="text" name="city" size="15" maxlength="40" value="<?php if (isset($_POST['city'])) echo $_POST['city']; ?>" /></p>
 	<p>State/province: <input type="text" name="state" size="15" maxlength="40" value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>" /></p>
 	<p>State/province: <select name="state"> 
+		<option value="NULL">Empty</option>
 		<option value="1">Alabama</option>
 		<option value="2">Alaska</option>
 		<option value="3">Arizona</option>
