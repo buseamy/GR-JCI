@@ -39,3 +39,6 @@ DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`;
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`;
 DROP PROCEDURE IF EXISTS `spAuthorViewSubmissions`;
 DROP PROCEDURE IF EXISTS `spReviewerViewSubmissions`;
+DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`;
+DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
+DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`;

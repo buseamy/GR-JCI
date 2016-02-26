@@ -836,7 +836,7 @@ BEGIN
            s.IncidentTitle;
 END$$
 
-/* Lists the submissions for an editor for a given year */
+/* Lists the submissions for an reviewer for a given year */
 DROP PROCEDURE IF EXISTS `spReviewerViewSubmissions`$$
 CREATE PROCEDURE `spReviewerViewSubmissions`(IN _UserID int, IN _Year int)
 DETERMINISTIC
@@ -861,6 +861,77 @@ BEGIN
     And Year(s.SubmissionDate) = _Year
   Order By s.SubmissionDate,
            s.IncidentTitle;
+END$$
+
+/* Lists the submissions for an editor for a given year */
+DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`$$
+CREATE PROCEDURE `spEditorViewSubmissions`(IN _Year int)
+DETERMINISTIC
+BEGIN
+  Select s.IncidentTitle,
+         If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
+		 GROUP_CONCAT(CONCAT('''',ua.FirstName,' ',ua.LastName,'''')) As 'Authors',
+		 GROUP_CONCAT(CONCAT('''',ur.FirstName,' ',ur.LastName,'''')) As 'Reviewers',
+		 ss.SubmissionStatus,
+		 s.SubmissionDate
+  From Submissions s
+	Left Join Users eu
+	  On eu.UserID = s.EditorUserID
+    Inner Join Reviewers r
+	  On r.SubmissionID = s.SubmissionID
+    Inner Join Users ur
+	  On ur.UserID = r.ReviewerUserID
+    Inner Join AuthorsSubmission a
+	  On a.SubmissionID = s.SubmissionID
+	Inner Join Users ua
+	  On ua.UserID = a.UserID
+	Inner Join SubmissionStatus ss
+	  On ss.SubmissionStatusID = s.SubmissionStatusID
+  Where Year(s.SubmissionDate) = _Year
+  Order By s.SubmissionDate,
+           s.IncidentTitle;
+END$$
+
+/* Assigns an editor UserID to a Submission */
+DROP PROCEDURE IF EXISTS `spSubmissionAssignEditor`$$
+CREATE PROCEDURE `spSubmissionAssignEditor`(IN _SubmissionID int, IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the SubmissionID exists */
+  If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+    /* Make sure the UserID exists */
+	If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+	  Update Submissions
+	  Set EditorUserID = _UserID
+	  Where SubmissionID = _SubmissionID;
+	Else
+	  Select 'User doesn''t exist' As 'Error';
+	End If;
+  Else
+    Select 'Submission doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing submission record */
+DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`$$
+CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
+                                            IN _IncidentTitle varchar(150),
+										    IN _Abstract varchar(5000),
+										    IN _KeyWords varchar(5000))
+DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+  
+	/* Update the submission record */
+	Update Submissions
+	Set IncidentTitle = _IncidentTitle,
+	    Abstract = _Abstract,
+		Keywords = _KeyWords
+	Where SubmissionID = _SubmissionID;
+  Else
+    Select 'SubmissionID doesn''t exist' As 'Error';
+  End If;
 END$$
 
 DELIMITER ;

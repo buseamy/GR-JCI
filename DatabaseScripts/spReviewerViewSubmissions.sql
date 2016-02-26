@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Lists the submissions for an editor for a given year */
+/* Lists the submissions for a reviewer for a given year */
 DROP PROCEDURE IF EXISTS `spReviewerViewSubmissions`$$
 CREATE PROCEDURE `spReviewerViewSubmissions`(IN _UserID int, IN _Year int)
 DETERMINISTIC
