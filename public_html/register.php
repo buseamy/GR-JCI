@@ -131,7 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	if ($_POST['ptype'] = 2){
 		$pprime = 1;
-		
+	}
+	
 	if (!empty($_POST['atype'])){
 		$atypeID = mysqli_real_escape_string($dbc, trim($_POST['atype']));
 	}
