@@ -58,7 +58,7 @@
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	$r = @mysqli_query ($dbc, $q_search); // Run the query.
 	//  if no results found
-	if(mysqli_num_rows)($r < 1) {
+	if(mysqli_num_rows($r) < 1) {
 		echo 'No results Found' ;
 	}
 	//dispay results
@@ -82,7 +82,7 @@
 }
 ?>
 <h1>Search cases</h1>
-<form action="search cases.php" method="post">
+<form action="search_cases.php" method="post">
 	<p>Case ID: <input type="text" name="case_ID" size="15" maxlength="20" value="<?php if (isset($_POST['case_ID'])) echo $_POST['case_ID']; ?>" /></p>
 	<p>Case Title: <input type="text" name="case_title" size="15" maxlength="40" value="<?php if (isset($_POST['case_title'])) echo $_POST['case_title']; ?>" /></p>
 	<p>Keywords: <input type="text" name="keyword" size="20" maxlength="60" value="<?php if (isset($_POST['keyword'])) echo $_POST['keyword']; ?>"  /> </p>
