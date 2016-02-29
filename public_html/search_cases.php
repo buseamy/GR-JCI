@@ -6,8 +6,8 @@
 	
 
 	// if nothing is entered give an error message
-	if (empty($_POST['case_ID'])) && (empty($_POST['case_title'])) && (empty($_POST($_POST['keyword']))
-		&& (empty($_POSTisset($_POST['author'])) && (empty($_POST['category'])) {
+	if ((empty($_POST['case_ID'])) && (empty($_POST['case_title'])) && (empty($_POST['keyword']))
+		&& (empty($_POST['author'])) && (empty($_POST['category']))) {
 			$errors[] = 'You forgot to enter a search criteria please enter one.';
 		}
 

@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else if (Is_numeric($_POST['zip'])){
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}	
-	  else (!Is_numeric($_POST['zip'])){
+	  else if(!Is_numeric($_POST['zip'])){
 		$errors[] = 'Your zip code should only contain numbers.';
 	  }
 
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else if (Is_numeric($_POST['phone'])) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
 	}
-	  else (!Is_numeric($_POST['phone'])){
+	  else if(!Is_numeric($_POST['phone'])){
 		$errors[] = 'Your phone number should only contain numbers.';
 	  }
 	
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// check to see if address or phone number are primary.
 		
 		// if main is selected change the primary field to active in database
-		/*
+		
 	if ($_POST['atype'] = 2){
 		$aprime = 1;
 	}
@@ -139,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (!empty($_POST['ptype'])){
 		$ptypeID = mysqli_real_escape_string($dbc, trim($_POST['ptype']));
 	}
-	*/
 	
 	/*
 	$stateID = mysqli_real_escape_string($dbc, trim($_POST['state']));
@@ -161,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			$r_userID = $row_verify["UserID"];
 			$r_everify = $row_verify["EmailVerificationGUID"];
-			if (!empty($_post['address1'])) || (!empty($_post['address2'])) {
+			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$atypeID', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
 			}
