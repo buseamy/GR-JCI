@@ -1,13 +1,16 @@
 <?php // search cases.php Written by Jamal Ahmed
 	
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	
 	$errors = array(); // Initialize an error array.
 	
+
 	// if nothing is entered give an error message
-	if (!isset($_POST['case_ID'])) && (!isset($_POST['case_title'])) && (!isset($_POST['keyword']))
-		&& (!isset($_POST['author'])) && (!isset($_POST['category'])) {
+	if (empty($_POST['case_ID'])) && (empty($_POST['case_title'])) && (empty($_POST($_POST['keyword']))
+		&& (empty($_POSTisset($_POST['author'])) && (empty($_POST['category'])) {
 			$errors[] = 'You forgot to enter a search criteria please enter one.';
 		}
-	
+
 	
 	// if nothing is entered in to the field put in a wildcard operator which allows any value to be selected
 	if (empty($_POST['case_ID'])) {
@@ -42,15 +45,18 @@
 
 	// run only if one or more fields has been entered
 	if (empty($errors)) {
+/*
 	// select statement joining user table to submission and category table 
 	// using like instead of = because it allows the wildcard to be used
 	$q = "select Abstract from Users u INNER JOIN AuthorsSubmission asub ON u.UserID = asub.UserID 
 	INNER JOIN Submissions s ON asub.SubmissionID = s.SubmissionID INNER JOIN SubmissionCategories sc ON s.SubmissionID = sc.SubmissionID 
 	INNER JOIN Categories c ON sc.CategoryID = c.CategoryID
 	where SubmissionID like $case_ID AND CaseTitle like $case_title
-	AND Keywords like $keyword AND (select FirstName, LastName from Users) like $author AND Category like $category"
+	AND Keywords like $keyword AND (select FirstName, LastName from Users) like $author AND Category like $category" ;
+*/
+	$q_search = "CALL spSearchCases ('$case_ID', '$case_title', '$keyword', '$author', '$category' )" ;
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
-	$r = @mysqli_query ($dbc, $q); // Run the query.
+	$r = @mysqli_query ($dbc, $q_search); // Run the query.
 	//dispay results
 		while($row = mysqli_fetch_array($r, mysqli_ASSOC)) {
 			print_r($row);
@@ -67,6 +73,9 @@
 		echo '</p><p>Please try Searching again.</p>';
 		
 	}
+	
+	
+}
 ?>
 <h1>Search cases</h1>
 <form action="search cases.php" method="post">
