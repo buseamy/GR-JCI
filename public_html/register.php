@@ -123,7 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}	
 	
 		// check to see if address or phone number are primary.
+		
 		// if main is selected change the primary field to active in database
+		/*
 	if ($_POST['atype'] = 2){
 		$aprime = 1;
 	}
@@ -137,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (!empty($_POST['ptype'])){
 		$ptypeID = mysqli_real_escape_string($dbc, trim($_POST['ptype']));
 	}
+	*/
 	
 	/*
 	$stateID = mysqli_real_escape_string($dbc, trim($_POST['state']));
