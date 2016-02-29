@@ -1,11 +1,11 @@
-<? // This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
+<?php // This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
 
 $page_title = 'Create User';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
-	require ('../../mysqli_connect.php');
+	require ('../mysqli_connect.php');
 		
 	$errors = array(); // Initialize an error array.
 	
@@ -76,15 +76,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if (empty($_POST['zip'])) {
 		$zip = null;
-	} else {
+	} else if (Is_numeric($_POST['zip'])){
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}	
+	  else if(!Is_numeric($_POST['zip'])){
+		$errors[] = 'Zip codes should only contain numbers.';
+	  }
 
 	if (empty($_POST['phone'])) {
 		$phone = null;
-	} else {
+	} else if (Is_numeric($_POST['phone'])) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
 	}
+	  else if(!Is_numeric($_POST['phone'])){
+		$errors[] = 'Phone numbers should only contain numbers.';
+	  }
 	
 	if (empty($_POST['code'])) {
 		$code = null;
@@ -111,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Add the user in the database...
 		
 		// Make the query:
-		$q_users = "CALL spCreateUser('$email', '$pass1', '$firstname', '$lastname')";
+		$q_users = "CALL spCreateUser('$email', '$password', '$firstname', '$lastname')";
 				
 		// Run the query.
 		if ($r_users = mysqli_query ($dbc, $q_users)) { // If it ran OK.
@@ -121,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			$r_userID = $row_verify["UserID"];
 			$r_everify = $row_verify["EmailVerificationGUID"];
-			if (!empty($_post['address1'])) {
+			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$_post['atype']', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
 			}
@@ -186,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Street Address Line 1: <input type="text" name="address1" size="25" maxlength="50" value="<?php if (isset($_POST['address1'])) echo $_POST['address1']; ?>" /></p>
 	<p>Street Address Line 2: <input type="text" name="address2" size="25" maxlength="50" value="<?php if (isset($_POST['address2'])) echo $_POST['address2']; ?>" /></p>
 	<p>City: <input type="text" name="city" size="15" maxlength="40" value="<?php if (isset($_POST['city'])) echo $_POST['city']; ?>" /></p>
-	<p>State/province: <input type="text" name="state" size="15" maxlength="40" value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>" /></p>
 	<p>State/province: <select name="state"> 
+		<option value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>">
 		<option value="NULL">Empty</option>
 		<option value="1">Alabama</option>
 		<option value="2">Alaska</option>
@@ -241,7 +247,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="50">Wyoming</option>
 	</select>
 	<p>Country: <select name="country"> 
-		<option value="--">none</option>
+		<option value="<?php if (isset($_POST['country'])) echo $_POST['country']; ?>">
+		<option value="NULL">none</option>
 		<option value="Afghanistan">Afghanistan</option>
 		<option value="Albania">Albania</option>
 		<option value="Algeria">Algeria</option>
@@ -484,19 +491,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	</select>
 	<p>Postal code (zip) : <input type="text" name="zip" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" /></p>
 	<p>Address Type:<select name="atype">
+		<option value="<?php if (isset($_POST['atype'])) echo $_POST['atype']; ?>">
 		<option value="2">Main</option>
 		<option value="1">Home</option>
 		<option value="3">Work</option>
 	</select> </p>
 	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])) echo $_POST['phone']; ?>" /></p>
 	<p>Phone Type:<select name="ptype">
+		<option value="<?php if (isset($_POST['ptype'])) echo $_POST['ptype']; ?>">
 		<option value="2">Main</option>
 		<option value="1">Home</option>
 		<option value="3">Mobile</option>
 		<option value="4">Work</option>
 	</select> </p>
 	<p>SCR Member ID: <input type="text" name="code" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" /></p>
-	<p>Professional Association (Univercity/Firm): <input type="association" name="last_name" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
+	<p>Professional Association (Univercity, Firm, etc.): <input type="association" name="last_name" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
 	<p>*asterisk indicates a required field </p>
 	<p><input type="submit" name="submit" value="Create User" /></p>
 </form>
