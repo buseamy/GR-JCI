@@ -86,9 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$state = mysqli_real_escape_string($dbc, trim($_POST['state']));
 	}	
 	*/
-	$stateID = mysqli_real_escape_string($dbc, trim($_POST['state']));
-	
-	$countryID = mysqli_real_escape_string($dbc, trim($_POST['country']));
+
 	
 	
 
@@ -140,6 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$ptypeID = mysqli_real_escape_string($dbc, trim($_POST['ptype']));
 	}
 	
+	/*
+	$stateID = mysqli_real_escape_string($dbc, trim($_POST['state']));
+	
+	$countryID = mysqli_real_escape_string($dbc, trim($_POST['country']));
+	*/
 	if (empty($errors)) { // If everything's OK.
 	
 		// Add the user in the database...
@@ -275,6 +278,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="48">West Virginia</option>
 		<option value="49">Wisconsin</option>
 		<option value="50">Wyoming</option>
+		<option value="AB">Alberta</option>
+		<option value="BC">British Columbia</option>
+		<option value="MB">Manitoba</option>
+		<option value="NB">New Brunswick</option>
+		<option value="NL">Newfoundland and Labrador</option>
+		<option value="NS">Nova Scotia</option>
+		<option value="ON">Ontario</option>
+		<option value="PE">Prince Edward Island</option>
+		<option value="QC">Quebec</option>
+		<option value="SK">Saskatchewan</option>
+		<option value="NT">Northwest Territories</option>
+		<option value="NU">Nunavut</option>
+		<option value="YT">Yukon</option>
 	</select>
 	<p>Country: <select name="country"> 
 	<option value="<?php if (isset($_POST['country'])) echo $_POST['country']; ?>">
