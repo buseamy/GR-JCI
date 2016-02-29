@@ -57,6 +57,10 @@
 	$q_search = "CALL spSearchCases ('$case_ID', '$case_title', '$keyword', '$author', '$category' )" ;
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	$r = @mysqli_query ($dbc, $q_search); // Run the query.
+	//  if no results found
+	if(mysqli_num_rows)($r < 1) {
+		echo 'No results Found' ;
+	}
 	//dispay results
 		while($row = mysqli_fetch_array($r, mysqli_ASSOC)) {
 			print_r($row);
