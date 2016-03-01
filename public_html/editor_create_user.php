@@ -103,7 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
 	}
-	
+	$atype = $_POST['atype'];
+	$ptype = $_POST['ptype'];
 	// check to see if address or phone number are primary.
 	if ($_POST['atype'] = 2){
 		$aprime = 1;
@@ -128,15 +129,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$r_userID = $row_verify["UserID"];
 			$r_everify = $row_verify["EmailVerificationGUID"];
 			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
-				$q_address = "CALL spCreateAddress('$r_userID', '$_post['atype']', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
+				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
 			}
 			if (!empty($_post['phone'])){
-				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$_POST['ptype']', '$phone', '$pprime')";
+				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', '$pprime')";
 				mysqli_query ($dbc, $q_phone);
 			}
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
+			if (isset($_POST['submit']))
+			{
+				header( "Location: 5; editor_create_user.php");
+			}
 		
 		} else { // If it did not run OK.
 			
@@ -145,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<p class="error">user could not be created due to a system error.</p>'; 
 			
 			// Debugging message:
-			echo '<p>' . mysqli_error($dbc) . '<br /><br />Query: ' . $q . '</p>';
+			echo '<p>' . mysqli_error($dbc) . '</p>';
 						
 		} // End of if ($r) IF.
 		
@@ -153,18 +158,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		
 		// Send welcome E-mail for verification
-		$to = '$email';
+		/*$to = '$email';
 		$subject = 'Welcome to JCI';
 		$body = "Welcome to the Journal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
 		{$r_everify}";
 		$body = wordwrap($body,70);
 		
 		mail($to, $subject, $body);
-
-		
+*/
         //quit the script:
 		exit();
-		
+	
 	} else { // Report the errors.
 	
 		echo '<h1>Error!</h1>
@@ -178,6 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	mysqli_close($dbc); // Close the database connection.
 }
+
 ?>
 
 <!-- create the form-->
@@ -505,7 +510,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="4">Work</option>
 	</select> </p>
 	<p>SCR Member ID: <input type="text" name="code" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" /></p>
-	<p>Professional Association (Univercity, Firm, etc.): <input type="association" name="last_name" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
+	<p>Professional Association (Univercity, Firm, etc.): <input type="text" name="association" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
 	<p>*asterisk indicates a required field </p>
 	<p><input type="submit" name="submit" value="Create User" /></p>
 </form>
