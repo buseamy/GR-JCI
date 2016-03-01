@@ -138,11 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			}
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
-			if (isset($_POST['submit']))
+			/*if (isset($_POST['submit']))
 			{
 				header( "Location: 5; editor_create_user.php");
 			}
-		
+		*/
 		} else { // If it did not run OK.
 			
 			// Public message:
