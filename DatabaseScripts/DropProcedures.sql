@@ -42,3 +42,8 @@ DROP PROCEDURE IF EXISTS `spReviewerViewSubmissions`;
 DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`;
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
 DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`;
+DROP PROCEDURE IF EXISTS `spReviewerAddToSubmission`;
+DROP PROCEDURE IF EXISTS `spAnnouncementRemoveRole`;
+DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`;
+DROP PROCEDURE IF EXISTS `spSubmissionAssignEditor`;
+DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`;

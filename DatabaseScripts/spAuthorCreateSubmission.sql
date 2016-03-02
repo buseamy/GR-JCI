@@ -8,7 +8,8 @@ CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
                                            IN _IncidentTitle varchar(150),
 										   IN _Abstract varchar(5000),
 										   IN _KeyWords varchar(5000),
-										   IN _PreviousSubmissionID int)
+										   IN _PreviousSubmissionID int,
+										   IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
 
@@ -22,12 +23,14 @@ BEGIN
     Insert Into Submissions (IncidentTitle,
 	                         Abstract,
 							 Keywords,
+							 SubmissionNumber,
 							 PreviousSubmissionID,
 							 SubmissionDate,
 							 SubmissionStatusID)
 	Values (_IncidentTitle,
 	        _Abstract,
 			_KeyWords,
+			_SubmissionNumber,
 			_PreviousSubmissionID,
 			CURRENT_DATE,
 			1);

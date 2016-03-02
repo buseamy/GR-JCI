@@ -451,9 +451,10 @@ END$$
 DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`$$
 CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
                                             IN _IncidentTitle varchar(150),
-											IN _Abstract varchar(5000),
-											IN _KeyWords varchar(5000),
-											IN _PreviousSubmissionID int)
+										    IN _Abstract varchar(5000),
+										    IN _KeyWords varchar(5000),
+										    IN _PreviousSubmissionID int,
+										    IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
 
@@ -467,22 +468,26 @@ BEGIN
     Insert Into Submissions (IncidentTitle,
 	                         Abstract,
 							 Keywords,
+							 SubmissionNumber,
 							 PreviousSubmissionID,
 							 SubmissionDate,
 							 SubmissionStatusID)
 	Values (_IncidentTitle,
 	        _Abstract,
 			_KeyWords,
+			_SubmissionNumber,
 			_PreviousSubmissionID,
 			CURRENT_DATE,
 			1);
 	
 	Set _SubmissionID = last_insert_id();
 	
+	/* Get the user's InstitutionAffiliation */
 	Select InstitutionAffiliation Into _InstitutionAffiliation
 	From Users
 	Where UserID = _UserID;
 	
+	/* Link the UserID to the SubmissionID */
 	Insert Into AuthorsSubmission (UserID,
 	                               SubmissionID,
 	                               InstitutionAffiliation,
@@ -926,6 +931,35 @@ BEGIN
 	Where SubmissionID = _SubmissionID;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Adds a Reviewer UserID to an existing Submission */
+DROP PROCEDURE IF EXISTS `spReviewerAddToSubmission`$$
+CREATE PROCEDURE `spReviewerAddToSubmission`(IN _UserID int,
+                                             IN _SubmissionID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    /* Make sure the SubmissionID exists */
+    If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+	  /* Link the UserID to the SubmissionID */
+	  Insert Into Reviewers (ReviewerUserID,
+	                         SubmissionID,
+							 ReviewStatusID,
+							 CreateDate,
+							 LastUpdatedDate)
+	  Values (_UserID,
+	          _SubmissionID,
+			  1,
+			  CURRENT_DATE,
+			  CURRENT_DATE);
+	Else
+	  Select 'SubmissionID doesn''t exist' As 'Error';
+	End If;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
   End If;
 END$$
 

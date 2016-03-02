@@ -7,7 +7,8 @@ DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`$$
 CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
                                             IN _IncidentTitle varchar(150),
 										    IN _Abstract varchar(5000),
-										    IN _KeyWords varchar(5000))
+										    IN _KeyWords varchar(5000),
+										    IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
   /* Make sure the UserID exists */
@@ -17,7 +18,8 @@ BEGIN
 	Update Submissions
 	Set IncidentTitle = _IncidentTitle,
 	    Abstract = _Abstract,
-		Keywords = _KeyWords
+		Keywords = _KeyWords,
+		SubmissionNumber = _SubmissionNumber
 	Where SubmissionID = _SubmissionID;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
