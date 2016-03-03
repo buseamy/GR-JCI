@@ -177,6 +177,7 @@ SubmissionID int NOT NULL AUTO_INCREMENT,
 EditorUserID int,
 IncidentTitle varchar(150) NOT NULL,
 Abstract varchar(5000),
+SubmissionNumber TINYINT NOT NULL,
 SubmissionDate date NOT NULL,
 SubmissionStatusID int NOT NULL,
 PreviousSubmissionID int,
@@ -263,11 +264,11 @@ CREATE TABLE ReviewerFiles
 ReviewerFileID int NOT NULL AUTO_INCREMENT,
 ReviewerUserID int NOT NULL,
 SubmissionID int NOT NULL,
-FileDataID int NOT NULL,
+FileMetaDataID int NOT NULL,
 PRIMARY KEY (ReviewerFileID),
 FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
 FOREIGN KEY (ReviewerUserID) REFERENCES Users(UserID),
-FOREIGN KEY (FileDataID) REFERENCES FileData(FileDataID)
+FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
 );
 
 /*Create SubmissionFiles table*/
@@ -275,10 +276,10 @@ CREATE TABLE SubmissionFiles
 (
 SubmissionFileID int NOT NULL AUTO_INCREMENT,
 SubmissionID int NOT NULL,
-FileDataID int NOT NULL,
+FileMetaDataID int NOT NULL,
 PRIMARY KEY (SubmissionFileID),
 FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
-FOREIGN KEY (FileDataID) REFERENCES FileData(FileDataID)
+FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
 );
 
 /*Create SystemSettings_CaseDates table*/
@@ -369,6 +370,18 @@ Values ('Author'),
 	   ('Assistant Editor'),
 	   ('General Assistant');
 
+/*Populate the Roles table*/
+Insert Into FileTypes (RoleID,FileType)
+Values (1,'Cover Letter'),
+       (1,'Incident'),
+       (1,'Summary'),
+       (1,'Teaching Notes'),
+       (1,'Memo'),
+       (2,'Incident'),
+       (2,'Summary'),
+       (2,'Teaching Notes'),
+       (2,'Reviewer Form');
+
 /*Populate the EmailStatus table*/
 Insert Into EmailStatus (EmailStatus)
 Values ('Initiated'),
@@ -392,8 +405,11 @@ Values ('Home'),
 Insert Into SubmissionStatus (SubmissionStatus)
 Values ('Submitted'),
        ('Editor Assigned'),
+       ('Editor Updated'),
        ('Reviwers Assigned'),
-       ('Reviews Completed');
+       ('Editor Reviewed'),
+       ('Ready for Publish'),
+       ('Revision Needed');
 
 /*Populate the ReviewStatus table*/
 Insert Into ReviewStatus (ReviewStatus)
@@ -403,8 +419,47 @@ Values ('Reviewing'),
 
 /*Create a test user table*/
 Insert Into Users (EmailAddress,PasswordHash,FirstName,LastName,InstitutionAffiliation,EmailStatusID,CreateDate)
-Values ('test@user.com',SHA1('Password'),'Test','User','Ferris',3,CURRENT_DATE);
+Values ('Author1@user.com',SHA1('Password'),'Author','One','Ferris',3,CURRENT_DATE),
+       ('Author2@user.com',SHA1('Password'),'Author','Two','MSU',3,CURRENT_DATE),
+       ('Author3@user.com',SHA1('Password'),'Author','Three','UofM',3,CURRENT_DATE),
+       ('Reviewer1@user.com',SHA1('Password'),'Reviewer','One','Ferris',3,CURRENT_DATE),
+       ('Reviewer2@user.com',SHA1('Password'),'Reviewer','Two','Ferris',3,CURRENT_DATE),
+       ('Editor1@user.com',SHA1('Password'),'Editor','One','Ferris',3,CURRENT_DATE),
+       ('AllRoles@user.com',SHA1('Password'),'All','Roles','Ferris',3,CURRENT_DATE);
 
+/* Link the users to roles */
 Insert Into UserRoles (UserID, RoleID)
 Values (1,1),
-       (1,2);
+       (2,1),
+       (2,2),
+	   (3,1),
+	   (4,1),
+	   (4,2),
+	   (5,1),
+	   (5,2),
+	   (6,1),
+	   (6,3),
+	   (7,1),
+	   (7,2),
+	   (7,3);
+/* Populate the submissions table */
+Insert Into Submissions (IncidentTitle,Abstract,SubmissionNumber,SubmissionDate,SubmissionStatusID,Keywords,EditorUserID)
+Values ('Title 1','Some 1bstract',1,CURRENT_DATE,4,'Key,words',6),
+       ('Title 2','Some other abstract',1,CURRENT_DATE,4,'Other,words',7),
+       ('Title 3','Another abstract',1,CURRENT_DATE,2,'Other,words,additional',Null);
+
+
+/* Link authors to submissions */
+Insert Into AuthorsSubmission (UserID,SubmissionID,InstitutionAffiliation,PrimaryContact,AuthorSeniority)
+Values (1,1,'Ferris',1,1),
+       (2,2,'MSU',1,1),
+	   (3,2,'UofM',0,2),
+	   (1,3,'Ferris',0,1),
+	   (2,3,'MSU',1,2),
+	   (3,3,'UofM',0,3);
+
+/* Link some reviewers */
+Insert Into Reviewers (ReviewerUserID,SubmissionID,ReviewStatusID,CreateDate,LastUpdatedDate)
+Values (4,1,1,CURRENT_DATE,CURRENT_DATE),
+       (4,2,1,CURRENT_DATE,CURRENT_DATE),
+       (5,1,1,CURRENT_DATE,CURRENT_DATE);

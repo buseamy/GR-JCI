@@ -6,11 +6,16 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`$$
 CREATE PROCEDURE `spRemoveExpiredAnnouncements`() DETERMINISTIC
 BEGIN
-  /*
+
+  /* Remove the associated roles with the expired announcements */
   Delete From AccouncementRoles
-  Where AnnouncementID = _AnnouncementID;
-  */
-  
+  Where AnnouncementID IN (
+        Select AnnouncementID
+		From Announcements
+		Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE
+	);
+
+  /* Remove the expired announcements */
   Delete From Announcements
   Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE;
 END$$

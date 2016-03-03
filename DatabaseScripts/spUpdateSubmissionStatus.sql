@@ -2,7 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing Submissions' status */
+/* Updates an existing Submissions' status:
+   SubmissionStatusID 2 : Editor Assigned
+   SubmissionStatusID 3 : Editor Updated
+   SubmissionStatusID 4 : Reviwers Assigned
+   SubmissionStatusID 5 : Editor Reviewed
+   SubmissionStatusID 6 : Ready for Publish
+   SubmissionStatusID 7 : Revision Needed
+*/
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`$$
 CREATE PROCEDURE `spUpdateSubmissionStatus`(IN _SubmissionID int,
                                             IN _SubmissionStatusID int

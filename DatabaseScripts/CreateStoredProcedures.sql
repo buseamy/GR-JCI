@@ -1008,4 +1008,33 @@ BEGIN
   Order By u.LastName, u.FirstName;
 END$$
 
+/* Deletes all expired announcements */
+DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`$$
+CREATE PROCEDURE `spRemoveExpiredAnnouncements`() DETERMINISTIC
+BEGIN
+
+  /* Remove the associated roles with the expired announcements */
+  Delete From AccouncementRoles
+  Where AnnouncementID IN (
+        Select AnnouncementID
+		From Announcements
+		Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE
+	);
+
+  /* Remove the expired announcements */
+  Delete From Announcements
+  Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE;
+END$$
+
+/* Gets the list of types of files for a role */
+DROP PROCEDURE IF EXISTS `spGetFileTypes`$$
+CREATE PROCEDURE `spGetFileTypes`(IN _RoleID int)
+DETERMINISTIC
+BEGIN
+  Select FileTypeID, FileType
+  From FileTypes
+  Where RoleID = _RoleID
+  Order By FileType;
+END$$
+
 DELIMITER ;

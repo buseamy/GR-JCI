@@ -50,3 +50,5 @@ DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`;
 DROP PROCEDURE IF EXISTS `spGetUsersEditorsList`;
 DROP PROCEDURE IF EXISTS `spGetUsersReviewersList`;
 DROP PROCEDURE IF EXISTS `spGetUsersAuthorsList`;
+DROP PROCEDURE IF EXISTS `spGetFileTypes`;
+DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`;
