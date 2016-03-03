@@ -47,3 +47,6 @@ DROP PROCEDURE IF EXISTS `spAnnouncementRemoveRole`;
 DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`;
 DROP PROCEDURE IF EXISTS `spSubmissionAssignEditor`;
 DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`;
+DROP PROCEDURE IF EXISTS `spGetUsersEditorsList`;
+DROP PROCEDURE IF EXISTS `spGetUsersReviewersList`;
+DROP PROCEDURE IF EXISTS `spGetUsersAuthorsList`;
