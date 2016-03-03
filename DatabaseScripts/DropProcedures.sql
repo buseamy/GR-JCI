@@ -51,4 +51,8 @@ DROP PROCEDURE IF EXISTS `spGetUsersEditorsList`;
 DROP PROCEDURE IF EXISTS `spGetUsersReviewersList`;
 DROP PROCEDURE IF EXISTS `spGetUsersAuthorsList`;
 DROP PROCEDURE IF EXISTS `spGetFileTypes`;
+DROP PROCEDURE IF EXISTS `spSubmissionGetInfo`;
+DROP PROCEDURE IF EXISTS `spSubmissionGetFilesList`;
+DROP PROCEDURE IF EXISTS `spGetFileInfo`;
+DROP PROCEDURE IF EXISTS `spGetFileContents`;
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`;
