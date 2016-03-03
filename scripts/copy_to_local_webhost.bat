@@ -27,4 +27,12 @@ SET SrcDir=%SrcDir:\public_html=\test_files%
 SET HostDir=%HostDir:\htdocs=\htdocs\test_files%
 ECHO %SrcDir% %HostDir%
 ROBOCOPY %SrcDir% %HostDir% *.* /E /SL /XD .git
+
+REM copy ux-team files
+SET SrcDir=%SrcDir:\GR-JCI\test_files=\GRDE328_GR1%
+SET HostDir=%HostDir:\htdocs\test_files=\htdocs%
+IF EXIST %SrcDir% (
+    ROBOCOPY %SrcDir% %HostDir% *.* /E /SL /XD .git
+)
+
 PAUSE
