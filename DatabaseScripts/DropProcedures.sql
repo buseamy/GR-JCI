@@ -59,3 +59,4 @@ DROP PROCEDURE IF EXISTS `spGetFileContents`;
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`;
 DROP PROCEDURE IF EXISTS `spCreateReviewerFileMetaData`;
 DROP PROCEDURE IF EXISTS `spCreateFileContent`;
+DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`;
