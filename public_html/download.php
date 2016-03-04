@@ -49,7 +49,7 @@ if (isset($_GET["fid"])) {
         complete_procedure($dbc);
         
         // check query before sending header information
-        $q_FileSegments = "CALL spGetFileSegments('$fid')";
+        $q_FileSegments = "CALL spGetFileContents('$fid')";
         if (!$r_FileSegments = mysqli_query($dbc, $q_FileSegments)) {
             $error = true;
             array_push($errors, "Unable to get file content.");
