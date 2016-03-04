@@ -1037,7 +1037,7 @@ BEGIN
   Order By FileType;
 END$$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new  */
+/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`$$
 CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _FileTypeID int,
@@ -1062,6 +1062,42 @@ BEGIN
 	
 	/* Output the new FileMetaDataID */
 	Select _FileMetaDataID As 'FileMetaDataID';
+  Else
+    Select 'SubmissionID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
+DROP PROCEDURE IF EXISTS `spCreateReviewerFileMetaData`$$
+CREATE PROCEDURE `spCreateReviewerFileMetaData`(IN _SubmissionID int,
+												IN _ReviewerUserID int,
+                                                IN _FileTypeID int,
+												IN _FileMime varchar(200),
+												IN _sFileName varchar(200),
+												IN _sFileSize int)
+DETERMINISTIC
+BEGIN
+  Declare _FileMetaDataID int;
+  
+  /* Make sure the SubmissionID exists */
+  If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+    /* Make sure the ReviewerUserID exists */
+    If(Select Exists(Select 1 From Users Where UserID = _ReviewerUserID)) Then
+      Insert Into FileMetaData (FileTypeID,FileMime,FileName,FileSize)
+      Values (_FileTypeID,_FileMime,_sFileName,_sFileSize);
+      
+      /* Get the new FileMetaDataID */
+      Set _FileMetaDataID = last_insert_id();
+      
+      /* Connect the new FileMetaDataID to the SubmissionID */
+      Insert Into ReviewerFiles(SubmissionID,ReviewerUserID,FileMetaDataID)
+      Values (_SubmissionID,_ReviewerUserID,_FileMetaDataID);
+      
+      /* Output the new FileMetaDataID */
+      Select _FileMetaDataID As 'FileMetaDataID';
+	Else
+	  Select 'ReviewerUserID doesn''t exist' As 'Error';
+	End If;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -1101,6 +1137,24 @@ BEGIN
   Where sf.SubmissionID = _SubmissionID;
 END$$
 
+/* Gets the file list for a ReviewerUserID & SubmissionID  */
+DROP PROCEDURE IF EXISTS `spReviewerGetFilesList`$$
+CREATE PROCEDURE `spReviewerGetFilesList`(IN _ReviewerUserID int, IN _SubmissionID int)
+DETERMINISTIC
+BEGIN
+  Select fmd.FileMetaDataID,
+         fmd.FileName,
+		 fmd.FileSize,
+		 ft.FileType
+  From ReviewerFiles rf
+    Inner Join FileMetaData fmd
+	  On fmd.FileMetaDataID = rf.FileMetaDataID
+	Inner Join FileTypes ft
+	  On ft.FileTypeID = fmd.FileTypeID
+  Where rf.SubmissionID = _SubmissionID
+    And rf.ReviewerUserID = _ReviewerUserID;
+END$$
+
 /* Gets the file info record for a FileMetaDataID  */
 DROP PROCEDURE IF EXISTS `spGetFileInfo`$$
 CREATE PROCEDURE `spGetFileInfo`(IN _FileMetaDataID int)
@@ -1120,6 +1174,27 @@ BEGIN
   From FileData
   Where FileMetaDataID = _FileMetaDataID
   Order By SequenceNumber;
+END$$
+
+/* Inserts a file content record for a FileMetaDataID  */
+DROP PROCEDURE IF EXISTS `spCreateFileContent`$$
+CREATE PROCEDURE `spCreateFileContent`(IN _FileMetaDataID int,
+                                       IN _FileContent blob,
+									   IN _SequenceNumber int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the FileMetaDataID exists */
+  If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+    /* Make sure the FileMetaDataID & SequenceNumber doesn't exist */
+    If(Select Exists(Select 1 From FileData Where FileMetaDataID = _FileMetaDataID And SequenceNumber = _SequenceNumber)) Then
+	  Select 'FileMetaDataID with this SequenceNumber already exists' As 'Error';
+	Else
+	  Insert Into FileData (FileMetaDataID,FileContents,SequenceNumber)
+	  Values (_FileMetaDataID,_FileContent,_SequenceNumber);
+	End If;
+  Else
+    Select 'FileMetaDataID doesn''t exist' As 'Error';
+  End If;
 END$$
 
 DELIMITER ;

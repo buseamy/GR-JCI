@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new  */
+/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`$$
 CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _FileTypeID int,
@@ -30,23 +30,6 @@ BEGIN
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
-END$$
-
-/* Gets the file list for a SubmissionID  */
-DROP PROCEDURE IF EXISTS `spSubmissionGetFilesList`$$
-CREATE PROCEDURE `spSubmissionGetFilesList`(IN _SubmissionID int)
-DETERMINISTIC
-BEGIN
-  Select fmd.FileMetaDataID,
-         fmd.FileName,
-		 fmd.FileSize,
-		 ft.FileType
-  From SubmissionFiles sf
-    Inner Join FileMetaData fmd
-	  On fmd.FileMetaDataID = sf.FileMetaDataID
-	Inner Join FileTypes ft
-	  On ft.FileTypeID = fmd.FileTypeID
-  Where sf.SubmissionID = _SubmissionID;
 END$$
 
 DELIMITER ;
