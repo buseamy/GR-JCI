@@ -14,7 +14,7 @@ BEGIN
     If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
 	  Select 'AddressType already exists' As 'Error';
 	Else
-      /* Update the phone number record */
+      /* Update the Address Type record */
 	  Update AddressTypes
 	  Set AddressType = _AddressType
 	  Where AddressTypeID = _AddressTypeID;

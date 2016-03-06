@@ -662,7 +662,7 @@ BEGIN
     If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
 	  Select 'AddressType already exists' As 'Error';
 	Else
-      /* Update the phone number record */
+      /* Update the Address Type record */
 	  Update AddressTypes
 	  Set AddressType = _AddressType
 	  Where AddressTypeID = _AddressTypeID;
@@ -1221,6 +1221,38 @@ BEGIN
 	Where FileMetaDataID = _FileMetaDataID;
   Else
     Select 'FileMetaDataID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Inserts a new Category */
+DROP PROCEDURE IF EXISTS `spCreateCategory`$$
+CREATE PROCEDURE `spCreateCategory`(IN _Category varchar(20))
+DETERMINISTIC
+BEGIN
+  /* Make sure the Category doesn't exist */
+  If(Select Exists(Select 1 From Categories Where Category = _Category)) Then
+    Select 'Category already exists' As 'Error';
+  Else
+    Insert Into Categories(Category)
+	Values (_Category);
+	
+	Select last_insert_id() As 'CategoryID';
+  End If; 
+END$$
+
+/* Updates an existing Category */
+DROP PROCEDURE IF EXISTS `spUpdateCategory`$$
+CREATE PROCEDURE `spUpdateCategory`(IN _CategoryID int,
+                                    IN _Category varchar(20))
+DETERMINISTIC
+BEGIN
+  /* Make sure the Category doesn't exist */
+  If(Select Exists(Select 1 From Categories Where Category = _Category And CategoryID != _CategoryID)) Then
+    Select 'Category already exists' As 'Error';
+  Else
+    Update Categories
+	Set Category = _Category
+	Where CategoryID = _CategoryID;
   End If;
 END$$
 
