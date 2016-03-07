@@ -2,6 +2,7 @@
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
+	require ('../mysqli_connect.php');
 	$errors = array(); // Initialize an error array.
 	
 
@@ -66,7 +67,7 @@
 			print_r($row);
 
 		}
-
+	complete_procedure($dbc);
 	} else { // Report the errors.
 	
 		echo '<h1>Error!</h1>
