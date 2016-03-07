@@ -62,3 +62,8 @@ DROP PROCEDURE IF EXISTS `spCreateFileContent`;
 DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`;
 DROP PROCEDURE IF EXISTS `spCreateCategory`;
 DROP PROCEDURE IF EXISTS `spUpdateCategory`;
+DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`;
+DROP PROCEDURE IF EXISTS `spSubmissionRemoveCategory`;
+DROP PROCEDURE IF EXISTS `spSearchGetUsersNames`;
+DROP PROCEDURE IF EXISTS `spSearchGetUsersEmail`;
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`;

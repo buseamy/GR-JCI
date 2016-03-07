@@ -1256,4 +1256,102 @@ BEGIN
   End If;
 END$$
 
+/* Connects a SubmissionID with a CategoryID */
+DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`$$
+CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int, IN _CategoryID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure SubmissionID exists */
+  If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
+    /* Make sure CategoryID exists */
+    If(Select Exists(Select 1 From Categories Where CategoryID = _CategoryID)) Then
+	  /* Make sure SubmissionID and CategoryID combination doesn't exist */
+      If(Select Exists(Select 1 From SubmissionCategories Where SubmissionID = _SubmissionID And CategoryID = _CategoryID)) Then
+        Select 'Submission already has that Category' As 'Error';
+      Else
+	    /* Make the connection */
+        Insert Into SubmissionCategories (SubmissionID,CategoryID)
+	    Values (_SubmissionID,_CategoryID);
+      End If;
+	Else
+	  Select 'CategoryID doesn''t exist' As 'Error';
+	End If;
+  Else
+    Select 'SubmissionID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Removes a SubmissionID from a CategoryID */
+DROP PROCEDURE IF EXISTS `spSubmissionRemoveCategory`$$
+CREATE PROCEDURE `spSubmissionRemoveCategory`(IN _SubmissionID int, IN _CategoryID int)
+DETERMINISTIC
+BEGIN
+  Delete From SubmissionCategories
+  Where SubmissionID = _SubmissionID
+    And CategoryID = _CategoryID;
+END$$
+
+/* Gets the List of users by first and/or last name */
+DROP PROCEDURE IF EXISTS `spSearchGetUsersNames`$$
+CREATE PROCEDURE `spSearchGetUsersNames`(IN _LastName varchar(30),
+                                         IN _FirstName varchar(15))
+DETERMINISTIC
+BEGIN
+  Set _LastName = IfNull(_LastName,'%');
+  Set _FirstName = IfNull(_FirstName,'%');
+  
+  Select UserID,
+         CONCAT(LastName,', ',FirstName) As 'FullName',
+		 EmailAddress,
+		 MemberCode,
+		 InstitutionAffiliation
+  From Users
+  Where LastName Like CONCAT('%',_LastName,'%')
+    And FirstName Like CONCAT('%',_FirstName,'%')
+  Group By UserID,
+           EmailAddress,
+		   MemberCode,
+		   InstitutionAffiliation
+  Order By LastName, FirstName;
+END$$
+
+/* Gets the List of users by email address */
+DROP PROCEDURE IF EXISTS `spSearchGetUsersEmail`$$
+CREATE PROCEDURE `spSearchGetUsersEmail`(IN _EmailAddress varchar(30))
+DETERMINISTIC
+BEGIN
+  Set _EmailAddress = IfNull(_EmailAddress,'%');
+  
+  Select UserID,
+         CONCAT(LastName,', ',FirstName) As 'FullName',
+		 EmailAddress,
+		 MemberCode,
+		 InstitutionAffiliation
+  From Users
+  Where EmailAddress Like CONCAT('%',_EmailAddress,'%')
+  Group By UserID,
+           EmailAddress,
+		   MemberCode,
+		   InstitutionAffiliation
+  Order By LastName, FirstName;
+END$$
+
+/* Gets the list of all Announcements */
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`$$
+CREATE PROCEDURE `spGetAllAnnouncements`()
+DETERMINISTIC
+BEGIN
+  Select a.Title,
+         GROUP_CONCAT(r.RoleTitle) As 'Roles',
+         a.CreateDate,
+		 a.ExpireDate
+  From Announcements a
+    Inner Join AccouncementRoles ar
+	  On ar.AnnouncementID = a.AnnouncementID
+	Inner Join Roles r
+	  On r.RoleID = ar.RoleID
+	Order By CreateDate,
+	         Title;
+END$$
+
 DELIMITER ;
