@@ -10,7 +10,7 @@ BEGIN
   Select a.Title,
          GROUP_CONCAT(r.RoleTitle) As 'Roles',
          a.CreateDate,
-		 a.ExpireDate
+		 IfNull(a.ExpireDate,'') As 'ExpireDate'
   From Announcements a
     Inner Join AccouncementRoles ar
 	  On ar.AnnouncementID = a.AnnouncementID
