@@ -68,3 +68,4 @@ DROP PROCEDURE IF EXISTS `spSearchGetUsersNames`;
 DROP PROCEDURE IF EXISTS `spSearchGetUsersEmail`;
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`;
 DROP PROCEDURE IF EXISTS `spAuthorGetSubmissionReviewerFilesList`;
+DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`;

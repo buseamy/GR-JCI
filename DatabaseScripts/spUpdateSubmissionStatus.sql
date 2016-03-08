@@ -6,9 +6,10 @@ DELIMITER $$
    SubmissionStatusID 2 : Editor Assigned
    SubmissionStatusID 3 : Editor Updated
    SubmissionStatusID 4 : Reviwers Assigned
-   SubmissionStatusID 5 : Editor Reviewed
-   SubmissionStatusID 6 : Ready for Publish
-   SubmissionStatusID 7 : Revision Needed
+   SubmissionStatusID 5 : Reviews Completed, DON'T USE, use spReviewerUpdateReviewStatus procedure instead
+   SubmissionStatusID 6 : Editor Reviewed
+   SubmissionStatusID 7 : Ready for Publish
+   SubmissionStatusID 8 : Revision Needed
 */
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`$$
 CREATE PROCEDURE `spUpdateSubmissionStatus`(IN _SubmissionID int,
