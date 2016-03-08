@@ -7,10 +7,10 @@ DROP PROCEDURE IF EXISTS `spCreateEmailSettings`$$
 CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
                                          IN _AuthorNagDays int,
                                          IN _AuthorSubjectTemplate varchar(50),
-										 IN _AuthorBodyTemplate varchar(1000),
+										 IN _AuthorBodyTemplate varchar(10000),
 										 IN _ReviewerNagDays int,
                                          IN _ReviewerSubjectTemplate varchar(50),
-										 IN _ReviewerBodyTemplate varchar(1000))
+										 IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
   Declare _SettingID int;
