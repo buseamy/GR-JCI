@@ -299,12 +299,13 @@ PRIMARY KEY (Year)
 CREATE TABLE SystemSettings_Email
 (
 SettingID int AUTO_INCREMENT,
+SettingName varchar(200) NOT NULL UNIQUE,
 AuthorNagEmailDays int NOT NULL,
 AuthorSubjectTemplate varchar(50) NOT NULL,
-AuthorBodyTemplate varchar(1000) NOT NULL,
+AuthorBodyTemplate varchar(10000) NOT NULL,
 ReviewerNagEmailDays int NOT NULL,
 ReviewerSubjectTemplate varchar(50) NOT NULL,
-ReviewerBodyTemplate varchar(1000) NOT NULL,
+ReviewerBodyTemplate varchar(10000) NOT NULL,
 Active tinyint(1) NOT NULL DEFAULT '1',
 PRIMARY KEY (SettingID)
 );
@@ -368,7 +369,8 @@ Values ('Author'),
        ('Reviewer'),
 	   ('Editor'),
 	   ('Assistant Editor'),
-	   ('General Assistant');
+	   ('General Assistant'),
+	   ('Public');
 
 /*Populate the Roles table*/
 Insert Into FileTypes (RoleID,FileType)
@@ -407,6 +409,7 @@ Values ('Submitted'),
        ('Editor Assigned'),
        ('Editor Updated'),
        ('Reviwers Assigned'),
+	   ('Reviews Completed'),
        ('Editor Reviewed'),
        ('Ready for Publish'),
        ('Revision Needed');
