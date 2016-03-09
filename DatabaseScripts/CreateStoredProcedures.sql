@@ -1507,4 +1507,107 @@ BEGIN
   End If;
 END$$
 
+/* Gets the List of available Email Settings */
+DROP PROCEDURE IF EXISTS `spGetEmailSettings`$$
+CREATE PROCEDURE `spGetEmailSettings`()
+DETERMINISTIC
+BEGIN
+  Select SettingID,
+         SettingName,
+         AuthorNagEmailDays,
+         AuthorSubjectTemplate,
+         AuthorBodyTemplate,
+         ReviewerNagEmailDays,
+         ReviewerSubjectTemplate,
+         ReviewerBodyTemplate,
+         Active
+  From SystemSettings_Email
+  Order By SettingName;
+END$$
+
+/* Marks an Email SettingID as active */
+DROP PROCEDURE IF EXISTS `spUpdateEmailSettingActive`$$
+CREATE PROCEDURE `spUpdateEmailSettingActive`(IN _SettingID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the SettingID exists */
+  If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
+    /* Mark all settings as inactive */
+	Update SystemSettings_Email
+	Set Active = 0;
+	
+	/* Mark the specific ID as active */
+	Update SystemSettings_Email
+	Set Active = 0
+	Where SettingID = _SettingID;
+  Else
+    Select 'SettingID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Gets the List of available Article Dates for a year */
+DROP PROCEDURE IF EXISTS `spGetArticleDates`$$
+CREATE PROCEDURE `spGetArticleDates`(IN _Year int)
+DETERMINISTIC
+BEGIN
+  /* If the year is null, set it to current year */
+  Set _Year = IfNull(_Year, Year(CURRENT_DATE));
+  
+  Select SeasonStartDate,
+         FirstSubmissionEndDate,
+         FirstReviewEndDate,
+         SecondSubmissionEndDate,
+         SecondReviewEndDate, 
+         PublicationSubmissionEndDate
+  From SystemSettings_ArticleDates
+  Where Year = _Year;
+END$$
+
+/* Updates the available Article Dates for a year */
+DROP PROCEDURE IF EXISTS `spUpdateArticleDates`$$
+CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
+                                        IN _SeasonStartDate date,
+										IN _FirstSubmissionEndDate date,
+										IN _FirstReviewEndDate date,
+										IN _SecondSubmissionEndDate date,
+										IN _SecondReviewEndDate date,
+										IN _PublicationSubmissionEndDate date)
+DETERMINISTIC
+BEGIN
+  Update SystemSettings_ArticleDates
+  Set SeasonStartDate = _SeasonStartDate,
+      FirstSubmissionEndDate = _FirstSubmissionEndDate,
+      FirstReviewEndDate = _FirstReviewEndDate,
+      SecondSubmissionEndDate = _SecondSubmissionEndDate,
+      SecondReviewEndDate = _SecondReviewEndDate, 
+      PublicationSubmissionEndDate = _PublicationSubmissionEndDate
+  Where Year = _Year;
+END$$
+
+/* Creates the available Article Dates for a new year  */
+DROP PROCEDURE IF EXISTS `spJobCreateArticleDates`$$
+CREATE PROCEDURE `spJobCreateArticleDates`()
+DETERMINISTIC
+BEGIN
+  Declare _CurrYear int;
+  Set _CurrYear = Year(CURRENT_DATE);
+  
+  Insert Into SystemSettings_ArticleDates (Year,
+                                           SeasonStartDate,
+                                           FirstSubmissionEndDate,
+										   FirstReviewEndDate,
+										   SecondSubmissionEndDate,
+										   SecondReviewEndDate,
+										   PublicationSubmissionEndDate)
+  Select _CurrYear As 'Year',
+         CONCAT(_CurrYear, RIGHT(SeasonStartDate,6)) As 'SeasonStartDate',
+         CONCAT(_CurrYear, RIGHT(FirstSubmissionEndDate,6)) As 'FirstSubmissionEndDate',
+		 CONCAT(_CurrYear, RIGHT(FirstReviewEndDate,6)) As 'FirstReviewEndDate',
+		 CONCAT(_CurrYear, RIGHT(SecondSubmissionEndDate,6)) As 'SecondSubmissionEndDate',
+		 CONCAT(_CurrYear, RIGHT(SecondReviewEndDate,6)) As 'SecondReviewEndDate',
+		 CONCAT(_CurrYear, RIGHT(PublicationSubmissionEndDate,6)) As 'PublicationSubmissionEndDate'
+  From SystemSettings_ArticleDates
+  Where Year = _CurrYear - 1;
+END$$
+
 DELIMITER ;

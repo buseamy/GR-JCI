@@ -1,5 +1,9 @@
 USE gr_jci;
 
+DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`;
+DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`;
+DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`;
+DROP PROCEDURE IF EXISTS `spJobCreateArticleDates`;
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`;
 DROP PROCEDURE IF EXISTS `spGetPhoneTypes`;
 DROP PROCEDURE IF EXISTS `spGetStates`;
@@ -71,6 +75,7 @@ DROP PROCEDURE IF EXISTS `spAuthorGetSubmissionReviewerFilesList`;
 DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`;
 DROP PROCEDURE IF EXISTS `spCreateEmailSettings`;
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettings`;
-DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`;
-DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`;
-DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`;
+DROP PROCEDURE IF EXISTS `spGetEmailSettings`;
+DROP PROCEDURE IF EXISTS `spUpdateEmailSettingActive`;
+DROP PROCEDURE IF EXISTS `spGetArticleDates`;
+DROP PROCEDURE IF EXISTS `spUpdateArticleDates`;

@@ -282,8 +282,8 @@ FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
 FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
 );
 
-/*Create SystemSettings_CaseDates table*/
-CREATE TABLE SystemSettings_CaseDates
+/*Create SystemSettings_ArticleDates table*/
+CREATE TABLE SystemSettings_ArticleDates
 (
 Year int NOT NULL,
 SeasonStartDate date NOT NULL,
