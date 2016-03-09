@@ -3,8 +3,8 @@ USE gr_jci;
 DELIMITER $$
 
 /* Deletes all expired announcements */
-DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`$$
-CREATE PROCEDURE `spRemoveExpiredAnnouncements`() DETERMINISTIC
+DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`$$
+CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`() DETERMINISTIC
 BEGIN
 
   /* Remove the associated roles with the expired announcements */

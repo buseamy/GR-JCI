@@ -3,8 +3,8 @@ USE gr_jci;
 DELIMITER $$
 
 /* For every user create membership history record */
-DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
-CREATE PROCEDURE `spYearlyAddMembershipHistory`()
+DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`$$
+CREATE PROCEDURE `spJobYearlyAddMembershipHistory`()
 DETERMINISTIC
 BEGIN
   /* Delete the current year's entries */

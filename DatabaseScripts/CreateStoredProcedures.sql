@@ -374,8 +374,8 @@ BEGIN
 END$$
 
 /* For every user create membership history record */
-DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
-CREATE PROCEDURE `spYearlyAddMembershipHistory`()
+DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`$$
+CREATE PROCEDURE `spJobYearlyAddMembershipHistory`()
 DETERMINISTIC
 BEGIN
   /* Delete the current year's entries */
@@ -427,8 +427,8 @@ BEGIN
 END$$
 
 /* Expire user's EmailAddress change attempts */
-DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`$$
-CREATE PROCEDURE `spUpdateExpireUsersEmailAddressChange`()
+DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`$$
+CREATE PROCEDURE `spJobUpdateExpireUsersEmailAddressChange`()
 DETERMINISTIC
 BEGIN
   Update Users
@@ -1009,8 +1009,8 @@ BEGIN
 END$$
 
 /* Deletes all expired announcements */
-DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`$$
-CREATE PROCEDURE `spRemoveExpiredAnnouncements`() DETERMINISTIC
+DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`$$
+CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`() DETERMINISTIC
 BEGIN
 
   /* Remove the associated roles with the expired announcements */

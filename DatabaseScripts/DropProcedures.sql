@@ -71,3 +71,6 @@ DROP PROCEDURE IF EXISTS `spAuthorGetSubmissionReviewerFilesList`;
 DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`;
 DROP PROCEDURE IF EXISTS `spCreateEmailSettings`;
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettings`;
+DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`;
+DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`;
+DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`;

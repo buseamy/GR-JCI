@@ -3,8 +3,8 @@ USE gr_jci;
 DELIMITER $$
 
 /* Expire user's EmailAddress change attempts */
-DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`$$
-CREATE PROCEDURE `spUpdateExpireUsersEmailAddressChange`()
+DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`$$
+CREATE PROCEDURE `spJobUpdateExpireUsersEmailAddressChange`()
 DETERMINISTIC
 BEGIN
   Update Users
