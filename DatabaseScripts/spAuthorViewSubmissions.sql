@@ -7,7 +7,8 @@ DROP PROCEDURE IF EXISTS `spAuthorViewSubmissions`$$
 CREATE PROCEDURE `spAuthorViewSubmissions`(IN _UserID int, IN _Year int)
 DETERMINISTIC
 BEGIN
-  Select s.IncidentTitle,
+  Select s.SubmissionID,
+         s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
 		 ss.SubmissionStatus,
 		 s.SubmissionDate

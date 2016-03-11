@@ -7,7 +7,8 @@ DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`$$
 CREATE PROCEDURE `spEditorViewSubmissions`(IN _Year int)
 DETERMINISTIC
 BEGIN
-  Select s.IncidentTitle,
+  Select s.SubmissionID,
+         s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
 		 GROUP_CONCAT(CONCAT('''',ua.FirstName,' ',ua.LastName,'''')) As 'Authors',
 		 GROUP_CONCAT(CONCAT('''',ur.FirstName,' ',ur.LastName,'''')) As 'Reviewers',
