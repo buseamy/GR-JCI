@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
 	require ('../mysqli_connect.php');
+	require('./include_utils/procedures.php');
 		
 	$errors = array(); // Initialize an error array.
 	
@@ -128,13 +129,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			$r_userID = $row_verify["UserID"];
 			$r_everify = $row_verify["EmailVerificationGUID"];
+			complete_procedure($dbc);
+			
+			// Send the users address information to the database
 			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
+				complete_procedure($dbc);
 			}
+			
+			// Send the users phone information to the database.
 			if (!empty($_post['phone'])){
 				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', '$pprime')";
 				mysqli_query ($dbc, $q_phone);
+				complete_procedure($dbc);
 			}
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
