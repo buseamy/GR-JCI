@@ -6,8 +6,8 @@
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	// Need two helper files:
-	require ('includes/login_functions.php');
-	require ('../../mysqli_connect.php');
+	require ('./includes/login_functions.php');
+	require ('../mysqli_connect.php');
 		
 	// Check the login:
 	list ($check, $data) = check_login($dbc, $_POST['username'], $_POST['password']);
@@ -37,5 +37,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } // End of the main submit conditional.
 
 // Create the page:
-include ('includes/login_page.php');
+include ('./includes/login_page.php');
 ?>
