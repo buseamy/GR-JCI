@@ -4,9 +4,9 @@
 * @File Name:		header.php
 * @Description: 	Header for the site
 * @PHP version: 	Currently Unknown
-* @Author(s):		Jacob Cole <colej28@ferris.edu>
+* @Author(s):		Jacob Cole <colej28@ferris.edu> Rui Takagi <takagir@ferris.edu>
 * @Organization:	Ferris State University
-* @Last updated:	02/05/2016
+* @Last updated:	03/12/2016
 */
 
 /*
@@ -51,6 +51,8 @@ Can be changed to detect any session variable. It must be placed in the list for
 				if($_SESSION['iseditor'] > -1) {
 					<li><a class="white" href="editor_index.php">Editor</a></li> <!--Editor page-->
 				}
+				<li><a class="white" href=" https://www.sfcr.org/">JCI Website</a></li> <!--Home page-->
+				<li><a class="white" href="teaching_notes.php">Teaching Notes</a></li> <!--Home page-->
 			</ul>
         </nav>
         <body>
