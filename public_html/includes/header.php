@@ -6,7 +6,7 @@
 * @PHP version: 	Currently Unknown
 * @Author(s):		Jacob Cole <colej28@ferris.edu> Rui Takagi <takagir@ferris.edu>
 * @Organization:	Ferris State University
-* @Last updated:	03/12/2016
+* @Last updated:	03/13/2016
 */
 
 /*
@@ -43,14 +43,21 @@
                 <li><a class="white" href="index.php">Home</a></li> <!--Home page-->
                 <li><a class="white" href="#">Register</a></li> <!--Register page-->
                 <li><a class="white" href="#">Contact us</a></li> <!--Contact page-->
-                <li><a class="white" href="#">Login</a></li> <!--Login page-->
-
-				<!--This section of code will make the Editor tab visible when the Editor logs in.
-Can be changed to detect any session variable. It must be placed in the list for tabs.-->
-
-				if($_SESSION['iseditor'] > -1) {
-					<li><a class="white" href="editor_index.php">Editor</a></li> <!--Editor page-->
+				 <?php // Create a logout if logged in, creates login if logged out
+				 session_start();
+				 //Editor tab is displayed if the user is an editor
+				if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1 ) {
+					echo '<li><a class="white" href="logout.php">Logout</a></li>';
+					echo '<li><a class="white" href="editor_index.php">Editor</a></li>' ;
+				} else if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1){
+					echo '<li><a class="white" href="logout.php">Logout</a></li>';
+				} else if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
+					echo '<li><a class="white" href="logout.php">Logout</a></li>';
+				} else {
+					echo '<li><a class="white" href="login_page.php">Login</a></li>';
 				}
+				?>
+
 				<li><a class="white" href=" https://www.sfcr.org/">JCI Website</a></li> <!--Home page-->
 				<li><a class="white" href="teaching_notes.php">Teaching Notes</a></li> <!--Home page-->
 			</ul>
