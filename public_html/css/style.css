@@ -6,9 +6,9 @@
 * @Last updated:  02/05/2016
 */
 
-/* 
- * The purpose of this file is to contain all general 
- * site styles that can be applied to every page. 
+/*
+ * The purpose of this file is to contain all general
+ * site styles that can be applied to every page.
  */
 
 html, body, div, span,
@@ -40,52 +40,52 @@ nav ul, ul { list-style:none; }
 
 aside{
   margin-left: 1%;
-  padding: 20px 5% 0 3%;
+  padding: 20px 1% 0 3%;
 }
 
 .span1{
   width: 7.41666666667%;
-  
+
 }
 .span2{
   width: 15.8333333333%;
-  
+
 }
 .span3{
   width: 24.25%;
-  
+
 }
 .span4{
   width: 32.6666666667%;
-  
+
 }
 .span5{
   width: 41.0833333333%;
-  
+
 }
 .span6{
   width: 49.5%;
-  
+
 }
 .span7{
   width: 57.9166666667%;
-  
+
 }
 .span8{
   width: 66.3333333333%;
-  
+
 }
 .span9{
   width: 74.75%;
-  
+
 }
 .span10{
   width: 83.1666666667%;
-  
+
 }
 .span11{
   width: 91.5833333333%;
-  
+
 }
 .span12{
   width: 100%;
@@ -182,6 +182,50 @@ nav a:active{
   background-color: #262f37;
 }
 
+/* NAVIGATION */
+.subnav{
+  margin: 7px 0 7px 0;
+}
+
+.subnav ul{
+  width: 100%;
+}
+
+.subnav ul li{
+  margin: 7px 0 7px 0;
+  text-align: center;
+  overflow: auto;
+  float: left;
+  width: 33.333%;
+}
+
+.subnav a{
+  text-decoration: none;
+  display: block;
+  padding: 7px 0 7px 5%;
+  margin: 0 2% 0 2%;
+  background-color: #9e012b;
+}
+
+.subnav .editor{
+background-color: #25B3E1;
+color: white;
+}
+
+.subnav .author{
+background-color: #FF7E31;
+color: white;
+}
+
+.subnav .reviewer{
+background-color: #7664D6;
+color: white;
+}
+
+.subnav a:active{
+  background-color: #820a2a;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width: 768px){
@@ -217,7 +261,7 @@ nav a:active{
 }
 
 .logo{
-  height:75px; 
+  height:75px;
   float: right;
 }
 
