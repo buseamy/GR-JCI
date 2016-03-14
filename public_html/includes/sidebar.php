@@ -19,7 +19,7 @@
 	<h2>Resources</h2>
     <ul>
         <li><a href="submit_case.php">Submit a case</a></li>
-		<li><a href="editorCaseManagement.php">Case Management</a></li> <!--Case Management-->
+		<li><a href="editorCaseManagement.php">Manage Critical Incidents</a></li> <!--Case Management-->
         <li><a href="#">Resource 3</a></li>
         <li><a href="#">Resource 4</a></li>
         <li><a href="#">Resource 5</a></li>
