@@ -71,9 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (empty($_POST['city'])) {
 		$city = null;
-	} else {
+	} else if (Is_numeric($_POST['city'])) {
+		$errors[] = 'The city name should not contain numbers.';
+	}  else {
 		$city = mysqli_real_escape_string($dbc, trim($_POST['city']));
-	}	
+	}
 	
 	if (empty($_POST['zip'])) {
 		$zip = null;

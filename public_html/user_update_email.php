@@ -95,4 +95,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Confirm New Email Address: <input type="text" name="email2" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  /> </p>
 	<p><input type="submit" name="submit" value="Create User" /></p>
 </form>
-<a href="javascript:history.back()" class="button">Cancel</a>
+<a href="index.php" class="button">Cancel</a>
