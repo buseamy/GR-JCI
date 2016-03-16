@@ -1,30 +1,30 @@
-<?php $page_title = 'JCI Website - Author Critical Incident Management';
+<?php $page_title = 'JCI Website - Reviewer Critical Incident Management';
 
 /*
- * The purpose of this file is to allow the authors
+ * The purpose of this file is to allow the reviewers
  * to view submitted Critical Incidents.
  */
 
-require ('../mysqli_connect.php'); // Connect to the database
-require ('./includes/header.php'); // Include the site header
-require ('./includes/subnav.php'); // Include subnav
-require('./include_utils/procedures.php'); // complete_procedure()
+ require ('../mysqli_connect.php'); // Connect to the database
+ require ('./includes/header.php'); // Include the site header
+ require ('./includes/subnav.php'); // Include subnav
+ require('./include_utils/procedures.php'); // complete_procedure()
 ?>
 <!-- temporary style -->
-<style>.subnav .author {height:30px;} th {text-align: left;}</style>
+<style>.subnav .reviewer {height:30px;} th {text-align: left;}</style>
 <div id="home-body" class="span9">
-    <?php // if (isset($_SESSION['user_id'])) { // Only display if logged in ?>
+    <?php // if (isset($_SESSION['user_id'])) { // Only display if logged in and role is reviewer ?>
         <!--Page main body-->
         <div class="span12">
             <div class="revisions">
                 <?php
 
                 //temporary until log-in is complete
-                $UserID = 1;
+                $UserID = 4;
                 $Year = date("Y");
 
-                $q_AuthorViewSubmissions = "Call spAuthorViewSubmissions($UserID, $Year);"; // Call to stored procedure
-                $result = $dbc->query($q_AuthorViewSubmissions); // Run procedure
+                $q_ReviewerViewSubmissions = "Call spReviewerViewSubmissions($UserID, $Year);"; // Call to stored procedure
+                $result = $dbc->query($q_ReviewerViewSubmissions); // Run procedure
 
                 //if something is returned
                 if ($result->num_rows > 0) { ?>
@@ -41,9 +41,8 @@ require('./include_utils/procedures.php'); // complete_procedure()
                     while($row = $result->fetch_assoc()) {
                         //Checks for null EditorName
                         if ($row["EditorName"] == "") { $row["EditorName"] = "Unassigned"; }
-                        echo '<tr><td class="span3">' . $row["IncidentTitle"]. '</td> <td class="span3">' . $row["EditorName"]. '</td> <td class="span3">' . $row["SubmissionStatus"]. '</td> <td class="span2">' . $row["SubmissionDate"]. '<td class="span1"><a href="AuthorViewIncident.php?SubmissionID=' . $row["SubmissionID"] .'">View</a></td></tr>';
-                    }
-                    echo "</table>";
+                        echo '<tr><td class="span3">' . $row["IncidentTitle"]. '</td> <td class="span3">' . $row["EditorName"]. '</td> <td class="span3">' . $row["SubmissionStatus"]. '</td> <td class="span2">' . $row["SubmissionDate"]. '<td class="span1"><a href="view_incident.php?SubmissionID=' . $row["SubmissionID"] .'">View</a></td></tr>';
+                    } echo "</table>";
                 } else {
                     //if no results found
                     echo "<tr><td>No results</td></tr>";
