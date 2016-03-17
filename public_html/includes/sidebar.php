@@ -18,8 +18,22 @@
 <aside class="span3">
 	<h2>Resources</h2>
     <ul>
-        <li><a href="submit_case.php">Submit a case</a></li>
-		<li><a href="editor_incident_management.php">Manage Critical Incidents</a></li> <!--Case Management-->
+		<?php
+		if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
+			echo '<li><a href="submit_critical_incident.php">Submit a case</a></li>';
+		} else {
+			echo '<li><a href="login.php">Submit a case</a></li>';
+		}
+		if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1) {
+			echo '<li><a href="editor_incident_management.php">Manage Critical Incidents</a></li> <!--Case Management-->';
+		} else if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
+			echo '<li><a href="reviewer_incident_management.php">Manage Critical Incidents</a></li> <!--Case Management-->';
+		} else if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
+			echo '<li><a href="author_incident_management.php">Manage Critical Incidents</a></li> <!--Case Management-->';
+		} else {
+			echo '<li><a href="login.php">Manage Critical Incidents</a></li> <!--Case Management-->';
+		}
+		?>
         <li><a href="#">Resource 3</a></li>
         <li><a href="#">Resource 4</a></li>
         <li><a href="#">Resource 5</a></li>

@@ -8,12 +8,12 @@
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
  require ('./includes/subnav.php'); // Include subnav
- require('./include_utils/procedures.php'); // complete_procedure()
+ require ('./include_utils/procedures.php'); // complete_procedure()
 ?>
 <!-- temporary style -->
 <style>.subnav .editor {height:30px;} th {text-align: left;}</style>
 <div id="home-body" class="span9">
-    <?php // if (isset($_SESSION['user_id'])) { // Only display if logged in and role is editor ?>
+    <?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
         <!--Page main body-->
         <div class="span12">
             <div class="revisions">
@@ -52,7 +52,7 @@
                 complete_procedure($dbc);?>
             </div>
         </div>
-    <?php // } else { echo "<p>You do not have permission</p>"; }?>
+    <?php } else { echo "<p>You do not have permission</p>"; }?>
 </div>
 <?php
 require 'includes/sidebar.php'; // Include sidebar
