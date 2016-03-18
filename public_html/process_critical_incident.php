@@ -10,7 +10,7 @@
  require ('./include_utils/procedures.php'); // complete_procedure()
 
 $Error = false;
-$PreviousSubmissionID = 1;
+$PreviousSubmissionID = NULL;
 $SubmissionNumber = 1;
 $UserID = $_SESSION['UserID'];
 
