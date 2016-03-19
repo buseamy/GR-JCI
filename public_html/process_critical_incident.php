@@ -72,7 +72,7 @@ $Abstract = $_POST['abstract'];
 
 if (isset($_POST['submit']) && $Error == false) {
 
-    $q_AuthorCreateSubmission = "Call spAuthorCreateSubmission($UserID, $IncidentTitle, $Abstract, $KeyWords, $PreviousSubmissionID, $SubmissionNumber);"; // Call to stored procedure
+    $q_AuthorCreateSubmission = "Call spAuthorCreateSubmission($UserID, '$IncidentTitle', '$Abstract', '$KeyWords', $PreviousSubmissionID, $SubmissionNumber);"; // Call to stored procedure
     $results = $dbc->query($q_AuthorCreateSubmission); // Run procedure
 
     //if nothing is returned
