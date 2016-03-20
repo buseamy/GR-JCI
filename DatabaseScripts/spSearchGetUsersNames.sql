@@ -18,7 +18,7 @@ BEGIN
 		 InstitutionAffiliation
   From Users
   Where LastName Like CONCAT('%',_LastName,'%')
-    And FirstName Like CONCAT('%',_FirstName,'%')
+    Or FirstName Like CONCAT('%',_FirstName,'%')
   Group By UserID,
            EmailAddress,
 		   MemberCode,

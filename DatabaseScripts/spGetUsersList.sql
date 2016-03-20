@@ -9,7 +9,7 @@ DETERMINISTIC
 BEGIN
   Select u.UserID,
          u.EmailAddress,
-		 CONCAT(u.FirstName,' ',u.LastName) As 'Name',
+		 CONCAT(u.LastName,', ',u.FirstName) As 'FullName',
 		 GROUP_CONCAT(r.RoleTitle) As 'Roles',
 		 IF(u.Active, 'Y', 'N') As 'IsActive'
   From Users u
