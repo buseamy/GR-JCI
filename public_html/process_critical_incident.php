@@ -1,20 +1,20 @@
 <?php $page_title = 'JCI Website - Process Submission';
 
 /*
- * The purpose of this file is to allow the authors
- * to submit a case with all required materials.
+ * The purpose of this file is to process
+ * the submited case with all required materials.
  */
 
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
  require ('./include_utils/procedures.php'); // complete_procedure()
-
+/*
 $Error = false;
-$PreviousSubmissionID = NULL;
+$PreviousSubmissionID = "NULL";
 $SubmissionNumber = 1;
 $UserID = $_SESSION['UserID'];
 
-//Collect data from submission and validate
+//Collect and validate data from submission
 if(!isset($_POST['title']) || strlen(trim($_POST['title'])) == 0){
     echo 'No title provided<br/>';
     $Error = true;
@@ -22,11 +22,24 @@ if(!isset($_POST['title']) || strlen(trim($_POST['title'])) == 0){
     $IncidentTitle = $_POST['title'];
 }
 $MemberCode = $_POST['memberCode'];
+$counter = $_POST['counter'];
 if(!isset($_POST['email']) || strlen(trim($_POST['email'])) == 0){
     echo 'No email address provided<br/>';
     $Error = true;
+} elseif ($counter == 1) {
+    $Email = $_POST['email'];
 } else {
     $Email = $_POST['email'];
+    $count = $counter;
+    while ($count > 1) {
+        if (!isset($_POST['email'.$count])|| strlen(trim($_POST['email'.$count])) == 0){
+            $Error = true;
+            echo "Please provide all author email addresses";
+        } else {
+            ${'Email' . $count} =$_POST['email'.$count];
+        }
+        $count--;
+    }
 }
 if(!isset($_POST['authorFirst']) || strlen(trim($_POST['authorFirst'])) == 0){
     echo 'No Author First Name provided<br/>';
@@ -40,7 +53,6 @@ if(!isset($_POST['authorLast']) || strlen(trim($_POST['authorLast'])) == 0){
 } else {
     $AuthorLast = $_POST['authorLast'];
 }
-$counter = $_POST['counter'];
 if(!isset($_POST['coverPage']) || strlen(trim($_POST['coverPage'])) == 0){
     echo 'No Cover Page provided<br/>';
     $Error = true;
@@ -69,7 +81,6 @@ $Summary = $_POST['summary'];
 $KeyWords = $_POST['keywords'];
 $Abstract = $_POST['abstract'];
 
-
 if (isset($_POST['submit']) && $Error == false) {
 
     $q_AuthorCreateSubmission = "Call spAuthorCreateSubmission($UserID, '$IncidentTitle', '$Abstract', '$KeyWords', $PreviousSubmissionID, $SubmissionNumber);"; // Call to stored procedure
@@ -77,13 +88,43 @@ if (isset($_POST['submit']) && $Error == false) {
 
     //if nothing is returned
     if (!$results){
-        echo "nothing returned";
+        $Error = true;
     } else { //if something is returned
         // output data of each row
         while($row = $results->fetch_assoc()) {
             $SubmissionID = $row["SubmissionID"];
-            echo $SubmissionID;
         }
     }
-} else { echo "Error with submission.";}
+    complete_procedure($dbc); // Complete SP Create submission
+
+    if (!$SubmissionID && isset($Email)) {
+        $Error = true;
+    } else {
+        $count = $counter;;
+        while ($count > 1) { // !!!!Everything works unless an empty email is submitted
+
+            $q_SearchGetUsersEmail = "Call spSearchGetUsersEmail('${'Email' . $count}');"; // Call to stored procedure
+            $results = $dbc->query($q_SearchGetUsersEmail); // Run procedure
+            complete_procedure($dbc);
+
+            if ($results->num_rows > 0) {
+                // output data of each row
+                while($row = $results->fetch_assoc()) {
+                    $AdditionalAuthorUserID = $row["UserID"];*/
+                    $AdditionalAuthorUserID = 6;
+                    $SubmissionID = 19;
+
+                    $q_AuthorAddToSubmission = "Call spAuthorAddToSubmission($AdditionalAuthorUserID, $SubmissionID);"; // Call to stored procedure
+                    $dbc->query($q_AuthorAddToSubmission); // Run procedure
+                    complete_procedure($dbc);
+
+                /*}
+            } else {
+                echo "No users found";
+            }
+            $count--;
+        }
+    }
+
+} else { echo "Error with submission.";}*/
  ?>
