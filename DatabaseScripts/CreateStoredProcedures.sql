@@ -2,6 +2,8 @@ USE gr_jci;
 
 DELIMITER $$
 
+DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`$$
+
 /* Gets the list of types of addresses */
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`$$
 CREATE PROCEDURE `spGetAddressTypes`()
@@ -327,16 +329,6 @@ BEGIN
   Where UserID = _UserID;
 END$$
 
-/* Marks a user's email address as invalid */
-DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`$$
-CREATE PROCEDURE `spUpdateRejectEmailAddress`(IN _UserID int)
-DETERMINISTIC
-BEGIN
-  Update Users
-  Set EmailStatusID = 2
-  Where UserID = _UserID;
-END$$
-
 /* Gets the List of available roles */
 DROP PROCEDURE IF EXISTS `spGetRoles`$$
 CREATE PROCEDURE `spGetRoles`()
@@ -431,10 +423,25 @@ DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`$$
 CREATE PROCEDURE `spJobUpdateExpireUsersEmailAddressChange`()
 DETERMINISTIC
 BEGIN
+  /* Registered user never confirmed their email address, expire it outright */
   Update Users
-  Set EmailStatusID = 2
+  Set EmailStatusID = 2,
+      NewEmailAddressCreateDate = Null,
+	  EmailVerificationGUID = Null,
+	  NewEmailAddress = Null
   Where EmailStatusID = 1
-    And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 3 DAY;
+    And NewEmailAddress = EmailAddress
+    And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 5 DAY;
+
+  /* User never confirmed their new email address, keep the old one */
+  Update Users
+  Set EmailStatusID = 3,
+      NewEmailAddressCreateDate = Null,
+	  EmailVerificationGUID = Null,
+	  NewEmailAddress = Null
+  Where EmailStatusID = 1
+    And NewEmailAddress != EmailAddress
+    And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 5 DAY;
 END$$
 
 /* Removes a UserID with a RoleID */
@@ -1611,6 +1618,74 @@ BEGIN
 		 CONCAT(_CurrYear, RIGHT(PublicationSubmissionEndDate,6)) As 'PublicationSubmissionEndDate'
   From SystemSettings_ArticleDates
   Where Year = _CurrYear - 1;
+END$$
+
+/* Update the RequestBecomeReviewer for a UserID */
+DROP PROCEDURE IF EXISTS `spUserAddRequestReviewer`$$
+CREATE PROCEDURE `spUserAddRequestReviewer`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 2)) Then
+	  Select 'UserID is already a reviewer' As 'Error';
+	Else
+      Update Users
+	  Set RequestBecomeReviewer = 1
+	  Where UserID = _UserID;
+	End If;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Update the RequestBecomeReviewer for a UserID */
+DROP PROCEDURE IF EXISTS `spUserRemoveRequestReviewer`$$
+CREATE PROCEDURE `spUserRemoveRequestReviewer`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set RequestBecomeReviewer = 0
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Update the RequestBecomeEditor for a UserID */
+DROP PROCEDURE IF EXISTS `spUserAddRequestEditor`$$
+CREATE PROCEDURE `spUserAddRequestEditor`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 3)) Then
+	  Select 'UserID is already an editor' As 'Error';
+	Else
+      Update Users
+	  Set RequestBecomeEditor = 1
+	  Where UserID = _UserID;
+	End If;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Update the RequestBecomeEditor for a UserID */
+DROP PROCEDURE IF EXISTS `spUserRemoveRequestEditor`$$
+CREATE PROCEDURE `spUserRemoveRequestEditor`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+    Update Users
+	Set RequestBecomeEditor = 0
+	Where UserID = _UserID;
+  Else
+    Select 'UserID doesn''t exist' As 'Error';
+  End If;
 END$$
 
 DELIMITER ;

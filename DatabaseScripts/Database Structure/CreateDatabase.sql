@@ -104,7 +104,6 @@ FirstName varchar(15) NOT NULL,
 LastName varchar(30) NOT NULL,
 MemberCode varchar(20),
 ValidMembership tinyint(1) NOT NULL DEFAULT '0',
-ReviewerNumber varchar(3),
 InstitutionAffiliation varchar(100),
 EmailStatusID int NOT NULL,
 NewEmailAddress varchar(200),
@@ -113,6 +112,8 @@ EmailVerificationGUID varchar(32),
 Active tinyint(1) NOT NULL DEFAULT '1',
 NonActiveNote varchar(500) NULL,
 CreateDate date NOT NULL,
+RequestBecomeReviewer tinyint(1) NOT NULL DEFAULT '0',
+RequestBecomeEditor tinyint(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (UserID),
 FOREIGN KEY (EmailStatusID) REFERENCES EmailStatus(EmailStatusID)
 );
@@ -282,19 +283,6 @@ FOREIGN KEY (SubmissionID) REFERENCES Submissions(SubmissionID),
 FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
 );
 
-/*Create SystemSettings_ArticleDates table*/
-CREATE TABLE SystemSettings_ArticleDates
-(
-Year int NOT NULL,
-SeasonStartDate date NOT NULL,
-FirstSubmissionEndDate date NOT NULL,
-FirstReviewEndDate date NOT NULL,
-SecondSubmissionEndDate date NOT NULL,
-SecondReviewEndDate date NOT NULL, 
-PublicationSubmissionEndDate date NOT NULL,
-PRIMARY KEY (Year)
-);
-
 /*Create SystemSettings_Email table*/
 CREATE TABLE SystemSettings_Email
 (
@@ -309,6 +297,50 @@ ReviewerBodyTemplate varchar(10000) NOT NULL,
 Active tinyint(1) NOT NULL DEFAULT '1',
 PRIMARY KEY (SettingID)
 );
+
+/*Create SystemSettings_ArticleDates table*/
+CREATE TABLE SystemSettings_ArticleDates
+(
+Year int NOT NULL,
+AuthorFirstSubmissionStartDate date NOT NULL,
+AuthorFirstSubmissionDueDate date NOT NULL,
+FirstReviewStartDate date NOT NULL,
+FirstReviewDueDate date NOT NULL,
+AuthorSecondSubmissionStartDate date NOT NULL,
+AuthorSecondSubmissionDueDate date NOT NULL,
+SecondReviewStartDate date NOT NULL,
+SecondReviewDueDate date NOT NULL,
+AuthorPublicationSubmissionStartDate date NOT NULL,
+AuthorPublicationSubmissionDueDate date NOT NULL,
+PublicationDate date NOT NULL,
+PRIMARY KEY (Year)
+);
+
+/* Populate the ArticleDates */
+Insert Into SystemSettings_ArticleDates (Year,
+                                         AuthorFirstSubmissionStartDate,
+										 AuthorFirstSubmissionDueDate,
+										 FirstReviewStartDate,
+										 FirstReviewDueDate,
+										 AuthorSecondSubmissionStartDate,
+										 AuthorSecondSubmissionDueDate,
+										 SecondReviewStartDate,
+										 SecondReviewDueDate,
+										 AuthorPublicationSubmissionStartDate,
+										 AuthorPublicationSubmissionDueDate,
+										 PublicationDate)
+Values (2016,
+        '2015-11-16',
+		'2016-5-16',
+		'2016-5-30',
+		'2016-6-20',
+		'2016-6-27',
+		'2016-7-18',
+		'2016-7-25',
+		'2016-8-15',
+		'2016-8-29',
+		'2016-9-19',
+		'2016-10-31');
 
 /*Populate the States table*/
 Insert Into States (Name,Abbr)

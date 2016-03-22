@@ -2,6 +2,7 @@ USE gr_jci;
 
 DROP TABLE IF EXISTS `SystemSettings_Email`;
 DROP TABLE IF EXISTS `SystemSettings_CaseDates`;
+DROP TABLE IF EXISTS `SystemSettings_ArticleDates`;
 DROP TABLE IF EXISTS `SubmissionFiles`;
 DROP TABLE IF EXISTS `ReviewerFiles`;
 DROP TABLE IF EXISTS `FileMetaData`;

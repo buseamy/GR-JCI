@@ -79,3 +79,7 @@ DROP PROCEDURE IF EXISTS `spGetEmailSettings`;
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettingActive`;
 DROP PROCEDURE IF EXISTS `spGetArticleDates`;
 DROP PROCEDURE IF EXISTS `spUpdateArticleDates`;
+DROP PROCEDURE IF EXISTS `spUserAddRequestReviewer`;
+DROP PROCEDURE IF EXISTS `spUserRemoveRequestReviewer`;
+DROP PROCEDURE IF EXISTS `spUserAddRequestEditor`;
+DROP PROCEDURE IF EXISTS `spUserRemoveRequestEditor`;
