@@ -12,7 +12,8 @@ BEGIN
     /* Make sure the UserID exists */
 	If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
 	  Update Submissions
-	  Set EditorUserID = _UserID
+	  Set EditorUserID = _UserID,
+	      SubmissionStatusID = 2
 	  Where SubmissionID = _SubmissionID;
 	Else
 	  Select 'User doesn''t exist' As 'Error';
