@@ -11,19 +11,29 @@ BEGIN
   Set _CurrYear = Year(CURRENT_DATE);
   
   Insert Into SystemSettings_ArticleDates (Year,
-                                           SeasonStartDate,
-                                           FirstSubmissionEndDate,
-										   FirstReviewEndDate,
-										   SecondSubmissionEndDate,
-										   SecondReviewEndDate,
-										   PublicationSubmissionEndDate)
+                                           AuthorFirstSubmissionStartDate,
+                                           AuthorFirstSubmissionDueDate,
+										   FirstReviewStartDate,
+										   FirstReviewDueDate,
+										   AuthorSecondSubmissionStartDate,
+										   AuthorSecondSubmissionDueDate,
+										   SecondReviewStartDate,
+										   SecondReviewDueDate,
+										   AuthorPublicationSubmissionStartDate,
+										   AuthorPublicationSubmissionDueDate,
+										   PublicationDate)
   Select _CurrYear As 'Year',
-         CONCAT(_CurrYear, RIGHT(SeasonStartDate,6)) As 'SeasonStartDate',
-         CONCAT(_CurrYear, RIGHT(FirstSubmissionEndDate,6)) As 'FirstSubmissionEndDate',
-		 CONCAT(_CurrYear, RIGHT(FirstReviewEndDate,6)) As 'FirstReviewEndDate',
-		 CONCAT(_CurrYear, RIGHT(SecondSubmissionEndDate,6)) As 'SecondSubmissionEndDate',
-		 CONCAT(_CurrYear, RIGHT(SecondReviewEndDate,6)) As 'SecondReviewEndDate',
-		 CONCAT(_CurrYear, RIGHT(PublicationSubmissionEndDate,6)) As 'PublicationSubmissionEndDate'
+         CONCAT(_CurrYear, RIGHT(AuthorFirstSubmissionStartDate,6)) As 'AuthorFirstSubmissionStartDate',
+         CONCAT(_CurrYear, RIGHT(AuthorFirstSubmissionDueDate,6)) As 'AuthorFirstSubmissionDueDate',
+		 CONCAT(_CurrYear, RIGHT(FirstReviewStartDate,6)) As 'FirstReviewStartDate',
+		 CONCAT(_CurrYear, RIGHT(FirstReviewDueDate,6)) As 'FirstReviewDueDate',
+		 CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionStartDate,6)) As 'AuthorSecondSubmissionStartDate',
+		 CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionDueDate,6)) As 'AuthorSecondSubmissionDueDate',
+		 CONCAT(_CurrYear, RIGHT(SecondReviewStartDate,6)) As 'SecondReviewStartDate',
+		 CONCAT(_CurrYear, RIGHT(SecondReviewDueDate,6)) As 'SecondReviewDueDate',
+		 CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionStartDate,6)) As 'AuthorPublicationSubmissionStartDate',
+		 CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionDueDate,6)) As 'AuthorPublicationSubmissionDueDate',
+		 CONCAT(_CurrYear, RIGHT(PublicationDate,6)) As 'PublicationDate'
   From SystemSettings_ArticleDates
   Where Year = _CurrYear - 1;
 END$$
