@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`;
 DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`;
 DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`;
 DROP PROCEDURE IF EXISTS `spJobCreateArticleDates`;
+DROP PROCEDURE IF EXISTS `spJobPublishEndRollOver`;
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`;
 DROP PROCEDURE IF EXISTS `spGetPhoneTypes`;
 DROP PROCEDURE IF EXISTS `spGetStates`;
