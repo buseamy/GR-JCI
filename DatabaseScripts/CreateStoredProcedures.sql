@@ -2,9 +2,12 @@ USE gr_jci;
 
 DELIMITER $$
 
+DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`$$
 DROP PROCEDURE IF EXISTS `spUpdateAcceptEmailAddress`$$
+DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`$$
 DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`$$
-DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
+DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`$$
+DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
 
 /* Connects an AnnouncementID with a RoleID */
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`$$
@@ -1229,10 +1232,10 @@ BEGIN
 	  Set EditorUserID = _UserID
 	  Where SubmissionID = _SubmissionID;
 	Else
-	  Select 'User doesn't exist' As 'Error';
+	  Select 'User doesn''t exist' As 'Error';
 	End If;
   Else
-    Select 'Submission doesn't exist' As 'Error';
+    Select 'Submission doesn''t exist' As 'Error';
   End If;
 END$$
 

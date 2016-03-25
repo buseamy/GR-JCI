@@ -15,10 +15,10 @@ BEGIN
 	  Set EditorUserID = _UserID
 	  Where SubmissionID = _SubmissionID;
 	Else
-	  Select 'User doesn't exist' As 'Error';
+	  Select 'User doesn''t exist' As 'Error';
 	End If;
   Else
-    Select 'Submission doesn't exist' As 'Error';
+    Select 'Submission doesn''t exist' As 'Error';
   End If;
 END$$
 
