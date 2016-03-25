@@ -84,3 +84,4 @@ DROP PROCEDURE IF EXISTS `spUserAddRequestReviewer`;
 DROP PROCEDURE IF EXISTS `spUserRemoveRequestReviewer`;
 DROP PROCEDURE IF EXISTS `spUserAddRequestEditor`;
 DROP PROCEDURE IF EXISTS `spUserRemoveRequestEditor`;
+DROP PROCEDURE IF EXISTS `spVerifyEmailAddress`;
