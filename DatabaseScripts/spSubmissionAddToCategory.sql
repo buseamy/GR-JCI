@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Assigns a UserID to the EditorUserID in the Submissions table */
+/* Connects a Submission to a Category */
 DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`$$
 CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int, IN _CategoryID int)
 DETERMINISTIC

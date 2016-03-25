@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`;
 DROP PROCEDURE IF EXISTS `spUpdateAcceptEmailAddress`;
 DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`;
 DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`;
+DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
 DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`;
 
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`;
@@ -74,7 +75,6 @@ DROP PROCEDURE IF EXISTS `spUpdateEmailSettings`;
 DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`;
 DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`;
 DROP PROCEDURE IF EXISTS `spUpdatePhoneType`;
-DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`;
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`;
 DROP PROCEDURE IF EXISTS `spUpdateUserInfo`;
