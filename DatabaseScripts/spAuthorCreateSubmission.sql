@@ -12,7 +12,6 @@ CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
 										   IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
-
   Declare _SubmissionID int;
   Declare _InstitutionAffiliation varchar(100);
 	

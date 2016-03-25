@@ -8,7 +8,6 @@ CREATE PROCEDURE `spAuthorAddToSubmission`(IN _UserID int,
                                            IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
-
   Declare _InstitutionAffiliation varchar(100);
 	
   /* Make sure the UserID exists */
