@@ -40,7 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$_SESSION['isReviewer'] = 0;
 			$_SESSION['isEditor'] = 0;
 			
-
+			//Stored procedure for getting the user roles
+		    $Roles = mysqli_fetch_array(mysqli_query($dbc, "Call spGetUserRoles($UserID);"));
+		    complete_procedure($dbc);
+		    if (in_array("Author", $Roles)) {
+                $_SESSION['isAuthor'] =  1;
+            }
+            if (in_array("Reviewer", $Roles)) {
+                $_SESSION['isReviewer'] =  1;
+            }
+            if (in_array("Editor", $Roles)) {
+                $_SESSION['isEditor'] =  1;
+            }
+			
+			/* 2016-Mar-25 : JB - Less redundancy to get the user roles
 			//Stored procedure for getting the user roles
 			$q_userrole = "CALL spGetUserRoles('$temp_userid')";	
 			$userrole = @mysqli_query($dbc, $q_userrole); 
@@ -59,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				}
 			}
 			//complete_procedure($dbc);
+			*/
 		
 			// Store the HTTP_USER_AGENT:
 			$_SESSION['agent'] = md5($_SERVER['HTTP_USER_AGENT']);
