@@ -795,6 +795,22 @@ BEGIN
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
 
+/* Gets the user's info */
+DROP PROCEDURE IF EXISTS `spGetUserInfo`$$
+CREATE PROCEDURE `spGetUserInfo`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select FirstName,
+         LastName,
+		 EmailAddress,
+		 MemberCode,
+		 InstitutionAffiliation,
+		 IF(ValidMembership, 'Y', 'N') As 'IsValidMember',
+		 IF(Active, 'Y', 'N') As 'IsActive'
+  From Users
+  Where UserID = _UserID;
+END$$
+
 /* Gets the roles associated with a UserID */
 DROP PROCEDURE IF EXISTS `spGetUserRoles`$$
 CREATE PROCEDURE `spGetUserRoles`(IN _UserID int)
@@ -870,6 +886,19 @@ BEGIN
     And u.Active = 1
 	And u.EmailStatusID != 2
   Order By u.LastName, u.FirstName;
+END$$
+
+/* Gets the user's info for sending verification email */
+DROP PROCEDURE IF EXISTS `spGetVerificationUserInfo`$$
+CREATE PROCEDURE `spGetVerificationUserInfo`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select FirstName,
+         LastName,
+		 NewEmailAddress,
+		 EmailVerificationGUID
+  From Users
+  Where UserID = _UserID;
 END$$
 
 /* Creates the available Article Dates for a new year  */
