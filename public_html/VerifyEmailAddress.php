@@ -31,18 +31,8 @@ if (isset($_GET["e"])) {
             if ($row["RoleTitle"] == 'Reviewer') { $_SESSION['isReviewer'] =  1; }
             if ($row["RoleTitle"] == 'Editor') { $_SESSION['isEditor'] =  1; }
         }
-        /*
-        if (in_array("Author", $Roles)) {
-            $_SESSION['isAuthor'] =  1;
-        }
-        if (in_array("Reviewer", $Roles)) {
-            $_SESSION['isReviewer'] =  1;
-        }
-        if (in_array("Editor", $Roles)) {
-            $_SESSION['isEditor'] =  1;
-        }
-        */
-        echo $_SESSION['isAuthor'].'<br />'.$_SESSION['isReviewer'].'<br />'.$_SESSION['isEditor'];
+
+        //echo $_SESSION['isAuthor'].'<br />'.$_SESSION['isReviewer'].'<br />'.$_SESSION['isEditor'];
         
         // Store the HTTP_USER_AGENT:
         $_SESSION['agent'] = md5($_SERVER['HTTP_USER_AGENT']);
@@ -51,7 +41,7 @@ if (isset($_GET["e"])) {
         mysqli_close($dbc);
         
         // Redirect:
-        //redirect_user('logged_in.php');
+        redirect_user('logged_in.php');
     }
     else {
         //We don't have a valid userid so the GUID expired or was already used
