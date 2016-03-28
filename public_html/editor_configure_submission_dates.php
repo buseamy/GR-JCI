@@ -35,26 +35,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}else{
 		echo '<p>There was an error updating the submission dates. Please try again.</p><br />,/p>';
 	}
-	echo "<a href="index.php" class="button">Return</a>"
 }
 ?>
 
 <!-- create the form-->
 <h1>Set Important Submission Dates for the Year</h1>
-<form action="editor_configure_submission_dates.html" method="post">
+<form action="editor_configure_submission_dates.php" method="post">
 	<p>Publication Year:  <input type="number" name="pubyear" min="2015" max="2100" step="1" value="2015"/></p>
-	<p>First Submission Start:  <input type="date" name="fsstart" /> </p>
-	<p>First Submission Due:  <input type="date" name="fsdue" /> </p>
-	<p>First Review Start:  <input type="date" name="frstart"   /></p>
-	<p>First Review Due:  <input type="date" name="frdue"  /></p>
-	<p>Second Submission Starts:  <input type="date" name="sstart" /></p>
-	<p>Second Submission Due:  <input type="date" name="ssdue" /></p>
-	<p>Second Review Starts:  <input type="date" name="srstart"  /></p>
-	<p>Second Review Due:  <input type="date" name="srdue" /></p>
-	<p>Publication Submission Start:  <input type="date" name="psstart" /></p>
-	<p>Publication Submission Due:  <input type="date" name="psdue" /></p>
-	<p>Publication Date:  <input type="date" name="pdate" /></p>
-	<p><b>Note:</b> If your browser dosen't display the above fields corectly, all dates must be entered in the format "mm/dd/yyyy"</p>
+	<p>First Submission Start:  <input type="text" name="fsstart" value="mm/dd/yyyy"/> </p>
+	<p>First Submission Due:  <input type="text" name="fsdue" value="mm/dd/yyyy"/> </p>
+	<p>First Review Start:  <input type="text" name="frstart" value="mm/dd/yyyy"/></p>
+	<p>First Review Due:  <input type="text" name="frdue" value="mm/dd/yyyy"/></p>
+	<p>Second Submission Starts:  <input type="text" name="sstart" value="mm/dd/yyyy"/></p>
+	<p>Second Submission Due:  <input type="text" name="ssdue" value="mm/dd/yyyy"/></p>
+	<p>Second Review Starts:  <input type="text" name="srstart" value="mm/dd/yyyy"/></p>
+	<p>Second Review Due:  <input type="text" name="srdue" value="mm/dd/yyyy"/></p>
+	<p>Publication Submission Start:  <input type="text" name="psstart" value="mm/dd/yyyy"/></p>
+	<p>Publication Submission Due:  <input type="text" name="psdue" value="mm/dd/yyyy"/></p>
+	<p>Publication Date:  <input type="text" name="pdate" value="mm/dd/yyyy"/></p>
 	<p><input type="submit" name="submit" value="Submit Changes" /></p>
 </form>
 <a href="index.php" class="button">Cancel</a>

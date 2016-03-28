@@ -9,10 +9,12 @@
 function convert_to($date) {
    list($m, $d, $y) = explode('/', $date);
    if(checkdate($m, $d, $y)){
-		$newdate = DateTime::createFromFormat('m/d/Y', $date )->format('Y-m-d');
-		return $newdate;
+		  $newdate = DateTime::createFromFormat('m/d/Y', $date )->format('Y-m-d');
+		  return $newdate;
+      }elseif($date = "mm/dd/yyyy"){
+		  die ("Please fill out all dates.")
       }else{
-      die("The date was in the wrong format");
+          die("One of the dates provided was in the wrong format. Please try again.");
       }
 }
 
@@ -22,3 +24,4 @@ function convert_from ($date) {
 	$newdate = DateTime::createFromFormat('Y-m-d', $date )->format('m/d/Y');
 	return $newdate;
 }
+<?
