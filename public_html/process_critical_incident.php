@@ -101,7 +101,7 @@ if (isset($_POST['submit']) && $Error == false) {
         $Error = true;
     } else {
         $count = $counter;;
-        while ($count > 1) { // !!!!Everything works unless an empty email is submitted
+        while ($count > 1) {
 
             $q_SearchGetUsersEmail = "Call spSearchGetUsersEmail('${'Email' . $count}');"; // Call to stored procedure
             $results = $dbc->query($q_SearchGetUsersEmail); // Run procedure
@@ -112,7 +112,7 @@ if (isset($_POST['submit']) && $Error == false) {
                 while($row = $results->fetch_assoc()) {
                     $AdditionalAuthorUserID = $row["UserID"];*/
                     $AdditionalAuthorUserID = 6;
-                    $SubmissionID = 19;
+                    $SubmissionID = 3;
 
                     $q_AuthorAddToSubmission = "Call spAuthorAddToSubmission($AdditionalAuthorUserID, $SubmissionID);"; // Call to stored procedure
                     $dbc->query($q_AuthorAddToSubmission); // Run procedure
