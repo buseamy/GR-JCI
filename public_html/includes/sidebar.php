@@ -15,14 +15,14 @@
  */
 ?>
 <!--Begin Sidebar-->
-<aside class="span3">
+<aside class="col s2 side white">
 	<h2>Resources</h2>
     <ul>
 		<?php
 		if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
-			echo '<li><a href="submit_critical_incident.php">Submit a case</a></li>';
+			echo '<li><a href="submit_critical_incident.php">Submit a Critical Incident</a></li>';
 		} else {
-			echo '<li><a href="login.php">Submit a case</a></li>';
+			echo '<li><a href="login.php">Submit a Critical Incident</a></li>';
 		}
 		if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1) {
 			echo '<li><a href="editor_incident_management.php">Manage Critical Incidents</a></li> <!--Case Management-->';
