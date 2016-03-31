@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Add the user in the database...
 		
 		// Make the query:
-		$q_email = "CALL spUpdateUserEmailAddress('$uid', '$email')";
+		$q_email = "Call spUpdateUserEmailAddress($uid, '$email');";
 				
 		// Run the query.
 		if ($r_users = mysqli_query ($dbc, $q_email)) { // If it ran OK.
@@ -39,8 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
 			$row_everify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			complete_procedure($dbc);
+            
+            // Send welcome E-mail for verification
+            sendVerificationEmail($dbc, $uid, 2);
 			
-			echo '<p>The E-mail address has been successfully updated.</p><p><br /></p>';
+			echo '<p>The E-mail address has been successfully updated, please check your inbox for a verification message.</p><p><br /></p>';
 			/*if (isset($_POST['submit']))
 			{
 				header( "Location: 5; editor_create_user.php");
@@ -59,16 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 		mysqli_close($dbc); // Close the database connection.
 
-		
-		// Send welcome E-mail for verification
-		/*$to = '$email';
-		$subject = 'JCI E-mail Update';
-		$body = "Thank you for updating you'r E-mail address for the Journal for Critical Incidents! \nWe greatly apreciate you'r contributions. There is one more step before you'r new E-mail address is successfully changed. Please follow the link below to verify you'r E-mail and we will take care of everything for you. \n
-		{$r_everify}";
-		$body = wordwrap($body,70);
-		
-		mail($to, $subject, $body);
-*/
         //quit the script:
 		exit();
 	
