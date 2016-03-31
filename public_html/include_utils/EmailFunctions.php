@@ -23,9 +23,11 @@ function sendVerificationEmail($dbc, $UID, $MessageType) {
         break;
     }
     
-    $Message = '<html>'.$Message.'</html>';
+    $Message = '<html><body>'.$Message.'</body></html>';
+    $To = $r["NewEmailAddress"];
+    $Header = "From: NoReply@sfcrjci.org\r\nContent-Type: text/html;charset=iso-8859-1\r\nMIME-Version: 1.0\r\n";
 
-    mail($r["NewEmailAddress"],$Subject,$Message,"From: NoReply@sfcrjci.org\r\n");
+    mail($To,$Subject,$Message,$Header);
 }
 
 ?>
