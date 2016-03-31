@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// database connection is required for queries to be inserted in database
 	require ('../mysqli_connect.php');
 	require('./include_utils/procedures.php');
+    require ('./include_utils/email_functions.php');
 		
 	$errors = array(); // Initialize an error array.
 	
