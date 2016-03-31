@@ -1,4 +1,6 @@
-<?php // This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
+<?php 
+// This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
+// This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
 
 $page_title = 'Create User';
 
@@ -15,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'The password must be at least 6 characters long.';
 	}
 	// checks if password matches
-	if (!empty($_POST['pass1'])) {
+	if (isset($_POST['pass1'])) {
 	if ($_POST['pass1'] != $_POST['pass2']) {
 		$errors[] = 'Your password did not match the confirmed password.';
 	} else {
@@ -26,11 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	// checks if email matches
-	if (!empty($_POST['email'])) {
-	if ($_POST['email'] != $_POST['email2']) {
-		$errors[] = 'The E-mail addresses did not match.';
-	} else {
-		$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+	if (isset($_POST['email']) {
+		if ($_POST['email'] != $_POST['email2']) {
+			$errors[] = 'The E-mail addresses do not match.';
+		} elseif (preg_match('/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2}|aero|biz|com|coop|edu|gov|info|jobs|mil|mobi|museum|name|net|org|travel)$/i', $_POST['email'])) {
+			$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+		} else {
+			$errors[] = 'The E-mail address must be in the format "someone@host.com".'
 		}
 	} else {
 		$errors[] = 'You forgot to enter an E-mail address.';
@@ -39,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// check for first name
 	if (empty($_POST['first_name'])) {
 		$errors[] = 'You forgot to enter a first name.';
-	} else if (Is_numeric($_POST['first_name'])) {
+	} elseif (Is_numeric($_POST['first_name'])) {
 		$errors[] = 'First names should not contain numbers.';
 	}  else {
 		$firstname = mysqli_real_escape_string($dbc, trim($_POST['first_name']));
@@ -48,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// Check for a last name:
 	if (empty($_POST['last_name'])) {
 		$errors[] = 'You forgot to enter a last name.';
-	} else if (Is_numeric($_POST['last_name'])) {
+	} elseif (Is_numeric($_POST['last_name'])) {
 		$errors[] = 'Last names should not contain numbers.';
 	}  else {
 		$lastname = mysqli_real_escape_string($dbc, trim($_POST['last_name']));
@@ -71,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (empty($_POST['city'])) {
 		$city = null;
-	} else if (Is_numeric($_POST['city'])) {
+	} elseif (Is_numeric($_POST['city'])) {
 		$errors[] = 'The city name should not contain numbers.';
 	}  else {
 		$city = mysqli_real_escape_string($dbc, trim($_POST['city']));
@@ -79,27 +83,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if (empty($_POST['zip'])) {
 		$zip = null;
-	} else if (Is_numeric($_POST['zip'])){
+	} elseif (Is_numeric($_POST['zip'])){
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}	
-	  else if(!Is_numeric($_POST['zip'])){
+	  elseif(!Is_numeric($_POST['zip'])){
 		$errors[] = 'Zip codes should only contain numbers.';
 	  }
 
-	if (empty($_POST['phone'])) {
-		$phone = null;
-	} else if (Is_numeric($_POST['phone'])) {
+	if (isset($_POST['iphone')) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
+	} elseif (preg_match('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone'])) {
+		$phone = preg_replace('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone']);
+		$phone = mysqli_real_escape_string($dbc, trim($phone));
+	} else {
+		$errors[] = 'Phone numbers should be formated "(000) 000-0000".';
 	}
-	  else if(!Is_numeric($_POST['phone'])){
-		$errors[] = 'Phone numbers should only contain numbers.';
-	  }
+
 	
 	if (empty($_POST['code'])) {
 		$code = null;
-	} else {
+	} elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['code'])) {
 		$code = mysqli_real_escape_string($dbc, trim($_POST['code']));
-	}	
+	} else {
+		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".'
+	}
 	
 	if (empty($_POST['association'])) {
 		$association = null;
@@ -134,16 +141,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			complete_procedure($dbc);
 			
 			// Send the users address information to the database
-			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
+			if ((isset($_post['address1'])) || (isset($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
 				complete_procedure($dbc);
 			}
 			
 			// Send the users phone information to the database.
-			if (!empty($_post['phone'])){
+			if (isset($_post['phone'])){
 				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', '$pprime')";
 				mysqli_query ($dbc, $q_phone);
+				complete_procedure($dbc);
+			}
+			
+			// Send user role information to database.
+			$q_role = "CALL spUserAddRole ('$r_userID', 1)";
+			mysqli_query ($dbc, $q_role);
+			complete_procedure($dbc);
+			if (isset($_POST['checkeditor'])){
+				$q_role = "CALL spUserAddRole ('$r_userID', 3)";
+				mysqli_query ($dbc, $q_role);
+				complete_procedure($dbc);
+			}
+			if (isset($_POST['checkreviewer'])){
+				$q_role = "CALL spUserAddRole ('$r_userID', 2)";
+				mysqli_query ($dbc, $q_role);
 				complete_procedure($dbc);
 			}
 		
@@ -204,62 +226,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Confirm Password*: <input type="password" name="pass2" size="10" maxlength="20"  /></p>
 	<p>First Name*: <input type="text" name="first_name" size="15" maxlength="40" value="<?php if (isset($_POST['first_name'])) echo $_POST['first_name']; ?>" /></p>
 	<p>Last Name*: <input type="text" name="last_name" size="15" maxlength="40" value="<?php if (isset($_POST['last_name'])) echo $_POST['last_name']; ?>" /></p>
+	<p>Professional Association (Univercity, Firm, etc.): <input type="text" name="association" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
 	<p>Street Address Line 1: <input type="text" name="address1" size="25" maxlength="50" value="<?php if (isset($_POST['address1'])) echo $_POST['address1']; ?>" /></p>
 	<p>Street Address Line 2: <input type="text" name="address2" size="25" maxlength="50" value="<?php if (isset($_POST['address2'])) echo $_POST['address2']; ?>" /></p>
 	<p>City: <input type="text" name="city" size="15" maxlength="40" value="<?php if (isset($_POST['city'])) echo $_POST['city']; ?>" /></p>
 	<p>State/province: <select name="state"> 
 		<option value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>">
 		<option value="NULL">Empty</option>
-		<option value="1">Alabama</option>
-		<option value="2">Alaska</option>
-		<option value="3">Arizona</option>
-		<option value="4">Arkansas</option>
-		<option value="5">California</option>
-		<option value="6">Colorado</option>
-		<option value="7">Connecticut</option>
-		<option value="8">Delaware</option>
-		<option value="9">Florida</option>
-		<option value="10">Georgia</option>
-		<option value="11">Hawaii</option>
-		<option value="12">Idaho</option>
-		<option value="13">Illinois</option>
-		<option value="14">Indiana</option>
-		<option value="15">Iowa</option>
-		<option value="16">Kansas</option>
-		<option value="17">Kentucky</option>
-		<option value="18">Louisiana</option>
-		<option value="19">Maine</option>
-		<option value="20">Maryland</option>
-		<option value="21">Massachusetts</option>
-		<option value="22">Michigan</option>
-		<option value="23">Minnesota</option>
-		<option value="24">Mississippi</option>
-		<option value="25">Missouri</option>
-		<option value="26">Montana</option>
-		<option value="27">Nebraska</option>
-		<option value="28">Nevada</option>
-		<option value="29">New Hampshire</option>
-		<option value="30">New Jersey</option>
-		<option value="31">New Mexico</option>
-		<option value="32">New York</option>
-		<option value="33">North Carolina</option>
-		<option value="34">North Dakota</option>
-		<option value="35">Ohio</option>
-		<option value="36">Oklahoma</option>
-		<option value="37">Oregon</option>
-		<option value="38">Pennsylvania</option>
-		<option value="39">Rhode Island</option>
-		<option value="40">South Carolina</option>
-		<option value="41">South Dakota</option>
-		<option value="42">Tennessee</option>
-		<option value="43">Texas</option>
-		<option value="44">Utah</option>
-		<option value="45">Vermont</option>
-		<option value="46">Virginia</option>
-		<option value="47">Washington</option>
-		<option value="48">West Virginia</option>
-		<option value="49">Wisconsin</option>
-		<option value="50">Wyoming</option>
+		<option value="AL">Alabama</option>
+		<option value="AK">Alaska</option>
+		<option value="AZ">Arizona</option>
+		<option value="AR">Arkansas</option>
+		<option value="CA">California</option>
+		<option value="CO">Colorado</option>
+		<option value="CT">Connecticut</option>
+		<option value="DE">Delaware</option>
+		<option value="FL">Florida</option>
+		<option value="GA">Georgia</option>
+		<option value="HI">Hawaii</option>
+		<option value="ID">Idaho</option>
+		<option value="IL">Illinois</option>
+		<option value="IN">Indiana</option>
+		<option value="IA">Iowa</option>
+		<option value="KS">Kansas</option>
+		<option value="KY">Kentucky</option>
+		<option value="LA">Louisiana</option>
+		<option value="ME">Maine</option>
+		<option value="MD">Maryland</option>
+		<option value="MA">Massachusetts</option>
+		<option value="MI">Michigan</option>
+		<option value="MN">Minnesota</option>
+		<option value="MS">Mississippi</option>
+		<option value="MO">Missouri</option>
+		<option value="MT">Montana</option>
+		<option value="NE">Nebraska</option>
+		<option value="NV">Nevada</option>
+		<option value="NH">New Hampshire</option>
+		<option value="NJ">New Jersey</option>
+		<option value="NM">New Mexico</option>
+		<option value="NY">New York</option>
+		<option value="NC">North Carolina</option>
+		<option value="ND">North Dakota</option>
+		<option value="OH">Ohio</option>
+		<option value="OK">Oklahoma</option>
+		<option value="OR">Oregon</option>
+		<option value="PA">Pennsylvania</option>
+		<option value="RI">Rhode Island</option>
+		<option value="SC">South Carolina</option>
+		<option value="SD">South Dakota</option>
+		<option value="TN">Tennessee</option>
+		<option value="TX">Texas</option>
+		<option value="UT">Utah</option>
+		<option value="VT">Vermont</option>
+		<option value="VA">Virginia</option>
+		<option value="WA">Washington</option>
+		<option value="WV">West Virginia</option>
+		<option value="WI">Wisconsin</option>
+		<option value="WY">Wyoming</option>
+		
 	</select>
 	<p>Country: <select name="country"> 
 		<option value="<?php if (isset($_POST['country'])) echo $_POST['country']; ?>">
@@ -511,7 +535,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="1">Home</option>
 		<option value="3">Work</option>
 	</select> </p>
-	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])) echo $_POST['phone']; ?>" /></p>
+	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '000-000-0000'} ?>" /></p>
+	<p><input type="checkbox" name="iphone" /> This Number is international. (The format "000-000-0000" will no longer apply)</p>
 	<p>Phone Type:<select name="ptype">
 		<option value="<?php if (isset($_POST['ptype'])) echo $_POST['ptype']; ?>">
 		<option value="2">Main</option>
@@ -520,7 +545,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="4">Work</option>
 	</select> </p>
 	<p>SCR Member ID: <input type="text" name="code" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" /></p>
-	<p>Professional Association (Univercity, Firm, etc.): <input type="text" name="association" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
+	<p></p>
+	<p>Roles:
+	<div class="form-checkbox"><input type="checkbox" name="checkeditor"> Editor</div>
+	<div class="form-checkbox"><input type="checkbox" name="checkreviewer"> Reviewer</div></p>
 	<p>*asterisk indicates a required field </p>
 	<p><input type="submit" name="submit" value="Create User" /></p>
 </form>
