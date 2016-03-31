@@ -1,11 +1,14 @@
 <?php // Registration for all users written by Jamal Ahmed code referred to was from Isys288 register.php
 
-$page_title = 'Register';
+$page_title = 'Register User - SFCI - Journal for Critical Indicents';
+	
+// database connection is required for queries to be inserted in database
+require ('../mysqli_connect.php');
+require('./include_utils/procedures.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-	// database connection is required for queries to be inserted in database
-	require ('../mysqli_connect.php');
+
+    require ('./include_utils/email_functions.php');
 		
 	$errors = array(); // Initialize an error array.
 
@@ -86,10 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$state = mysqli_real_escape_string($dbc, trim($_POST['state']));
 	}	
 	*/
-
-	
-	
-
+    
 	// only accepts numbers for input displays an error if anything else is entered
 	if (empty($_POST['zip'])) {
 		$zip = null;
@@ -159,7 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
 			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			$r_userID = $row_verify["UserID"];
-			$r_everify = $row_verify["EmailVerificationGUID"];
 			complete_procedure($dbc);
 			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$atypeID', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
@@ -170,8 +169,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptypeID', '$phone', '$pprime')";
 				mysqli_query ($dbc, $q_phone);
 			}
+            
+            // Send welcome E-mail for verification
+            sendVerificationEmail($dbc, $r_userID, 1);
 		
-			echo '<p>You have successfully registered.</p><p><br /></p>';
+			echo '<p>You have successfully registered, please check your email for a verification message.</p><p><br /></p>';
 		
 		} else { // If it did not run OK.
 			
@@ -185,17 +187,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} // End of if ($r) IF.
 		
 		mysqli_close($dbc); // Close the database connection.
-
-		
-		// Send welcome E-mail for verification
-		$to = '$email';
-		$subject = 'Welcome to JCI';
-		$body = "Welcome to the Journal for Critical Incidents! \n We greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
-		{$r_everify}";
-		$body = wordwrap($body,70);
-		
-		mail($to, $subject, $body);
-
 		
         //quit the script:
 		exit();
@@ -229,73 +220,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Street Address Line 1: <input type="text" name="address1" size="25" maxlength="50" value="<?php if (isset($_POST['address1'])) echo $_POST['address1']; ?>" /></p>
 	<p>Street Address Line 2: <input type="text" name="address2" size="25" maxlength="50" value="<?php if (isset($_POST['address2'])) echo $_POST['address2']; ?>" /></p>
 	<p>City: <input type="text" name="city" size="15" maxlength="40" value="<?php if (isset($_POST['city'])) echo $_POST['city']; ?>" /></p>
-	<p>State/province: <select name="state"> 
-	<option value="<?php if (isset($_POST['state'])) echo $_POST['state']; ?>">
-		<option value="NULL">Empty</option>
-		<option value="1">Alabama</option>
-		<option value="2">Alaska</option>
-		<option value="3">Arizona</option>
-		<option value="4">Arkansas</option>
-		<option value="5">California</option>
-		<option value="6">Colorado</option>
-		<option value="7">Connecticut</option>
-		<option value="8">Delaware</option>
-		<option value="9">Florida</option>
-		<option value="10">Georgia</option>
-		<option value="11">Hawaii</option>
-		<option value="12">Idaho</option>
-		<option value="13">Illinois</option>
-		<option value="14">Indiana</option>
-		<option value="15">Iowa</option>
-		<option value="16">Kansas</option>
-		<option value="17">Kentucky</option>
-		<option value="18">Louisiana</option>
-		<option value="19">Maine</option>
-		<option value="20">Maryland</option>
-		<option value="21">Massachusetts</option>
-		<option value="22">Michigan</option>
-		<option value="23">Minnesota</option>
-		<option value="24">Mississippi</option>
-		<option value="25">Missouri</option>
-		<option value="26">Montana</option>
-		<option value="27">Nebraska</option>
-		<option value="28">Nevada</option>
-		<option value="29">New Hampshire</option>
-		<option value="30">New Jersey</option>
-		<option value="31">New Mexico</option>
-		<option value="32">New York</option>
-		<option value="33">North Carolina</option>
-		<option value="34">North Dakota</option>
-		<option value="35">Ohio</option>
-		<option value="36">Oklahoma</option>
-		<option value="37">Oregon</option>
-		<option value="38">Pennsylvania</option>
-		<option value="39">Rhode Island</option>
-		<option value="40">South Carolina</option>
-		<option value="41">South Dakota</option>
-		<option value="42">Tennessee</option>
-		<option value="43">Texas</option>
-		<option value="44">Utah</option>
-		<option value="45">Vermont</option>
-		<option value="46">Virginia</option>
-		<option value="47">Washington</option>
-		<option value="48">West Virginia</option>
-		<option value="49">Wisconsin</option>
-		<option value="50">Wyoming</option>
-		<option value="AB">Alberta</option>
-		<option value="BC">British Columbia</option>
-		<option value="MB">Manitoba</option>
-		<option value="NB">New Brunswick</option>
-		<option value="NL">Newfoundland and Labrador</option>
-		<option value="NS">Nova Scotia</option>
-		<option value="ON">Ontario</option>
-		<option value="PE">Prince Edward Island</option>
-		<option value="QC">Quebec</option>
-		<option value="SK">Saskatchewan</option>
-		<option value="NT">Northwest Territories</option>
-		<option value="NU">Nunavut</option>
-		<option value="YT">Yukon</option>
-	</select>
+	<p>State/province: 
+    <?php
+      //$States = mysqli_fetch_array(mysqli_query($dbc, "Call spGetStates();"), MYSQLI_ASSOC);
+      $States = mysqli_query($dbc, "Call spGetStates();");
+      complete_procedure($dbc);
+      
+      echo '<select name="state">';
+        while($row = $States->fetch_assoc()) {
+          echo '<option value="' . $row["StateID"]. '">' . $row["FullStateName"]. '</option>';
+        }
+      echo '</select>';
+    ?>
+    </p>
 	<p>Country: <select name="country"> 
 	<option value="<?php if (isset($_POST['country'])) echo $_POST['country']; ?>">
 		<option value="--">none</option>
@@ -540,20 +477,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="Zimbabwe">Zimbabwe</option>
 	</select>
 	<p>Postal code (zip) : <input type="text" name="zip" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" /></p>
-	<p>Address Type:<select name="atype">
-	<option value="<?php if (isset($_POST['atype'])) echo $_POST['atype']; ?>">
-		<option value="2">Main</option>
-		<option value="1">Home</option>
-		<option value="3">Work</option>
-	</select> </p>
+	<p>Address Type: 
+    <?php
+      $ATypes = mysqli_query($dbc, "Call spGetAddressTypes();");
+      complete_procedure($dbc);
+      
+      echo '<select name="atype">';
+        while($row = $ATypes->fetch_assoc()) {
+          echo '<option value="' . $row["AddressTypeID"]. '">' . $row["AddressType"]. '</option>';
+        }
+      echo '</select>';
+    ?>
+    </p>
 	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])) echo $_POST['phone']; ?>" /></p>
-	<p>Phone Type:<select name="ptype">
-	<option value="<?php if (isset($_POST['ptype'])) echo $_POST['ptype']; ?>">
-		<option value="2">Main</option>
-		<option value="1">Home</option>
-		<option value="3">Mobile</option>
-		<option value="4">Work</option>
-	</select> </p>
+	<p>Phone Type: <?php
+      $PTypes = mysqli_query($dbc, "Call spGetPhoneTypes();");
+      complete_procedure($dbc);
+      
+      echo '<select name="ptype">';
+        while($row = $PTypes->fetch_assoc()) {
+          echo '<option value="' . $row["PhoneTypeID"]. '">' . $row["PhoneType"]. '</option>';
+        }
+      echo '</select>';
+    ?>
+    </p>
 	<p>SCR Member ID: <input type="text" name="code" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" /></p>
 	<p>Professional Association: (university, firm, etc.) <input type="text" name="association" size="25" maxlength="60" value="<?php if (isset($_POST['association'])) echo $_POST['association']; ?>" /></p>
 	<p>*asterisk indicates a required field </p>
