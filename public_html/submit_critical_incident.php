@@ -15,7 +15,7 @@
 <script type="text/javascript" src="js/form_validator.js"></script>
 
 </script>
-<div id="home-body" class="span8">
+<div id="home-body" class="span7">
     <?php if (isset($_SESSION['isAuthor'])) { // Only display if logged in role is author ?>
         <div class="contentwidth">
             <div class="row flush">

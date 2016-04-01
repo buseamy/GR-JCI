@@ -15,7 +15,7 @@
  */
 ?>
 <!--Begin Sidebar-->
-<aside class="col s2 side white">
+<aside class="col s3 side white">
 	<h2>Resources</h2>
     <ul>
 		<?php
