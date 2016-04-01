@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	// checks if email matches
-	if (isset($_POST['email']) {
+	if (isset($_POST['email'])) {
 		if ($_POST['email'] != $_POST['email2']) {
 			$errors[] = 'The E-mail addresses do not match.';
 		} elseif (preg_match('/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2}|aero|biz|com|coop|edu|gov|info|jobs|mil|mobi|museum|name|net|org|travel)$/i', $_POST['email'])) {
 			$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
 		} else {
-			$errors[] = 'The E-mail address must be in the format "someone@host.com".'
+			$errors[] = 'The E-mail address must be in the format "someone@host.com".';
 		}
 	} else {
 		$errors[] = 'You forgot to enter an E-mail address.';
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'Zip codes should only contain numbers.';
 	  }
 
-	if (isset($_POST['iphone')) {
+	if (isset($_POST['iphone'])) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
 	} elseif (preg_match('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone'])) {
 		$phone = preg_replace('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone']);
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['code'])) {
 		$code = mysqli_real_escape_string($dbc, trim($_POST['code']));
 	} else {
-		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".'
+		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".';
 	}
 	
 	if (empty($_POST['association'])) {
@@ -535,7 +535,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="1">Home</option>
 		<option value="3">Work</option>
 	</select> </p>
-	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '000-000-0000'} ?>" /></p>
+	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '000-000-0000';} ?>" /></p>
 	<p><input type="checkbox" name="iphone" /> This Number is international. (The format "000-000-0000" will no longer apply)</p>
 	<p>Phone Type:<select name="ptype">
 		<option value="<?php if (isset($_POST['ptype'])) echo $_POST['ptype']; ?>">
@@ -550,6 +550,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<div class="form-checkbox"><input type="checkbox" name="checkeditor"> Editor</div>
 	<div class="form-checkbox"><input type="checkbox" name="checkreviewer"> Reviewer</div></p>
 	<p>*asterisk indicates a required field </p>
-	<p><input type="submit" name="submit" value="Create User" /></p>
+	<p><input type="submit" name="submit" value="Submit" /></p>
 </form>
-<a href="editor_index.php" class="button">Return</a>
+<a href="index.php" class="button">Cancel</a>
