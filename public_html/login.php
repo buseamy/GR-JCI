@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($userid_row[2] == 0) {
                 //User account isn't active
-                $errors[] = 'Username or password is incorrect - Active';
+                $errors[] = 'Username or password is incorrect';
             } else {
                 if ($userid_row[1] == 2) {
                     //User needs to click the new verify email link
