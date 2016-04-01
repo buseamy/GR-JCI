@@ -1,9 +1,13 @@
-<?php session_start();
-
+<?php
 /*
  * The purpose of this file is to display page title, meta information, include links to
  * style sheets, and contain the site navigation.
  */
+ 
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
  ?>
  <!DOCTYPE HTML>
 <html>
