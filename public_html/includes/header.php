@@ -1,11 +1,15 @@
-<!DOCTYPE HTML>
 <?php
-
 /*
  * The purpose of this file is to display page title, meta information, include links to
  * style sheets, and contain the site navigation.
  */
+ 
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
  ?>
+ <!DOCTYPE HTML>
 <html>
     <head>
         <!--Meta information-->
@@ -40,7 +44,6 @@
             			<li class=""><a href="#">Contact Us</a></li>
             			<li class=""><a href="account_settings.php">Account Settings</a></li>
                         <?php // Create a logout if logged in, creates login if logged out
-           				 session_start();
            				 //Editor tab is displayed if the user is an editor
            				if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1 ) {
            					echo '<li><a id="togglelogin" href="#/">Logout</a></li>';

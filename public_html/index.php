@@ -21,7 +21,7 @@ include ('./includes/header.php');
 ?>
 <div class="contentwidth">
     <div class="row flush">
-        <div class="col s8">
+        <div class="col s7">
             <h1>Journal of Critical Incidents</h1>
             <!--Page main body-->
             <div id="home_about">

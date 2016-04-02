@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// database connection is required for queries to be inserted in database
 	require ('../mysqli_connect.php');
 	require('./include_utils/procedures.php');
+	require('./include_utils/email_functions.php');
 		
 	$errors = array(); // Initialize an error array.
 	
@@ -128,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Add the user in the database...
 		
 		// Make the query:
-		$q_users = "CALL spCreateUser('$email', '$password', '$firstname', '$lastname')";
+		$q_users = "Call spEditorCreateUser('$email', '$password', '$firstname', '$lastname');";
 				
 		// Run the query.
 		if ($r_users = mysqli_query ($dbc, $q_users)) { // If it ran OK.
@@ -154,20 +155,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				complete_procedure($dbc);
 			}
 			
+            //No need to add the author role, the CreateUser SP does that automatically
 			// Send user role information to database.
-			$q_role = "CALL spUserAddRole ('$r_userID', 1)";
-			mysqli_query ($dbc, $q_role);
-			complete_procedure($dbc);
+			//$q_role = "Call spUserAddRole ($r_userID, 1);";
+			//mysqli_query ($dbc, $q_role);
+			//complete_procedure($dbc);
 			if (isset($_POST['checkeditor'])){
-				$q_role = "CALL spUserAddRole ('$r_userID', 3)";
+				$q_role = "Call spUserAddRole ($r_userID, 3);";
 				mysqli_query ($dbc, $q_role);
 				complete_procedure($dbc);
 			}
 			if (isset($_POST['checkreviewer'])){
-				$q_role = "CALL spUserAddRole ('$r_userID', 2)";
+				$q_role = "Call spUserAddRole ($r_userID, 2);";
 				mysqli_query ($dbc, $q_role);
 				complete_procedure($dbc);
 			}
+            
+            // Send welcome E-mail for verification
+            sendNotificationEmail($dbc, $r_userID, $password);
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
 			/*if (isset($_POST['submit']))

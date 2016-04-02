@@ -3,11 +3,13 @@ USE gr_jci;
 DELIMITER $$
 
 /* Inserts a new user then returns the UserID */
-DROP PROCEDURE IF EXISTS `spCreateUser`$$
-CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
+DROP PROCEDURE IF EXISTS `spEditorCreateUser`$$
+CREATE PROCEDURE `spEditorCreateUser`(IN _EmailAddress varchar(200),
                                 IN _Password varchar(50),
 								IN _FirstName varchar(15),
-								IN _LastName varchar(30))
+								IN _LastName varchar(30),
+								IN _InstitutionAffiliation varchar(100),
+								IN _MemberCode varchar(20))
 DETERMINISTIC
 BEGIN
   Declare _UserID int;
@@ -22,6 +24,8 @@ BEGIN
 	                   PasswordHash,
 					   FirstName,
 					   LastName,
+					   InstitutionAffiliation,
+					   MemberCode,
 					   EmailStatusID,
 					   EmailVerificationGUID,
 					   NewEmailAddressCreateDate,
@@ -32,9 +36,11 @@ BEGIN
 	        SHA1(_Password),
 			_FirstName,
 			_LastName,
-			1,
-			REPLACE(UUID(),'-',''),
-			CURRENT_DATE,
+			_InstitutionAffiliation,
+			_MemberCode,
+			3,
+			NULL,
+			NULL,
 			1,
 			CURRENT_DATE);
     
