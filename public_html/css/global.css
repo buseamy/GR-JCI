@@ -352,7 +352,7 @@ ul.nav li a {
 	text-decoration:none;
 	text-transform:uppercase;
 	color:#b4b4b4;
-	font-size:13px;
+	font-size:15px;
 	transition:all 0.2s;
 	text-align:center;
 }
@@ -2353,7 +2353,7 @@ body > .jcf-select-drop.jcf-drop-flipped {
     margin-left: 0;
   }
   .contentwidth {
-	  padding-left:5%;
+	  padding-left:1%;
   }
   .col.s1 {
     width:10%;
@@ -2519,4 +2519,31 @@ body > .jcf-select-drop.jcf-drop-flipped {
 }
 .inputFileLabel {
 	cursor: pointer;
+}
+
+.side p, li {
+	padding-left: 10px;
+}
+
+.editorTable .editorTitle {
+	width:60px;
+}
+.editorTable .editorName, .editorAction {
+	width:50px;
+}
+.editorTable .authorName, .reviewerName {
+	width:100px;
+}
+.editorTable .subStatus, .subDate {
+	width: 100px;
+}
+
+.editorTable th, td {
+	font-size: 10px;
+	text-align: left;
+	padding-left: 40px;
+}
+
+.editorTable th:first-of-type, td:first-of-type {
+	padding-left: 0px;
 }

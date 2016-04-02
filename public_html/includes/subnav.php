@@ -1,16 +1,15 @@
 <!--This navigation will only be available once a user is logged in-->
-<div id="subnav" class="subnav span9">
-    <ul>
-        <?php
-        if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1){
-            echo '<li><a class="editor" href="editor_incident_management.php">Editor</a></li>';
-        }
-        if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1){
-            echo '<li><a class="author" href="author_incident_management.php">Author</a></li>';
-        }
-        if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1){
-            echo '<li><a class="reviewer" href="reviewer_incident_management.php">Reviewer</a></li>';
-        }
-        ?>
-    </ul>
+<div>
+    <img class="responsive" src="images/wood_image.jpg" alt="conference">
+    <div class="dashcontent">
+         <div class="dashboardnav">
+            <ul class="row dashnav">
+                <li class="homeicon col s1 active nomargin"> <a href="dashboard.php"><img id="dashboardicon" src="images/homeicon.png"></a></li>
+                <li class="col s1 nomargin nomobile"></li>
+                <li class="editor col s2 nomargin" id="editor"><a href="editor_incident_management.php">Editor</a></li>
+                <li class="author col s2 nomargin" id="author"><a href="author_incident_management.php">Author</a></li>
+                <li class="reviewer col s2 nomargin" id="reviewer"><a href="reviewer_incident_management.php">Reviewer</a></li>
+            </ul>
+        </div>
+    </div>
 </div>

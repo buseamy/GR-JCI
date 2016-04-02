@@ -10,51 +10,47 @@
  require ('./includes/subnav.php'); // Include subnav
  require ('./include_utils/procedures.php'); // complete_procedure()
 ?>
-<!-- temporary style -->
-<style>.subnav .editor {height:30px;} th {text-align: left;}</style>
-<div id="home-body" class="span9">
-    <?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
-        <!--Page main body-->
-        <div class="span12">
-            <div class="revisions">
-                <?php
+<script type="text/javascript"> $( "#editor" ).addClass( "active" ); </script>
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
+            <?php /* if (isset($_SESSION['isEditor'])) { */ // Only display if logged in role is editor
 
-                //temporary until log-in is complete
-                $Year = date("Y");
+                    //temporary until log-in is complete
+                    $Year = date("Y");
 
-                $q_EditorViewSubmissions = "Call spEditorViewSubmissions($Year);"; // Call to stored procedure
-                $result = $dbc->query($q_EditorViewSubmissions); // Run procedure
+                    $q_EditorViewSubmissions = "Call spEditorViewSubmissions($Year);"; // Call to stored procedure
+                    $result = $dbc->query($q_EditorViewSubmissions); // Run procedure
 
-                //if something is returned
-                if ($result->num_rows > 0) { ?>
-                    <table class="span12">
-                        <tr>
-                            <th class="span1">Title</th>
-                            <th class="span2">Editor Name</th>
-                            <th class="span2">Author(s)</th>
-                            <th class="span2">Reviewer(s)</th>
-                            <th class="span2">Submission Status</th>
-                            <th class="span2">Submission Date</th>
-                            <th class="span1">Action</th>
-                        </tr>
-                    <?php
-                    // output data of each row
-                    while($row = $result->fetch_assoc()) {
-                        //Checks for null EditorName
-                        if ($row["EditorName"] == "") { $row["EditorName"] = "Unassigned"; }
-                        echo '<tr><td class="span1">' . $row["IncidentTitle"]. '</td> <td class="span2">' . $row["EditorName"]. '</td> <td class="span2">' . $row["Authors"]. '</td> <td class="span2">' . $row["Reviewers"]. '</td> <td class="span2">' . $row["SubmissionStatus"]. '</td> <td class="span2">' . $row["SubmissionDate"]. '<td class="span1"><a href="view_incident.php?SubmissionID=' . $row["SubmissionID"] .'">View</a></td></tr>';
+                    //if something is returned
+                    if ($result->num_rows > 0) { ?>
+                        <table class="editorTable">
+                            <tr>
+                                <th class="editorTitle">Title</th>
+                                <th class="editorName">Editor</th>
+                                <th class="authorName">Author(s)</th>
+                                <th class="reviewerName">Reviewer(s)</th>
+                                <th class="subStatus">Submission Status</th>
+                                <th class="subDate">Submission Date</th>
+                                <th class="editorAction">Action</th>
+                            </tr>
+                        <?php
+                        // output data of each row
+                        while($row = $result->fetch_assoc()) {
+                            //Checks for null EditorName
+                            if ($row["EditorName"] == "") { $row["EditorName"] = "Unassigned"; }
+                            echo '<tr><td class="editorTitle">' . $row["IncidentTitle"]. '</td> <td class="editorName">' . $row["EditorName"]. '</td> <td class="authorName">' . $row["Authors"]. '</td> <td class="reviewerName">' . $row["Reviewers"]. '</td> <td class="subStatus">' . $row["SubmissionStatus"]. '</td> <td class="subDate">' . $row["SubmissionDate"]. '<td class="editorAction"><a href="view_incident.php?SubmissionID=' . $row["SubmissionID"] .'">View</a></td></tr>';
+                        }
+                        echo "</table>";
+                    } else {
+                        //if no results found
+                        echo "<tr><td>No results</td></tr>";
                     }
-                    echo "</table>";
-                } else {
-                    //if no results found
-                    echo "<tr><td>No results</td></tr>";
-                }
-                complete_procedure($dbc);?>
+                    complete_procedure($dbc);?>
             </div>
-        </div>
-    <?php } else { echo "<p>You do not have permission</p>"; }?>
+            <?php require 'includes/sidebar.php'; // Include sidebar
+        /* } else { echo "<p>You do not have permission</p>"; } */?>
+    </div>
 </div>
-<?php
-require 'includes/sidebar.php'; // Include sidebar
-require 'includes/footer.php'; // Include footer
-?>
+</div>
+<?php require 'includes/footer.php'; // Include footer ?>

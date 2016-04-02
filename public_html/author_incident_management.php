@@ -10,14 +10,11 @@ require ('./includes/header.php'); // Include the site header
 require ('./includes/subnav.php'); // Include subnav
 require ('./include_utils/procedures.php'); // complete_procedure()
 ?>
-<!-- temporary style -->
-<style>.subnav .author {height:30px;} th {text-align: left;}</style>
-<div id="home-body" class="span9">
-    <?php if (isset($_SESSION['isAuthor'])) { // Only display if author ?>
-        <!--Page main body-->
-        <div class="span12">
-            <div class="revisions">
-                <?php
+<script type="text/javascript"> $( "#author" ).addClass( "active" ); </script>
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
+            <?php /* if (isset($_SESSION['isAuthor'])) { */ // Only display if author
 
                 //temporary until log-in is complete
                 $UserID = $_SESSION['UserID'];
@@ -50,10 +47,9 @@ require ('./include_utils/procedures.php'); // complete_procedure()
                 }
                 complete_procedure($dbc);?>
             </div>
-        </div>
-    <?php } else { echo "<p>You do not have permission</p>"; }?>
+            <?php require 'includes/sidebar.php'; // Include sidebar
+        /* } else { echo "<p>You do not have permission</p>"; } */?>
 </div>
-<?php
-require 'includes/sidebar.php'; // Include sidebar
-require 'includes/footer.php'; // Include footer
-?>
+</div>
+</div>
+<?php require 'includes/footer.php'; // Include footer ?>

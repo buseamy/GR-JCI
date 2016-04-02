@@ -1,4 +1,4 @@
-<?php
+<?php $page_title = 'JCI Website - Home';
 /*
 * @File Name:       index.php
 * @Description:     Home page for JCI website
@@ -13,12 +13,15 @@
  * The index file will contain an includes for the header and footer.
  */
 
-//Title to be displayed for the page
-$page_title = 'JCI Website - Home';
-
 // Call to the site header
 include ('./includes/header.php');
 ?>
+<div class="head">
+  	<img src="images/home.jpg" class="hero">
+	<div class="join">
+	  	<a href="register.php"><h3>Sign Up<br>Today!</h3></a>
+	</div>
+</div>
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
@@ -32,7 +35,7 @@ include ('./includes/header.php');
                 <p>The Journal of Critical Incidents is listed in Cabels and is published annually in October.</p>
                 <p><b>Editor</b></p>
                 <p>Timothy Brotherton</p>
-                <p> For additional information, visit our website, <a href="www.sfcr.org">www.sfcr.org</a>, or contact the Editor directly.</p>
+                <p> For additional information, visit our website, <a href="http://www.sfcr.org">www.sfcr.org</a>, or contact the Editor directly.</p>
                 <p>*Source: <a href="http://www.sfcr.org/jci">sfcr.org/jci</a></p>
             </div>
         </div>

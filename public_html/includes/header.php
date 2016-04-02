@@ -3,7 +3,7 @@
  * The purpose of this file is to display page title, meta information, include links to
  * style sheets, and contain the site navigation.
  */
- 
+
 if (session_status() == PHP_SESSION_NONE) {
     // Only start the session if one doesn't exist
     session_start();
@@ -39,60 +39,29 @@ if (session_status() == PHP_SESSION_NONE) {
             <header>
             	<div class="navbar row">
         			<a class="col s2 navbar-brand logotype alt_text active" href="index.php">Journal of<br> Critical Incidents</a>
-        		    <ul class="nav col s5">
-        			    <li class=""><a href="#">Critical Incidents</a></li>
-            			<li class=""><a href="#">Contact Us</a></li>
-            			<li class=""><a href="account_settings.php">Account Settings</a></li>
+        		    <ul class="nav col s8">
                         <?php // Create a logout if logged in, creates login if logged out
            				 //Editor tab is displayed if the user is an editor
-           				if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1 ) {
-           					echo '<li><a id="togglelogin" href="#/">Logout</a></li>';
-           				} else if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1){
-           					echo '<li><a id="togglelogin" href="#/">Logout</a></li>';
-           				} else if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
-           					echo '<li><a id="togglelogin" href="#/">Logout</a></li>';
-           				} else {
-           					echo '<li><a id="togglelogin" href="#/">Login</a></li>';
-           				}
-           				?>
+           				if (isset($_SESSION['UserID'])) { //if logged in
+                            echo '<li><a href="dashboard.php">Dashboard</a></li>';
+                            echo '<li><a href="search_cases.php">Critical Incidents</a></li>';
+                			echo '<li><a href="#">Contact Us</a></li>';
+                            echo '<li><a href="account_settings.php">Account Settings</a></li>';
+           					echo '<li><a href="logout.php">Logout</a></li>';
+           				} else { //if logged out
+                            echo '<li><a href="archive.php">Critical Incidents</a></li>';
+                			echo '<li><a href="contact_us.php">Contact Us</a></li>';
+           					echo '<li><a id="togglelogin" href="login.php" onclick="return false;">Login</a></li>';
+           				}?>
             		</ul>
-        		    <div class="searchdiv col s3">
-            			<form class="search-container" action="">
-            			  <input id="search-box" type="text" class="search-box" placeholder="Search..." name="q" />
-            			  <label for="search-box"><span class="glyphicon glyphicon-search search-icon"></span></label>
-            			</form>
-            		</div>
                 </div>
                 <div class="loginbar" style="display:none">
-                    <form>
-                	  <input type="text" class="regular login" placeholder="username"/>
-                	  <input type="password" class="regular login" placeholder="password"/>
-                	  <a href="template_dashboard.html"><button class="guest path" type="button">Login</button>
+                    <form action="login.php" method="post">
+                	  <input type="text" class="regular login" name="email" placeholder="username"/>
+                	  <input type="password" name="pass" class="regular login" placeholder="password"/>
+                	  <input type="submit" name="submit" value="Login" />
+                	  <!--<a href="login.php"><button class="guest path" type="button">Login</button>-->
                 	</form>
-                	<a class="loginlink" href="template_create_account.html"><p>Don't have an account? Create one now.</p></a>
-                </div>
-                <div class="row flush">
-                  <div class="col s3 searchdrop white">
-                	  <div class="searchresult">
-                		  <div class="result guest"></div>
-                          <h4 class="searchheading">How to Page</h4>
-                          <p class="searchsummary">The process of writing and submitting an incident, and the process to publishing.</p>
-                	  </div>
-                	  <div class="searchresult">
-                		  <div class="result guest"></div>
-                          <h4 class="searchheading">Create an Account</h4>
-                          <p class="searchsummary">Make an account to submit critical incidents and get published.</p>
-                	  </div>
-                	  <div class="searchresult">
-                		  <div class="result author"></div>
-                          <h4 class="searchheading">Rules of Submission</h4>
-                          <p class="searchsummary">The journal follows strict rules when compiling incidents for publishing.</p>
-                	  </div>
-                	  <div class="searchresult">
-                		  <div class="result reviewer"></div>
-                          <h4 class="searchheading">Reviewing Incidents</h4>
-                          <p class="searchsummary">The journal follows strict review guidelines when sorting through incidents for publishing.</p>
-                	  </div>
-                  </div>
+                	<a class="loginlink" href="register.php"><p>Don't have an account? Create one now.</p></a>
                 </div>
             </header>
