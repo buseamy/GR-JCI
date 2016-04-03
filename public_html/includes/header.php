@@ -49,7 +49,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             echo '<li><a href="account_settings.php">Account Settings</a></li>';
            					echo '<li><a href="logout.php">Logout</a></li>';
            				} else { //if logged out
-                            echo '<li><a href="archive.php">Critical Incidents</a></li>';
+                            echo '<li><a href="search_cases.php">Critical Incidents</a></li>';
                 			echo '<li><a href="contact.php">Contact Us</a></li>';
            					echo '<li><a id="togglelogin" href="login.php" onclick="return false;">Login</a></li>';
            				}?>
