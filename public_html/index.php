@@ -22,7 +22,7 @@ include ('./includes/header.php');
 <div class="head">
     <img src="images/home.jpg" class="hero">
     <div class="join">
-        <a href="template_create_account.html"><h3>Sign Up<br>Today!</h3></a>
+        <a href="register.php"><h3>Sign Up<br>Today!</h3></a>
     </div>
 </div>
 <div class="contentwidth">
