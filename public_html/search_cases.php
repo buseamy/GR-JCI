@@ -1,8 +1,13 @@
 <?php // search cases.php Written by Jamal Ahmed
 	
+	require ('../mysqli_connect.php'); // Connect to the database
+	require ('./includes/header.php'); // Include the site header
+	require ('./include_utils/procedures.php'); // complete_procedure()
+	
+	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
-	require ('../mysqli_connect.php');
+	
 	$errors = array(); // Initialize an error array.
 	
 
@@ -91,5 +96,7 @@
 	<p>Category: <input type="text" name="category" size="10" maxlength="20" value="<?php if (isset($_POST['category'])) echo $_POST['category']; ?>"  /></p>
 	<p><input type="submit" name="submit" value="search" /></p>
 </form>
+<?php include 'includes/sidebar.php'; ?>
+<?php include 'includes/footer.php'; ?>
 
 
