@@ -21,18 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $q_verify = "Call spLoginGetUserID('$email', '$pass');";
     $r = @mysqli_query ($dbc, $q_verify); // Run stored procedure
+    complete_procedure($dbc);
 
     while($userid_row = mysqli_fetch_array($r)) {
-    complete_procedure($dbc);
-    
-    /*
-    echo '0:'.$userid_row[0]."\r\n";
-    echo '1:'.$userid_row[1]."\r\n";
-    echo '2:'.$userid_row[2];
-    
-    exit;
-    */
-    
         if ($userid_row[0] == -1) { //Not a match or incomplete fields
             $errors[] = 'Username or password is incorrect';
         }

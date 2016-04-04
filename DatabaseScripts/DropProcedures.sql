@@ -34,6 +34,7 @@ DROP PROCEDURE IF EXISTS `spDeletePhoneNumber`;
 DROP PROCEDURE IF EXISTS `spDisableUser`;
 DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`;
 DROP PROCEDURE IF EXISTS `spEnableUser`;
+DROP PROCEDURE IF EXISTS `spGetActiveEditors`;
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`;
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`;
 DROP PROCEDURE IF EXISTS `spGetArticleDates`;

@@ -42,6 +42,22 @@ function sendNotificationEmail($dbc, $UID, $Password) {
     mail($To,$Subject,$Message,$Header);
 }
 
+function sendCommentEmail($dbc, $Message) {
+    $r = mysqli_query($dbc, "Call spGetActiveEditors();");
+    complete_procedure($dbc);
+    
+    $To = '';
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+        $To = $To.$row["EmailAddress"].',';
+    }
+    $To = rtrim($To, ","); //Remove the last comma from the string
+    
+    $Subject = 'Comment from Journal of Critial Incidents website';
+    $Header = "From: NoReply@sfcrjci.org\r\nContent-Type: text/html;charset=iso-8859-1\r\nMIME-Version: 1.0\r\n";
+
+    mail($To,$Subject,$Message,$Header);
+}
+
 function sendAuthorNagEmail($dbc, $UID) {
 }
 

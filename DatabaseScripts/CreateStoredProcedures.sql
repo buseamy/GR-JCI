@@ -778,6 +778,19 @@ BEGIN
   End If; 
 END$$
 
+/* Gets the list of Editors who are active */
+DROP PROCEDURE IF EXISTS `spGetActiveEditors`$$
+CREATE PROCEDURE `spGetActiveEditors`()
+DETERMINISTIC
+BEGIN
+  Select u.EmailAddress
+  From Users u
+    Inner Join UserRoles ur
+      On ur.UserID = u.UserID
+  Where Active = 1
+    And ur.RoleID = 3;
+END$$
+
 /* Gets the list of types of addresses */
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`$$
 CREATE PROCEDURE `spGetAddressTypes`()
