@@ -3,7 +3,7 @@
 // This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
 
 $page_title = 'Create User';
-
+	require ('./includes/header.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
@@ -152,11 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				complete_procedure($dbc);
 			}
 			
-            //No need to add the author role, the CreateUser SP does that automatically
-			// Send user role information to database.
-			//$q_role = "Call spUserAddRole ($r_userID, 1);";
-			//mysqli_query ($dbc, $q_role);
-			//complete_procedure($dbc);
+           
 			if (isset($_POST['checkeditor'])){
 				$q_role = "Call spUserAddRole ($r_userID, 3);";
 				mysqli_query ($dbc, $q_role);
@@ -172,11 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             sendNotificationEmail($dbc, $r_userID, $password);
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
-			/*if (isset($_POST['submit']))
-			{
-				header( "Location: 5; editor_create_user.php");
-			}
-		*/
 		} else { // If it did not run OK.
 			
 			// Public message:
@@ -190,16 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 		mysqli_close($dbc); // Close the database connection.
 
-		
-		// Send welcome E-mail for verification
-		/*$to = '$email';
-		$subject = 'Welcome to JCI';
-		$body = "Welcome to the Journal for Critical Incidents! \nWe greatly apreciate you'r interest in joining us, but there is one more step before you are registered. Please follow the link below to verify you'r E-mail and we will finish the registration. \n
-		{$r_everify}";
-		$body = wordwrap($body,70);
-		
-		mail($to, $subject, $body);
-*/
+
         //quit the script:
 		exit();
 	
@@ -288,7 +270,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 	</select>
 	<p>Country: <select name="country"> 
-		<option value="<?php if (isset($_POST['country'])) echo $_POST['country']; ?>">
 		<option value="NULL">none</option>
 		<option value="Afghanistan">Afghanistan</option>
 		<option value="Albania">Albania</option>
