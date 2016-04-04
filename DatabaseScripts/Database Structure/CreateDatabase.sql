@@ -296,7 +296,7 @@ PRIMARY KEY (AuthorID)
 /* Create the Publications table */
 CREATE TABLE Publications (
 PublicationID int NOT NULL AUTO_INCREMENT,
-Year int NOT NULL,
+Year int NOT NULL UNIQUE,
 FileMetaDataID int NOT NULL,
 PRIMARY KEY (PublicationID),
 FOREIGN KEY (FileMetaDataID) REFERENCES FileMetaData(FileMetaDataID)
@@ -455,7 +455,9 @@ Values (1,'Cover Letter'),
        (2,'Incident'),
        (2,'Summary'),
        (2,'Teaching Notes'),
-       (2,'Reviewer Form');
+       (2,'Reviewer Form'),
+	   (3,'Publication'),
+	   (3,'Published Incident');
 
 /*Populate the EmailStatus table*/
 Insert Into EmailStatus (EmailStatus)

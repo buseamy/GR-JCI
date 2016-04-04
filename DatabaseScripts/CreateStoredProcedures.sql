@@ -443,6 +443,91 @@ BEGIN
   End If; 
 END$$
 
+/* Creates a Publication record for a year */
+DROP PROCEDURE IF EXISTS `spCreatePublication`$$
+CREATE PROCEDURE `spCreatePublication`(IN _FileMetaDataID int)
+DETERMINISTIC
+BEGIN
+  Declare _Year int;
+  Set _Year = Year(CURRENT_DATE);
+  
+  If(Select Exists(Select 1 From Publications Where Year = _Year)) Then
+    Select Concat('Publication for year ', _Year, ' already exists') As 'Error';
+  Else
+    If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+	  Insert Into Publications (Year, FileMetaDataID)
+	  Values (_Year, _FileMetaDataID);
+	  
+	  Select last_insert_id() As 'PublicationID';
+	Else
+	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+	End If;
+  End If;
+END$$
+
+/* Creates a Published Author record from the Users table */
+DROP PROCEDURE IF EXISTS `spCreatePublishedAuthor`$$
+CREATE PROCEDURE `spCreatePublishedAuthor`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the UserID exists */
+  If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+      Insert Into PublishedAuthors (FirstName, LastName, EmailAddress, InstitutionAffiliation)
+      Select FirstName, LastName, EmailAddress, InstitutionAffiliation
+      From Users
+      Where UserID = _UserID;
+      
+      Select last_insert_id() As 'AuthorID';
+  Else
+    Select Concat('UserID ', _UserID, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
+/* Creates a Published Critical Incident record */
+DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
+CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
+                                                     IN _IncidentTitle varchar(150),
+													 IN _Abstract varchar(5000),
+													 IN _Keywords varchar(5000),
+													 IN _FileMetaDataID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the FileMetaDataID exists */
+  If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+    /* Make sure the PublicationID exists */
+    If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
+	  Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
+	  Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
+
+	  Select last_insert_id() As 'CriticalIncidentID';
+    Else
+      Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
+    End If;
+  Else
+    Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
+/* Links a published author to a published critical incident */
+DROP PROCEDURE IF EXISTS `spCreatePublishedIncidentAuthor`$$
+CREATE PROCEDURE `spCreatePublishedIncidentAuthor`(IN _AuthorID int,
+                                                   IN _CriticalIncidentID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the AuthorID exists */
+  If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
+    /* Make sure the CriticalIncidentID exists */
+    If(Select Exists(Select 1 From PublishedCriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
+      Insert Into PublishedIncidentsAuthors (AuthorID, CriticalIncidentID)
+      Values (_AuthorID, _CriticalIncidentID);
+    Else
+      Select Concat('CriticalIncidentID ', _CriticalIncidentID, ' doesn''t exist') As 'Error';
+    End If;
+  Else
+    Select Concat('AuthorID ', _AuthorID, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
 /* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateReviewerFileMetaData`$$
 CREATE PROCEDURE `spCreateReviewerFileMetaData`(IN _SubmissionID int,
@@ -804,6 +889,65 @@ BEGIN
   Order By PhoneType;
 END$$
 
+/* Gets the List of available Publications */
+DROP PROCEDURE IF EXISTS `spGetPublicationsList`$$
+CREATE PROCEDURE `spGetPublicationsList`()
+DETERMINISTIC
+BEGIN
+  Select PublicationID,
+         Year,
+         FileMetaDataID
+  From Publications
+  Order By Year;
+END$$
+
+/* Gets the Published Incident info */
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`$$
+CREATE PROCEDURE `spGetPublishedCriticalIncident`(IN _CriticalIncidentID int)
+DETERMINISTIC
+BEGIN
+  Select pci.CriticalIncidentID,
+         pci.IncidentTitle,
+         pci.Abstract,
+		 pci.Keywords,
+		 p.Year
+  From PublishedCriticalIncidents pci
+    Inner Join Publications p
+	  On p.PublicationID = pci.PublicationID
+  Where pci.CriticalIncidentID = _CriticalIncidentID
+  Order By pci.IncidentTitle;
+END$$
+
+/* Gets the Authors for a Published Incident */
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`$$
+CREATE PROCEDURE `spGetPublishedCriticalIncidentAuthors`(IN _CriticalIncidentID int)
+DETERMINISTIC
+BEGIN
+  Select Concat(pa.LastName, ', ', pa.FirstName) As 'FullName',
+         pa.EmailAddress,
+		 pa.InstitutionAffiliation
+  From PublishedAuthors pa
+    Inner Join PublishedIncidentsAuthors pca
+	  On pca.AuthorID = pa.AuthorID
+  Where pca.CriticalIncidentID = _CriticalIncidentID
+  Order By pa.LastName, pa.FirstName;
+END$$
+
+/* Gets the list Published Incidents for a year */
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`$$
+CREATE PROCEDURE `spGetPublishedCriticalIncidents`(IN _Year int)
+DETERMINISTIC
+BEGIN
+  Select pci.CriticalIncidentID,
+         pci.IncidentTitle,
+         pci.Abstract
+  From PublishedCriticalIncidents pci
+    Inner Join Publications p
+	  On p.PublicationID = pci.PublicationID
+  Where p.Year = _Year
+  Order By pci.IncidentTitle;
+END$$
+
 /* Gets the List of available roles */
 DROP PROCEDURE IF EXISTS `spGetRoles`$$
 CREATE PROCEDURE `spGetRoles`()
@@ -1132,6 +1276,27 @@ BEGIN
   /* Remove the Accouncement itself */
   Delete From Announcements
   Where AnnouncementID = _AnnouncementID;
+END$$
+
+/* Removes a published author to a published critical incident */
+DROP PROCEDURE IF EXISTS `spRemovePublishedIncidentAuthor`$$
+CREATE PROCEDURE `spRemovePublishedIncidentAuthor`(IN _AuthorID int,
+                                                   IN _CriticalIncidentID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the AuthorID exists */
+  If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
+    /* Make sure the CriticalIncidentID exists */
+    If(Select Exists(Select 1 From PublishedCriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
+      Delete From PublishedIncidentsAuthors
+      Where AuthorID = _AuthorID
+        And CriticalIncidentID = _CriticalIncidentID;
+    Else
+      Select Concat('CriticalIncidentID ', _CriticalIncidentID, ' doesn''t exist') As 'Error';
+    End If;
+  Else
+    Select Concat('AuthorID ', _AuthorID, ' doesn''t exist') As 'Error';
+  End If;
 END$$
 
 /* Adds a Reviewer UserID to an existing Submission */
@@ -1710,6 +1875,82 @@ BEGIN
 	End If;
   Else
     Select 'PhoneTypeID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates a Publication record for a year */
+DROP PROCEDURE IF EXISTS `spUpdatePublication`$$
+CREATE PROCEDURE `spUpdatePublication`(IN _Year int, IN _FileMetaDataID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the year exists */
+  If(Select Exists(Select 1 From Publications Where Year = _Year)) Then
+    /* Make sure the FileMetaDataID exists */
+    If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+	  Update Publications
+	  Set FileMetaDataID = _FileMetaDataID
+	  Where Year = _Year;
+	Else
+	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+	End If;
+  Else
+    Select Concat('Publication for year ', _Year, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
+/* Updates a Published Author record */
+DROP PROCEDURE IF EXISTS `spUpdatePublishedAuthor`$$
+CREATE PROCEDURE `spUpdatePublishedAuthor`(IN _AuthorID int,
+                                           IN _FirstName varchar(15),
+                                           IN _LastName varchar(30),
+                                           IN _EmailAddress varchar(200),
+                                           IN _InstitutionAffiliation varchar(100))
+DETERMINISTIC
+BEGIN
+  /* Make sure the AuthorID exists */
+  If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
+    Update PublishedAuthors
+    Set FirstName = _FirstName,
+        LastName = _LastName,
+        EmailAddress = _EmailAddress,
+        InstitutionAffiliation = _InstitutionAffiliation
+    Where AuthorID = _AuthorID;
+  Else
+    Select Concat('AuthorID ', _AuthorID, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
+/* Updates a Published Critical Incident record */
+DROP PROCEDURE IF EXISTS `spUpdatePublishedCriticalIncident`$$
+CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
+                                                     IN _PublicationID int,
+                                                     IN _IncidentTitle varchar(150),
+													 IN _Abstract varchar(5000),
+													 IN _Keywords varchar(5000),
+													 IN _FileMetaDataID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the CriticalIncidentID exists */
+  If(Select Exists(Select 1 From CriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
+    /* Make sure the FileMetaDataID exists */
+    If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+	  /* Make sure the PublicationID exists */
+	  If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
+	    Update CriticalIncidents
+	    Set PublicationID = _PublicationID,
+		    IncidentTitle = _IncidentTitle,
+			Abstract = _Abstract,
+			Keywords = _Keywords,
+		    FileMetaDataID = _FileMetaDataID
+	    Where CriticalIncidentID = _CriticalIncidentID;
+	  Else
+	    Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
+	  End If;
+	Else
+	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+	End If;
+  Else
+    Select Concat('CriticalIncidentID ', _CriticalIncidentID, ' doesn''t exist') As 'Error';
   End If;
 END$$
 
