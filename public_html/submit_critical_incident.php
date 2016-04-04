@@ -7,6 +7,7 @@
 
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
+ require ('./includes/subnav.php'); // Dashboard navigation
  require ('./include_utils/procedures.php'); // complete_procedure()
 
 ?>
@@ -15,10 +16,7 @@
 <script type="text/javascript" src="./js/form_validator.js"></script>
 <script type="text/javascript" src="./js/jcf.file.js"></script>
 <script type="text/javascript" src="./js/jcf.js"></script>
-
-</script>
-
-</script>
+<script type="text/javascript"> $( "#author" ).addClass( "active" ); </script>
 <div id="home-body" class="span7">
     <?php if (isset($_SESSION['isAuthor'])) { // Only display if logged in role is author ?>
         <div class="contentwidth">
