@@ -13,11 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 
 	// checks if email matches
-	if (!empty($_POST['email'])) {
-	if ($_POST['email'] != $_POST['email2']) {
-		$errors[] = 'The new E-mail addresses did not match.';
-	} else {
-		$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+	if (isset($_POST['email'])) {
+		if ($_POST['email'] != $_POST['email2']) {
+			$errors[] = 'The E-mail addresses do not match.';
+		} elseif (preg_match('/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2}|aero|biz|com|coop|edu|gov|info|jobs|mil|mobi|museum|name|net|org|travel)$/i', $_POST['email'])) {
+			$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+		} else {
+			$errors[] = 'The E-mail address must be in the format "someone@host.com".';
 		}
 	} else {
 		$errors[] = 'You forgot to enter a new E-mail address.';
@@ -45,11 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             sendVerificationEmail($dbc, $uid, 2);
 			
 			echo '<p>The E-mail address has been successfully updated, please check your inbox for a verification message.</p><p><br /></p>';
-			/*if (isset($_POST['submit']))
-			{
-				header( "Location: 5; editor_create_user.php");
-			}
-		*/
+
 		} else { // If it did not run OK.
 			
 			// Public message:
@@ -73,13 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		foreach ($errors as $msg) { // Print each error.
 			echo " - $msg<br />\n";
 		}
-		echo '</p><p>Please try again.</p><p><br /></p>';
+		echo '<p>Please try again.</p><p><br /></p>';
 		
 	} // End of if (empty($errors)) IF.
 	
 	mysqli_close($dbc); // Close the database connection.
+}else {
+	echo '<p>You must be logged in to change your E-mail. Please login and try again.</p><p><br /></p>';
 }
-
+}
 ?>
 
 <!-- create the form-->
