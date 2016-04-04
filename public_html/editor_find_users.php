@@ -130,15 +130,22 @@
 	
 }
 ?>
-
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
 <h1>Find Users</h1>
 <form action="editor_find_users.php" method="post">
 	<p>First name: <input type="text" name="firstname" size="20" maxlength="30" value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']; ?>" /></p>
 	<p>Last name: <input type="text" name="lastname" size="20" maxlength="30" value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']; ?>" /></p>
 	<p>Email: <input type="text" name="email" size="20" maxlength="20" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" /></p>
 	<p>
-	<input class="inputFileLabel" type="submit" name="submit" value="Search" />
+	<!--<input class="inputFileLabel" type="submit" name="submit" value="Search" />-->
+	<p><button class="editor" type="submit"  name="submit" onClick="#" >Search</button></p>
 	</p>
 </form>
+</div>
+<?php require 'includes/sidebar.php'; // Include sidebar ?>
+</div>
+</div>
 
 

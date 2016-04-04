@@ -15,8 +15,9 @@ if (!isset($_SESSION['agent']) OR ($_SESSION['agent'] != md5($_SERVER['HTTP_USER
 // Set the page title and include the HTML header:
 $page_title = 'Logged In!';
 include ('includes/header.php');
+require ('./includes/subnav.php'); // Dashboard navigation
 
-echo "<h1>Logged In!</h1>
+echo "<h1>Logged In</h1>
 <p>You are now logged in!</p>
 <p><a href=\"logout.php\">Logout</a></p>";
 

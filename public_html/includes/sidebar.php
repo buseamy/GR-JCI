@@ -3,7 +3,7 @@
 * @File Name:       sidebar.php
 * @Description:     Side bar for JCI website
 * @PHP version:     Currently Unknown
-* @Author(s):		Jacob Cole <colej28@ferris.edu>
+* @Author(s):		Jacob Cole <colej28@ferris.edu>, Rui Takagi
 * @Organization:    Ferris State University
 * @Last updated:    02/08/2016
 */
@@ -38,7 +38,9 @@
 		if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
             echo '<h3 class="author title">Author</h3>';
 			echo '<li><a href="author_view_feedback.php">Review Feedback</a></li>';
-            echo '<li><a href="submit_critical_incident.php">Submit Critical Incident</a></li><br>';
+            echo '<li><a href="submit_critical_incident.php">Submit Critical Incident</a></li>';
+			echo '<li><a href="teaching_notes.php">Get Purchasing Information for Teaching Notes</a></li>';
+			echo '<li><a href="https://www.sfcr.org/.">Visit SCR Site</a></li><br>';
 		}
 
 

@@ -26,19 +26,25 @@ $page_title = 'Teaching Notes';
 include ('includes/header.php');
 ?>
 
-<div id="mainhead" class="span8">
-    <h1>Purchasing Info for Teaching Notes</h1>
-    <!--Page main body-->
-    <div id="home_about">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
-		incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-		exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
-		incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-		exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
-		incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-		exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
+
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
+			<h1>Purchasing Information for Teaching Notes</h1>
+			<!--Page main body-->
+			<div id="home_about">
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
+				incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+				exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
+				incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+				exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
+				incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+				exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+			</div>
+		</div>
+		<?php require 'includes/sidebar.php'; // Include sidebar ?>
+	</div>
 </div>
 <?php include ('includes/footer.php'); ?>

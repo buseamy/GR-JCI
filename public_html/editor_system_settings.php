@@ -4,14 +4,21 @@
 $page_title = 'Editor System Settings';
 include ('includes/header.php');
 
-// Display the form:
-?><h1>Editor System Settings</h1>
-    <ul>
-        <li><a href="#">Change Date Allowed for Critical Incident Submission</a></li>
-        <p><li><a href="#">Configure Review Open and Closing Dates</a></li></p>
-        <li><a href="#">Configure Reminder Email Intervals</a></li>
-        <p><li><a href="#">Run Reports</a></li></p>
-    </ul>
-    <br>
+?>
+
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
+			<h1>Editor System Settings</h1>
+				<ul>
+					<li><button class="editor" type="button" onClick="#" >Change Date Allowed for Critical Incident Submission</button></li>
+					<p><li><button class="editor" type="button" onClick="#" >Configure Review Open and Closing Dates</button></li></p>
+					<li><button class="editor" type="button" onClick="#" >Configure Reminder Email Intervals</button></li>
+					<li><p><button class="editor" type="button" onClick="#" >Run Reports</button></p></li>
+				</ul>
+		</div>
+		<?php require 'includes/sidebar.php'; // Include sidebar ?>
+	</div>
+</div>
 <?php include ('includes/footer.php'); ?>
 
