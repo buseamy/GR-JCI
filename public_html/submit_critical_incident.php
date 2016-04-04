@@ -40,6 +40,10 @@
                             </div>
                             <button class="author" type="button" onClick="addInput('dynamicAuthor');">Add another author</button>
                             <p><input type="hidden" name="counter" id="counter" value="1"></p>
+                            <?php
+                            // replace hardcoded inputs with ones generated using the FileTypes table
+                            // currently, the only access to this list is from spGetFileTypes by providing RoleID (Author role)
+                            ?>
                             <h3>Please provide all the following documents:</h3>
                             <span class="jcf-file jcf-pressed">
                                 <span class="jcf-fake-input">No file chosen</span>
