@@ -53,20 +53,20 @@
                 if ($result->num_rows > 0) { ?>
                     <table class="span2">
                         <tr>
-                            <th class="span1">User ID</th>
-                            <th class="span1">Full Name (Last, First)</th>
-							<th class="span1">Email</th>
-							<th class="span1">Member Code</th>
-							<th class="span1">Institution Affiliation</th>
-                            <th class="span1">Update</th>
-							<th class="span1">Deactivate</th>
+                            <th class="span3">User ID</th>
+                            <th class="span3">Full Name (Last, First)</th>
+							<th class="span3">Email</th>
+							<th class="span2">Member Code</th>
+							<th class="span2">Institution Affiliation</th>
+                            <th class="span2">Update</th>
+							<th class="span2">Deactivate</th>
                         </tr>
                     <?php
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
-                        echo '<tr><td class="span1">' . $row["UserID"]. '</td>
-						<td class="span2">' . $row["FullName"]. '</td> 
-						<td class="span2">' . $row["EmailAddress"]. '</td> 
+                        echo '<tr><td class="span3">' . $row["UserID"]. '</td>
+						<td class="span3">' . $row["FullName"]. '</td> 
+						<td class="span3">' . $row["EmailAddress"]. '</td> 
 						<td class="span2">' . $row["MemberCode"]. '</td> 
 						<td class="span2">' . $row["InstitutionAffiliation"]. '</td> 
 						<td class="span2">'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>

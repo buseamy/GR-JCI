@@ -13,23 +13,28 @@
             <div class="User List">
                 <?php
 
-                $q = "Call spGetUsersAuthorsList();"; // Call to stored procedure
+                //$q = "Call spGetUsersAuthorsList();"; // Call to stored procedure
+				$q = "Call spGetUsersList();";
+				
                 $result = $dbc->query($q); // Run procedure
 
                 //if something is returned
                 if ($result->num_rows > 0) { ?>
                     <table class="span12">
                         <tr>
-                            <th class="span1">User ID</th>
+                            <th class="span2">User ID</th>
                             <th class="span2">Full Name (Last, First)</th>
-                            <th class="span1">Update</th>
-							<th class="span1">Deactivate</th>
+							<th class="span2">Email</th>
+							<th class="span2">Roles</th>
+							<!--<th class="span2">Active</th> <td class="span2">' . $row["isActive"]. '</td> -->
                         </tr>
                     <?php
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
-                        echo '<tr><td class="span1">' . $row["UserID"]. '</td>
+                        echo '<tr><td class="span2">' . $row["UserID"]. '</td>
 						<td class="span2">' . $row["FullName"]. '</td> 
+						<td class="span2">' . $row["EmailAddress"]. '</td> 
+						<td class="span2">' . $row["Roles"]. '</td> 
 						<td class="span2">'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>
 						<td class="span2">'. '<td class="span1"><a href="deactivate_user.php?UserID=' . $row["UserID"] .'">Deactivate</a></td>
 						</tr>';
