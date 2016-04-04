@@ -4,8 +4,8 @@ $page_title = 'Register - SFCI - Journal for Critical Indicents';
 
 // database connection is required for queries to be inserted in database
 require ('../mysqli_connect.php');
-require('./include_utils/procedures.php');
 require ('./includes/header.php'); // Include the site header
+require ('./include_utils/procedures.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -299,6 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				<input type="submit" class="guest" name="submit" value="Register" />
             </div>
 		</div>
-		<?php require ('./includes/sidebar.php'); // Include the site sidebar ?>
-	</div>
-</div>
+		<?php require ('./includes/sidebar.php'); // Include the site sidebar
+	echo '</div>';
+echo '</div>';
+require ('./includes/footer.php'); ?>
