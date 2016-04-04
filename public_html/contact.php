@@ -22,7 +22,9 @@
                     <h3 class="title">Contact</h3>
                 </div>
                 <div class="box editor_alt">
+                    <input type="text" class="regular inputForm" placeholder="Name" width="100%" value="">
                     <input type="text" class="regular inputForm" placeholder="Email" width="100%" value="">
+                    <input type="text" class="regular inputForm" placeholder="Phone" width="100%" value="">
                     <textarea placeholder="Comments" rows="10"></textarea>
 					<button class="editor buttonform" type="button">Send</button>
                 </div>

@@ -24,7 +24,7 @@
         <div class="contentwidth">
             <div class="row flush">
                 <div class="col s7">
-                    <h1>Submit a case to the Journal of Critical Incidents</h1>
+                    <h1>Submit a Critical Incident</h1>
                     <!--Page main body-->
                     <div id="registration-form">
                         <form class="submitform" id="submit_criticalIncident" action="process_critical_incident.php" method="post">
@@ -40,10 +40,6 @@
                             </div>
                             <button class="author" type="button" onClick="addInput('dynamicAuthor');">Add another author</button>
                             <p><input type="hidden" name="counter" id="counter" value="1"></p>
-                            <?php
-                            // replace hardcoded inputs with ones generated using the FileTypes table
-                            // currently, the only access to this list is from spGetFileTypes by providing RoleID (Author role)
-                            ?>
                             <h3>Please provide all the following documents:</h3>
                             <span class="jcf-file jcf-pressed">
                                 <span class="jcf-fake-input">No file chosen</span>
