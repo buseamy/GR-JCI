@@ -84,12 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if (empty($_POST['zip'])) {
 		$zip = null;
-	} elseif (Is_numeric($_POST['zip'])){
+	}elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['code'])) {
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
+	}else {
+		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".';
 	}	
-	  elseif(!Is_numeric($_POST['zip'])){
-		$errors[] = 'Zip codes should only contain numbers.';
-	  }
 
 	if (isset($_POST['iphone'])) {
 		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
@@ -101,18 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	
-	if (empty($_POST['code'])) {
-		$code = null;
-	} elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['code'])) {
+	if (isset($_POST['code'])) {
 		$code = mysqli_real_escape_string($dbc, trim($_POST['code']));
 	} else {
-		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".';
+		$code = null;
 	}
 	
-	if (empty($_POST['association'])) {
-		$association = null;
-	} else {
+	if (isset($_POST['association'])) {
 		$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
+	} else {
+		$association = null;
 	}
 	$atype = $_POST['atype'];
 	$ptype = $_POST['ptype'];
@@ -540,8 +537,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<option value="1">Home</option>
 		<option value="3">Work</option>
 	</select> </p>
-	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '000-000-0000';} ?>" /></p>
-	<p><input type="checkbox" name="iphone" /> This Number is international. (The format "000-000-0000" will no longer apply)</p>
+	<p>Phone Number: <input type="text" name="phone" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '(000) 000-0000';} ?>" /></p>
+	<p><input type="checkbox" name="iphone" /> This Number is international. (The format "(000) 000-0000" will no longer apply)</p>
 	<p>Phone Type:<select name="ptype">
 		<option value="<?php if (isset($_POST['ptype'])) echo $_POST['ptype']; ?>">
 		<option value="2">Main</option>
