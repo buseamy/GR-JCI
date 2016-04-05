@@ -4,7 +4,6 @@
     <div class="dashcontent">
          <div class="dashboardnav">
             <ul class="row dashnav">
-                <li class="homeicon col s1 active nomargin"> <a href="dashboard.php"><img id="dashboardicon" src="images/homeicon.png"></a></li>
                 <li class="col s1 nomargin nomobile"></li>
                 <?php
                 if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1){

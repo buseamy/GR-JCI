@@ -20,11 +20,18 @@
         <h3 class="title">Resources</h3>
     </div>
     <ul>
+        <li><a href="#">Learn how to submit a Critical Incident</a></li>
+        <li><a href="teaching_notes.php">Get Purchasing Information for Teaching Notes</a></li>
+        <li><a href="https://www.sfcr.org/.">Visit SCR Site</a></li>
+        <hr>
         <h2>Important Dates:</h2>
         <p>Submission Deadline: September 1st</p>
         <p>Journal Publication: October 31st</p>
-        <h2>Important Information</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <hr>
+        <h2>Announcement Title</h2>
+        <h4>00/00/0000 Time:Posted PM</h4>
+        <p>The new site is now live! Don't forget to register <a href="register.php">here</a> for an account if you do not have one already!</p>
+        <hr>
 		<?php
         if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1) {
             echo '<h3 class="editor title">Editor</h3>';
@@ -38,9 +45,7 @@
 		if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
             echo '<h3 class="author title">Author</h3>';
 			echo '<li><a href="author_view_feedback.php">Review Feedback</a></li>';
-            echo '<li><a href="submit_critical_incident.php">Submit Critical Incident</a></li>';
-			echo '<li><a href="teaching_notes.php">Get Purchasing Information for Teaching Notes</a></li>';
-			echo '<li><a href="https://www.sfcr.org/.">Visit SCR Site</a></li><br>';
+            echo '<li><a href="submit_critical_incident.php">Submit Critical Incident</a></li><br>';
 		}
 
 

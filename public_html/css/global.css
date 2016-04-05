@@ -351,7 +351,7 @@ ul.nav li:last-child {
 ul.nav li a {
 	text-decoration:none;
 	text-transform:uppercase;
-	color:#b4b4b4;
+	color:black;
 	font-size:15px;
 	transition:all 0.2s;
 	text-align:center;
