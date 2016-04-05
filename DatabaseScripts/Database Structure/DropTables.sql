@@ -3,6 +3,8 @@ USE gr_jci;
 DROP TABLE IF EXISTS `SystemSettings_Email`;
 DROP TABLE IF EXISTS `SystemSettings_CaseDates`;
 DROP TABLE IF EXISTS `SystemSettings_ArticleDates`;
+DROP TABLE IF EXISTS `PublishedCriticalIncidentCategories`;
+DROP TABLE IF EXISTS `PublicationCategories`;
 DROP TABLE IF EXISTS `PublishedIncidentsAuthors`;
 DROP TABLE IF EXISTS `PublishedCriticalIncidents`;
 DROP TABLE IF EXISTS `Publications`;
