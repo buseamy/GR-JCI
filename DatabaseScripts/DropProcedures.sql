@@ -50,6 +50,7 @@ DROP PROCEDURE IF EXISTS `spGetPublicationsList`;
 DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`;
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentCategories`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`;
 DROP PROCEDURE IF EXISTS `spGetRoles`;
 DROP PROCEDURE IF EXISTS `spGetStates`;

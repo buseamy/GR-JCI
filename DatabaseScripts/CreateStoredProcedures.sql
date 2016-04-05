@@ -1006,6 +1006,19 @@ BEGIN
   Order By pa.LastName, pa.FirstName;
 END$$
 
+/* Gets the Categories for a Published Incident */
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentCategories`$$
+CREATE PROCEDURE `spGetPublishedCriticalIncidentCategories`(IN _CriticalIncidentID int)
+DETERMINISTIC
+BEGIN
+  Select pc.CategoryID, pc.Category
+  From PublicationCategories pc
+    Inner Join PublishedCriticalIncidentCategories pcic
+	  On pcic.CategoryID = pc.CategoryID
+  Where pcic.CriticalIncidentID = _CriticalIncidentID
+  Order By pc.Category;
+END$$
+
 /* Gets the list Published Incidents for a year */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidents`(IN _Year int)
