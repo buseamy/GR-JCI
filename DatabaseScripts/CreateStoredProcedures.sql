@@ -323,6 +323,31 @@ BEGIN
   End If; 
 END$$
 
+/* Creates a Published Critical Incident record */
+DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
+CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
+                                                     IN _IncidentTitle varchar(150),
+													 IN _Abstract varchar(5000),
+													 IN _Keywords varchar(5000),
+													 IN _FileMetaDataID int)
+DETERMINISTIC
+BEGIN
+  /* Make sure the FileMetaDataID exists */
+  If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
+    /* Make sure the PublicationID exists */
+    If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
+	  Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
+	  Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
+
+	  Select last_insert_id() As 'CriticalIncidentID';
+    Else
+      Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
+    End If;
+  Else
+    Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
 /* Creates a new Email nagging profile */
 DROP PROCEDURE IF EXISTS `spCreateEmailSettings`$$
 CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
@@ -462,6 +487,21 @@ BEGIN
 	Else
 	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
 	End If;
+  End If;
+END$$
+
+/* Creates a new category for published incidents */
+DROP PROCEDURE IF EXISTS `spCreatePublicationCategory`$$
+CREATE PROCEDURE `spCreatePublicationCategory`(IN _Category varchar(20))
+DETERMINISTIC
+BEGIN
+  If(Select Exists(Select 1 From PublicationCategories Where Category = _Category)) Then
+    Select Concat('Category "', _Category, '" already exists') As 'Error';
+  Else
+    Insert Into PublicationCategories (Category)
+    Values (_Category);
+    
+    Select last_insert_id() As 'CategoryID';
   End If;
 END$$
 
@@ -902,6 +942,16 @@ BEGIN
   Order By PhoneType;
 END$$
 
+/* Gets the list of types of categories for published incidents */
+DROP PROCEDURE IF EXISTS `spGetPublicationCategories`$$
+CREATE PROCEDURE `spGetPublicationCategories`()
+DETERMINISTIC
+BEGIN
+  Select CategoryID, Category
+  From PublicationCategories
+  Order By Category;
+END$$
+
 /* Gets the List of available Publications */
 DROP PROCEDURE IF EXISTS `spGetPublicationsList`$$
 CREATE PROCEDURE `spGetPublicationsList`()
@@ -1289,6 +1339,16 @@ BEGIN
   /* Remove the Accouncement itself */
   Delete From Announcements
   Where AnnouncementID = _AnnouncementID;
+END$$
+
+/* Removes a published incident from a publication category */
+DROP PROCEDURE IF EXISTS `spRemoveCriticalIncidentCategories`$$
+CREATE PROCEDURE `spRemoveCriticalIncidentCategories`(IN _CriticalIncidentID int, IN _CategoryID int)
+DETERMINISTIC
+BEGIN
+  Delete From PublishedCriticalIncidentCategories
+  Where CriticalIncidentID = _CriticalIncidentID
+    And CategoryID = _CategoryID;
 END$$
 
 /* Removes a published author to a published critical incident */
@@ -1908,6 +1968,20 @@ BEGIN
 	End If;
   Else
     Select Concat('Publication for year ', _Year, ' doesn''t exist') As 'Error';
+  End If;
+END$$
+
+/* Updates a category for published incidents */
+DROP PROCEDURE IF EXISTS `spUpdatePublicationCategory`$$
+CREATE PROCEDURE `spUpdatePublicationCategory`(IN _CategoryID int, IN _Category varchar(20))
+DETERMINISTIC
+BEGIN
+  If(Select Exists(Select 1 From PublicationCategories Where Category = _Category And CategoryID != _CategoryID)) Then
+    Select Concat('Category "', _Category, '" already exists') As 'Error';
+  Else
+    Update PublicationCategories
+    Set Category = _Category
+    Where CategoryID = _CategoryID;
   End If;
 END$$
 
