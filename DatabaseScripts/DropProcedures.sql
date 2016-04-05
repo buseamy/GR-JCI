@@ -47,6 +47,7 @@ DROP PROCEDURE IF EXISTS `spGetFileTypes`;
 DROP PROCEDURE IF EXISTS `spGetPhoneTypes`;
 DROP PROCEDURE IF EXISTS `spGetPublicationCategories`;
 DROP PROCEDURE IF EXISTS `spGetPublicationsList`;
+DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`;

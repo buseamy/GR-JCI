@@ -964,6 +964,16 @@ BEGIN
   Order By Year;
 END$$
 
+/* Gets the List of available years from Publications */
+DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`$$
+CREATE PROCEDURE `spGetPublicationsYearsList`()
+DETERMINISTIC
+BEGIN
+  Select Year
+  From Publications
+  Order By Year;
+END$$
+
 /* Gets the Published Incident info */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncident`(IN _CriticalIncidentID int)
