@@ -43,7 +43,7 @@
       }
       
       if (empty($errors)) { // If everything's OK.
-        $Message = '<html><body>Editors,<br />&nbsp;&nbsp;A user made a comment on the JCI website.<br /><br />&nbsp;&nbsp;Name: '.$Name.'<br />&nbsp;&nbsp;Email: '.$Email.'<br />Phone: '.$Phone.'<br />&nbsp;&nbsp;Comment:<br />'.$Comment.'</body></html>';
+        $Message = '<html><body>Editors,<br />&nbsp;&nbsp;A user made a comment on the JCI website.<br /><br />&nbsp;&nbsp;Name: '.$Name.'<br />&nbsp;&nbsp;Email: '.$Email.'<br />&nbsp;&nbsp;Phone: '.$Phone.'<br />&nbsp;&nbsp;Comment:<br />'.$Comment.'</body></html>';
         
         //Send the email
         sendCommentEmail($dbc,$Message);
