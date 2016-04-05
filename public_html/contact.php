@@ -6,13 +6,17 @@
 
 
  require ('./includes/header.php'); // Include the site header
+ $errors = array(); // Initialize an error array.
+ $Name = '';
+ $Email = '';
+ $Phone = '';
+ $Comment = '';
  
  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+     require('./include_utils/login_functions.php');
       require ('../mysqli_connect.php'); // Connect to the database
       require ('./include_utils/procedures.php'); // complete_procedure()
       require ('./include_utils/email_functions.php');
-      
-      $errors = array(); // Initialize an error array.
       
       if (!empty($_POST['Name'])) {
           $Name = $_POST['Name'];
@@ -33,7 +37,7 @@
       }
       
       if (!empty($_POST['Comment'])) {
-          $Comments = $_POST['Comment'];
+          $Comment = $_POST['Comment'];
       } else {
           $errors[] = 'Please provide a comment';
       }
@@ -48,14 +52,6 @@
         
         // Redirect:
         redirect_user('index.php');
-      } else {
-        echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
-		foreach ($errors as $msg) { // Print each error.
-			echo " - $msg<br />\n";
-		}
-		echo '</p><p>Please try again.</p><p><br /></p>';
-        
-        mysqli_close($dbc); // Close the database connection.
       }
  }
 ?>
@@ -67,15 +63,28 @@
         <div class="col s7">
             <div class="row">
              <div class="col s10 frames">
+                <?php 
+                if (!empty($errors)) {
+                    echo '<div>';
+                    echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
+                    foreach ($errors as $msg) { // Print each error.
+                        echo " - $msg<br />\n";
+                    }
+                    echo '</p><p>Please try again.</p><p><br /></p>';
+                    echo '</div>';
+                }
+                ?>
                 <div class="editor roundcorner">
                     <h3 class="title">Contact</h3>
                 </div>
                 <div class="box editor_alt">
-                    <input type="text" class="regular inputForm" placeholder="Name" name="Name" width="100%" value="">
-                    <input type="text" class="regular inputForm" placeholder="Email" name="Email" width="100%" value="">
-                    <input type="text" class="regular inputForm" placeholder="Phone" name="Phone" width="100%" value="">
-                    <textarea placeholder="Comments" rows="10" name="Comment" ></textarea>
-					<button class="editor buttonform" type="button">Send</button>
+                    <form method="post">
+                        <input type="text" class="regular inputForm" placeholder="Name" name="Name" width="100%" value="<?php echo $Name; ?>">
+                        <input type="text" class="regular inputForm" placeholder="Email" name="Email" width="100%" value="<?php echo $Email; ?>">
+                        <input type="text" class="regular inputForm" placeholder="Phone" name="Phone" width="100%" value="<?php echo $Phone; ?>">
+                        <textarea placeholder="Comments" rows="10" name="Comment"><?php echo $Comment; ?></textarea>
+                        <button class="editor buttonform" type="submit">Send</button>
+                    </form>
                 </div>
             </div>
     	</div>
