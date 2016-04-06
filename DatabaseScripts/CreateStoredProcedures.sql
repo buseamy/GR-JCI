@@ -232,6 +232,8 @@ CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
 								   IN _PrimaryAddress tinyint
 ) DETERMINISTIC
 BEGIN
+  Declare _AddressCount int;
+  
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the AddressTypeID exists */
@@ -240,13 +242,23 @@ BEGIN
 	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
 	    /* Default _PrimaryAddress to 0 if null is passed in */
         Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
-		
+        
+		/* Get the count of PhoneNumbers for the user */
+        Select Count(AddressID) Into _AddressCount
+        From Addresses
+        Where UserID = _UserID;
+      
 		/* New PrimaryAddress, set others for user to 0 */
 	    If (_PrimaryAddress = 1) Then
 		  Update Addresses
 		  Set PrimaryAddress = 0
 		  Where UserID = _UserID;
 		End If;
+      
+        /* If this is the first address, make it the PrimaryAddress */
+        If (_AddressCount = 0) Then
+          Set _PrimaryAddress = 1;
+        End If;
 		
         /* Insert the new address record */
         Insert Into Addresses (UserID,AddressTypeID,AddressLn1,AddressLn2,City,StateID,PostCode,PrimaryAddress,CreateDate)
@@ -424,19 +436,31 @@ CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
 								       IN _PrimaryPhone tinyint
 ) DETERMINISTIC
 BEGIN
+  Declare _PhoneCount int;
+  
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the PhoneTypeID exists */
     If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
 	  /* Default _PrimaryPhone to 0 if null is passed in */
       Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
+      
+      /* Get the count of PhoneNumbers for the user */
+      Select Count(PhoneNumberID) Into _PhoneCount
+      From PhoneNumbers
+      Where UserID = _UserID;
 	  
-	  /* New PrimaryAddress, set others for user to 0 */
+	  /* New PrimaryPhone, set others for user to 0 */
 	  If (_PrimaryPhone = 1) Then
 		Update PhoneNumbers
 		Set PrimaryPhone = 0
 		Where UserID = _UserID;
 	  End If;
+      
+      /* If this is the first number, make it the PrimaryPhone */
+      If (_PhoneCount = 0) Then
+        Set _PrimaryPhone = 1;
+      End If;
 	  
       /* Insert the new phone number record */
       Insert Into PhoneNumbers (UserID,PhoneTypeID,PhoneNumber,PrimaryPhone,CreateDate)
@@ -799,6 +823,11 @@ BEGIN
 	Inner Join SubmissionStatus ss
 	  On ss.SubmissionStatusID = s.SubmissionStatusID
   Where Year(s.SubmissionDate) = _Year
+  Group By s.SubmissionID,
+           s.IncidentTitle,
+           s.EditorUserID,
+           ss.SubmissionStatus,
+		   s.SubmissionDate
   Order By s.SubmissionDate,
            s.IncidentTitle;
 END$$

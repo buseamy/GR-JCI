@@ -28,6 +28,11 @@ BEGIN
 	Inner Join SubmissionStatus ss
 	  On ss.SubmissionStatusID = s.SubmissionStatusID
   Where Year(s.SubmissionDate) = _Year
+  Group By s.SubmissionID,
+           s.IncidentTitle,
+           s.EditorUserID,
+           ss.SubmissionStatus,
+		   s.SubmissionDate
   Order By s.SubmissionDate,
            s.IncidentTitle;
 END$$
