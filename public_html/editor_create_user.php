@@ -5,12 +5,12 @@
 $page_title = 'Create User';
 	require ('./includes/header.php'); // Header
 	require ('./includes/subnav.php'); // Dashboard navigation
+	require ('../mysqli_connect.php'); // conect to database
+	require ('./include_utils/procedures.php'); // complete_procedure function
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
-	require ('../mysqli_connect.php');
-	require ('./include_utils/procedures.php');
 	require ('./include_utils/email_functions.php');
 		
 	$errors = array(); // Initialize an error array.
@@ -171,8 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} else { // If it did not run OK.
 			
 			// Public message:
-			echo '<h1>System Error</h1>
-			<p class="error">user could not be created due to a system error.</p>'; 
+			echo '<h1 class="swatch alert_text">System Error</h1>
+			<p class="swatch alert_text">user could not be created due to a system error.</p>'; 
 			
 			// Debugging message:
 			echo '<p>' . mysqli_error($dbc) . '</p>';
@@ -187,8 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	} else { // Report the errors.
 	
-		echo '<h1>Error!</h1>
-		<p class="error">The following error(s) occurred:<br />';
+		echo '<h1 class="swatch alert_text">Error!</h1>
+		<p>The following error(s) occurred:<br />';
 		foreach ($errors as $msg) { // Print each error.
 			echo " - $msg<br />\n";
 		}
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 								}
 							echo '</select>';
 						?>
-						<br><br>
+						<br>
 						<label for="zip">Postal code (zip): </label>
 						<input type="text" name="zip" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" />
 						<br>
@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							}
 							echo '</select>';
 						?>
-						<br><br>
+						<br>
 						<label for="phone">Phone Number: </label>
 						<input type="text" name="phone" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '(000) 000-0000';} ?>" />
 						<br>
@@ -286,12 +286,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							}
 						echo '</select>';
 						?>
-						<br><br>
+						<br>
 						<label for="code">SCR Member ID: </label>
 						<input type="text" name="code" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['code'])) echo $_POST['code']; ?>" />
-						<br><br>
+						<br>
 						<h5> Roles: </h5>
-						<span class="jcf-checkbox jcf-unchecked">
+		<!--				<span class="jcf-checkbox jcf-unchecked">
 						<span></span>
 						<input id="checkeditor" style="margin: 0px; width: 100%; height: 100%; position: absolute; opacity: 0;" type="checkbox"></span>
 						<label for="checkeditor" class="">Editor</label>
@@ -301,9 +301,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						<input id="checkreviewer" style="margin: 0px; width: 100%; height: 100%; position: absolute; opacity: 0;" type="checkbox"></span>
 						<label for="checkreviewer" class="">Reviewer</label>
 						<br>
-		<!--			<div class="form-checkbox"><input type="checkbox" name="checkeditor"> Editor</div>
+		-->				<div class="form-checkbox"><input type="checkbox" name="checkeditor"> Editor</div>
 						<div class="form-checkbox"><input type="checkbox" name="checkreviewer"> Reviewer</div></p>
-		-->				<h5>*asterisk indicates a required field </h5>
+						<h5>*asterisk indicates a required field </h5>
 						<input type="submit" class="editor" name="submit" value="Submit" />
 					</form>
 				</div>

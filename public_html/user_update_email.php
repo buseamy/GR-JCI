@@ -1,4 +1,6 @@
-<?php // This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
+<?php 
+// This page allows the user to change their email address
+// written by Jon Sankey
 
 $page_title = 'Update E-mail Address';
 
@@ -25,13 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'You forgot to enter a new E-mail address.';
 	}
 	
-	if (isset($_SESSION['id'])) {
-        $uid = $_SESSION['id'];
+        
 	
 	if (empty($errors)) { // If everything's OK.
 	
 		// Add the user in the database...
-		
+		$uid = $_SESSION['id'];
 		// Make the query:
 		$q_email = "Call spUpdateUserEmailAddress($uid, '$email');";
 				
@@ -51,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} else { // If it did not run OK.
 			
 			// Public message:
-			echo '<h1>System Error</h1>
-			<p class="error">user could not be created due to a system error.</p>'; 
+			echo '<h1 class="swatch alert_text">System Error</h1>
+			<p class="swatch alert_text">user could not be created due to a system error.</p>'; 
 			
 			// Debugging message:
 			echo '<p>' . mysqli_error($dbc) . '</p>';
@@ -66,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	} else { // Report the errors.
 	
-		echo '<h1>Error!</h1>
-		<p class="error">The following error(s) occurred:<br />';
+		echo '<h1 class="swatch alert_text">Error!</h1>
+		<p>The following error(s) occurred:<br />';
 		foreach ($errors as $msg) { // Print each error.
 			echo " - $msg<br />\n";
 		}
@@ -76,17 +77,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} // End of if (empty($errors)) IF.
 	
 	mysqli_close($dbc); // Close the database connection.
-}else {
-	echo '<p>You must be logged in to change your E-mail. Please login and try again.</p><p><br /></p>';
-}
 }
 ?>
 
 <!-- create the form-->
-<h1>Create User</h1>
-<form action="user_update_email.php" method="post">
-	<p>New Email Address: <input type="text" name="email" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  /> </p>
-	<p>Confirm New Email Address: <input type="text" name="email2" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  /> </p>
-	<p><input type="submit" name="submit" value="Create User" /></p>
-</form>
-<a href="index.php" class="button">Cancel</a>
+<?php if (isset($_SESSION['id'])) { // only display if logged in ?>
+	<div class="contentwidth">
+		<div class="row flush">
+			<div class="col s7">
+				<div>
+					<h1>Change E-mail</h1>
+				</div>
+				<div>
+					<form action="user_update_email.php" method="post">
+						<label for="email">New Email Address:  <span class="required"></span></label>
+						<input type="text" name="email" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  />
+						<br>
+						<label for="email2">Confirm New Email Address:  <span class="required"></span></label>
+						<input type="text" name="email2" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  />
+						<br>
+						<input type="submit" class="author" name="submit" value="Change E-mail" />
+						<br>
+						<input class="alert" type="button" onclick="window.location.replace('index.php')" value="Cancel" />
+					</form>
+				</div>
+			</div>
+			<?php require ('./includes/sidebar.php'); // Include the site sidebar
+		echo '</div>';
+	echo '</div>';
+} else { echo '<p class="swatch alert_text">Please login and try again</p>'; }
+require ('./includes/footer.php'); ?>
