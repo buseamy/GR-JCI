@@ -8,7 +8,7 @@
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
  require ('./include_utils/procedures.php'); // complete_procedure()
-/*
+
 $Error = false;
 $PreviousSubmissionID = "NULL";
 $SubmissionNumber = 1;
@@ -99,9 +99,9 @@ if (isset($_POST['submit']) && $Error == false) {
 
     if (!$SubmissionID && isset($Email)) {
         $Error = true;
-    } else {
-        $count = $counter;;
-        while ($count > 1) {
+    } elseif($Error == false) {
+        $count = $counter;
+        while ($count > 1 && $Error == false) {
 
             $q_SearchGetUsersEmail = "Call spSearchGetUsersEmail('${'Email' . $count}');"; // Call to stored procedure
             $results = $dbc->query($q_SearchGetUsersEmail); // Run procedure
@@ -110,21 +110,35 @@ if (isset($_POST['submit']) && $Error == false) {
             if ($results->num_rows > 0) {
                 // output data of each row
                 while($row = $results->fetch_assoc()) {
-                    $AdditionalAuthorUserID = $row["UserID"];*/
-                    $AdditionalAuthorUserID = 6;
-                    $SubmissionID = 3;
+                    $AdditionalAuthorUserID = $row["UserID"];
 
-                    $q_AuthorAddToSubmission = "Call spAuthorAddToSubmission($AdditionalAuthorUserID, $SubmissionID);"; // Call to stored procedure
-                    $dbc->query($q_AuthorAddToSubmission); // Run procedure
+                    $PrimaryContact = 0;
+
+                    $check = $dbc->query("Call spAuthorAddToSubmission('$AdditionalAuthorUserID', '$SubmissionID', '$PrimaryContact');"); // Run procedure
                     complete_procedure($dbc);
-
-                /*}
+                    if ($check == false) {
+                        echo "There was an issue, please try again";
+                        $Error = true;
+                    }elseif (is_bool($check) === false){
+                        while($checkrow = $check->fetch_assoc()) {
+                            if ($checkrow["Error"] == true){
+                                echo "The following errors occured: <br>";
+                                echo $checkrow["Error"];
+                                $Error = true;
+                            }
+    			        }
+                    }else {
+                        echo "success";
+                    }
+                }
             } else {
-                echo "No users found";
+                echo "Author " . $count . " not found";
+                $Error = true;
             }
             $count--;
         }
     }
 
-} else { echo "Error with submission.";}*/
+} else { echo "Error with submission.";}
+require "./includes/footer.php";
  ?>
