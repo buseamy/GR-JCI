@@ -20,10 +20,18 @@ function create_download_link ($file_id, $filename, $filesize) {
     }
     
     echo "<p><a target=\"_blank\" href=\"download.php?fid=$file_id\">$filename</a>";
-    if (isset($filesize) && is_numeric($filsize)) {
+    if (isset($filesize) && is_numeric($filesize)) {
         echo " ($bytecount $byteunit)";
     }
     echo "</p>\n";
+}
+
+function is_mime_valid ($mime) {
+    // valid MIMEs are:
+    $doc = 'application/msword';
+    $docx = 'application/vnd.openxmlformats-officedocument.wordprocessing';
+    $pdf = 'application/pdf';
+    return ($mime == $doc || $mime == $docx || $mime == $pdf);
 }
 
 // create_upload_input - expects string for input-id name,
