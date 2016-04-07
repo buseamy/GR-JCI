@@ -8,13 +8,9 @@ require('./include_utils/procedures.php');
 require('./include_utils/files.php'); // download links, upload inputs
 
 $error = false;
+$incomplete = false;
 $errorloc = '';
 $errors = array();
-
-//spGetRoles[RoleID, RoleTitle]
-//  make sure the user is a reviewer
-//spGetUserRoles(UserID)[RoleTitle]
-//  make sure the user is a reviewer
 
 // Make sure the user is a reviewer
 if (!isset($_SESSION) || (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer'])) {
@@ -22,10 +18,14 @@ if (!isset($_SESSION) || (isset($_SESSION['is_reviewer']) && !$_SESSION['is_revi
     $error = true;
     array_push($errors, 'Only reviewers may review critical incidents.');
 }
+// Get UserID
+if (isset($_SESSION['UserID'])) {
+    $userID = $_SESSION['UserID'];
+}
 
 // Make sure a submission is selected
-if (isset($_GET['sid'])) {
-    $subID = $_GET['sid'];
+if (isset($_GET['sid']) && is_numeric($_GET['sid'])) {
+    $subID = mysqli_real_escape_string($dbc, $_GET["sid"]);
 }
 else {
     $errorloc = 'navigating to this page';
@@ -36,18 +36,79 @@ else {
 // Process reviewer submission
 if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorloc = 'processing uploads';
-    if (isset($_FILES)) {
-        $startfile = 1;
-        while (isset($_FILES["$startfile"])) {
-            
-            /*if (is_mime_valid($_FILES["$startfile"])) {
-                
+    
+    // handle files, continue if incomplete
+    if (!$error && isset($_FILES)) {
+        $q_filetypes = 'CALL spGetFileTypes(2);';
+        $filetypes[] = array();
+        if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
+            // defer to array so the connection can be cleared
+            while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
+                array_push($filetypes, $row_filetypes);
             }
-            else {
-                $error = true;
-                array_push($errors, "File $startfile has an invalid document type.");
-            }*/
-            $startfile = $startfile++;
+            complete_procedure($dbc);
+            
+            foreach ($filetypes as $filerow) {
+                $typeId = $filerow['FileTypeID'];
+                $typeName = $filerow['FileType'];
+                $inName = 'fileup-' . $typeId
+                if (!$error && isset($_FILES["$inName"]) && isset($_FILES["$inName"]["type"])) {
+                    // adapted from prototyped file_upload_view_download
+                    $DstFileName = $_FILES["$inName"]["name"];
+                    $SrcFileType = $_FILES["$inName"]["type"];
+                    $SrcFilePath = $_FILES["$inName"]["tmp_name"];
+                    $FileErrorVal = $_FILES["$inName"]["error"];
+                    $FileSize = $_FILES["$inName"]["size"];
+                    if (is_mime_valid($SrcFileType) && $FileSize < 2097152) {
+                        $q_create_rfmd = "CALL spCreateReviewerFileMetaData($subID, $userID, $typeId, $SrcFileType, $DstFileName, $FileSize);";
+                        $r_create_rfmd = mysqli_query($dbc, $q_create_rfmd);
+                        $row_create_rfmd = mysqli_fetch_array($r_create_rfmd, MYSQLI_ASSOC);
+                        $fmdId = $row_create_rfmd['FileMetaDataID'];
+                        // TODO: verify this check works as intended
+                        if (isset($row_create_rfmd['Error']) || $fmdId == 0) {
+                            $error = true;
+                            $incomplete = true;
+                            $ret_err = $row_create_rfmd['Error'];
+                            array_push($errors, "File for $typeName could not be uploaded because $ret_err."
+                        }
+                        ignore_remaining_output($r_create_rfmd);
+                        complete_procedure($dbc);
+                        
+                        // File Processing
+                        if (!$error && file_exists($SrcFilePath)) {
+                            $fp = fopen($SrcFilePath, "rb");
+                            $segment = 1;
+                            while (!feof($fp)) {
+                                // Make the data mysql insert safe
+                                $binarydata = addslashes(fread($fp, 65535));
+                                $SQL = "CALL spCreateFileContent ('$fmdId', '$binarydata', $segment);";
+                                if (!$result = mysqli_query($dbc, $SQL)) {
+                                    $error = true;
+                                    $incomplete = true;
+                                    $ret_err = $dbc->error;
+                                    array_push($errors, "Segment $segment of file for $typeName could not be uploaded because $ret_err.";
+                                }
+                                complete_procedure($dbc);
+                                $segment ++;
+                            }
+                            fclose($fp);
+                        }
+                    }
+                    else {
+                        $error = true;
+                        $incomplete = true;
+                        array_push($errors, 'Uploaded documents must be less than 2MB and in Word-document or PDF format.');
+                    }
+                }
+                else {
+                    $incomplete = true;
+                    array_push($errors, 'Review file was missing for ' . $typeName . '.');
+                }
+            }
+        }
+        else {
+            $error = true;
+            array_push($errors, 'File types could not be retrieved.');
         }
     }
     else {
@@ -107,7 +168,7 @@ if (!$error) {
     $q_filetypes = 'CALL spGetFileTypes(2);';
     if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
         
-        echo "\t\t<form action=\"review_submission.php?sid=$subID\">\r\n";
+        echo "\t\t<form method=\"post\" action=\"review_submission.php?sid=$subID\" enctype=\"multipart/form-data\">\r\n";
         while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
             $typeId = $row_filetypes['FileTypeID'];
             $typeName = $row_filetypes['FileType'];
@@ -124,9 +185,14 @@ if (!$error) {
 }
 
 // Handle error messages
-if ($error) {
+if ($error || $incomplete) {
     // print errors
-    echo "\t\t<p class=\"error\">The following issues occurred while $errorloc:\r\n";
+    if ($error) {
+        echo "\t\t<p class=\"error\">The following issues occurred while $errorloc:\r\n";
+    }
+    else {
+        echo "\t\t<p class=\"incomplete\">Your review was partially processed with the following issues:\r\n";
+    }
     foreach ($errors as $msg) {
         echo "\t\t\t<br /> - $msg\r\n";
     }
