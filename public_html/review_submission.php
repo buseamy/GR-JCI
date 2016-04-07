@@ -47,6 +47,7 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $error = true;
                 array_push($errors, "File $startfile has an invalid document type.");
             }*/
+            $startfile = $startfile++;
         }
     }
     else {
