@@ -100,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						<input type="text" name="email2" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  />
 						<br>
 						<input type="submit" class="author" name="submit" value="Change E-mail" />
-						<br>
 						<input class="alert" type="button" onclick="window.location.replace('index.php')" value="Cancel" />
 					</form>
 				</div>

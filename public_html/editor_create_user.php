@@ -3,10 +3,10 @@
 // This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
 
 $page_title = 'Create User';
-	require ('./includes/header.php'); // Header
-	require ('./includes/subnav.php'); // Dashboard navigation
-	require ('../mysqli_connect.php'); // conect to database
-	require ('./include_utils/procedures.php'); // complete_procedure function
+require ('./includes/header.php'); // Header
+require ('./includes/subnav.php'); // Dashboard navigation
+require ('../mysqli_connect.php'); // conect to database
+require ('./include_utils/procedures.php'); // complete_procedure function
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	

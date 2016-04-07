@@ -4,6 +4,9 @@
 <?php
 $page_title = 'Set Submission Dates';
 
+require ('./includes/header.php'); // Header
+require ('./includes/subnav.php'); // Dashboard navigation
+
 function isdate($indate) {
 	if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$indate)) {
 		return true;
@@ -162,23 +165,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <!-- create the form-->
-<h1>Set Important Submission Dates for the Year</h1>
-<form action="editor_configure_submission_dates.php" method="post">
-	<p>Publication Year:  <input type="number" name="pubyear" min="2015" max="2100" step="1" placeholder="2015"/></p>
-	<p>First Submission Start:  <input type="text" name="fsstart" placeholder="mm/dd/yyyy"/> </p>
-	<p>First Submission Due:  <input type="text" name="fsdue" placeholder="mm/dd/yyyy"/> </p>
-	<p>First Review Start:  <input type="text" name="frstart" placeholder="mm/dd/yyyy"/></p>
-	<p>First Review Due:  <input type="text" name="frdue" placeholder="mm/dd/yyyy"/></p>
-	<p>Second Submission Starts:  <input type="text" name="sstart" placeholder="mm/dd/yyyy"/></p>
-	<p>Second Submission Due:  <input type="text" name="ssdue" placeholder="mm/dd/yyyy"/></p>
-	<p>Second Review Starts:  <input type="text" name="srstart" placeholder="mm/dd/yyyy"/></p>
-	<p>Second Review Due:  <input type="text" name="srdue" placeholder="mm/dd/yyyy"/></p>
-	<p>Publication Submission Start:  <input type="text" name="psstart" placeholder="mm/dd/yyyy"/></p>
-	<p>Publication Submission Due:  <input type="text" name="psdue" placeholder="mm/dd/yyyy"/></p>
-	<p>Publication Date:  <input type="text" name="pdate" placeholder="mm/dd/yyyy"/></p>
-	<p><input type="submit" name="submit" value="Submit Changes" /></p>
-</form>
-<a href="index.php" class="button">Cancel</a>
+<?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
+	<div class="contentwidth">
+		<div class="row flush">
+			<div class="col s7">
+				<div class="editor roundcorner">
+					<h3>Set Important Submission Dates for the Year</h3>
+				</div>
+				<div>
+					<form action="editor_configure_submission_dates.php" method="post">
+						<br>
+						<label for="pubyear">Publication Year:  <span class="required"></span></label>
+						<input type="number" name="pubyear" class="regular" min="2015" max="2100" step="1" placeholder="2015"/>
+						<br>
+						<label for="fsstart">First Submission Start:  <span class="required"></span></label>
+						<input type="text" name="fsstart" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="fsdue">First Submission Due:  <span class="required"></span></label>
+						<input type="text" name="fsdue" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="frstart">First Review Start:  <span class="required"></span></label>
+						<input type="text" name="frstart" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="frdue">First Review Due:  <span class="required"></span></label>
+						<input type="text" name="frdue" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="sstart">Second Submission Starts:  <span class="required"></span></label>
+						<input type="text" name="sstart" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="ssdue">Second Submission Due:  <span class="required"></span></input>
+						<input type="text" name="ssdue" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="srstart">Second Review Starts:  <span class="required"></span></label>
+						<input type="text" name="srstart" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="srdue">Second Review Due:  <span class="required"></span></label>
+						<input type="text" name="srdue" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="psstart">Publication Submission Start:  <span class="required"></span></label>
+						<input type="text" name="psstart" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="psdue">Publication Submission Due:  <span class="required"></span></label>
+						<input type="text" name="psdue" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<label for="pdate">Publication Date:  <span class="required"></span></label>
+						<input type="text" name="pdate" class="regular" placeholder="mm/dd/yyyy"/>
+						<br>
+						<input type="submit" class="editor" name="submit" value="Submit Changes" />
+						<input class="alert" type="button" onclick="window.location.replace('index.php')" value="Cancel" />
+					</form>
+					<a href="index.php" class="button">Cancel</a>
+				</div>
+			</div>
+			<?php require ('./includes/sidebar.php'); // Include the site sidebar
+		echo '</div>';
+	echo '</div>';
+} else { echo '<p class="swatch alert_text">Please login and try again</p>'; }
+require ('./includes/footer.php'); ?>
 
 </body>
 </html>
