@@ -7,21 +7,16 @@
 // This function takes a date in the American standard format. If it is in that format it will convert it to the European format
 // and return it for upload to the database. If it is in the wrong format it will exit with a descriptive error.
 function convert_to($date) {
-   list($m, $d, $y) = explode('/', $date);
-   if(checkdate($m, $d, $y)){
-		  $newdate = DateTime::createFromFormat('m/d/Y', $date )->format('Y-m-d');
-		  return $newdate;
-      }elseif($date = "mm/dd/yyyy"){
-		  die ("Please fill out all dates.")
-      }else{
-          die("One of the dates provided was in the wrong format. Please try again.");
-      }
+	   list($m, $d, $y) = explode('/', $date);
+	   if (checkdate($m, $d, $y)){
+			  $newdate = DateTime::createFromFormat('m/d/Y', $date )->format('Y-m-d');
+			  return $newdate;
 }
-
+}
 
 // this function converts Eropean standard time format to American standart time format for display.
 function convert_from ($date) {
 	$newdate = DateTime::createFromFormat('Y-m-d', $date )->format('m/d/Y');
 	return $newdate;
 }
-<?
+?>
