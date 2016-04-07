@@ -11,31 +11,47 @@ $error = false;
 $errorloc = '';
 $errors = array();
 
-//spGetFileInfo(FileMetaDataID)[FileName, FileMime, FileSize]
-//  list files available for download
-//spReviewerGetFileList(ReviewerUserID, SubmissionID)[FileMetaDataID, FileName, FileSize, FileType]
-//  list files available to reviewer - partially make sure the user is a reviewer
-
 //spGetRoles[RoleID, RoleTitle]
 //  make sure the user is a reviewer
 //spGetUserRoles(UserID)[RoleTitle]
 //  make sure the user is a reviewer
 
 // Make sure the user is a reviewer
-if (!isset($_SESSION) || !$_SESSION['is_reviewer']) {
+if (!isset($_SESSION) || (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer'])) {
     $errorloc = 'verifying reviewer status';
-    
     $error = true;
     array_push($errors, 'Only reviewers may review critical incidents.');
 }
 
+// Make sure a submission is selected
+if (isset($_GET['sid'])) {
+    $subID = $_GET['sid'];
+}
+else {
+    $errorloc = 'navigating to this page';
+    $error = true;
+    array_push($errors, 'A reviewable critical incident was not chosen.');
+}
+
 // Process reviewer submission
 if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errorloc = 'upload processing';
-    
-    $startfile = 1;
-    while (isset($_FILES["$startfile"])) {
-
+    $errorloc = 'processing uploads';
+    if (isset($_FILES)) {
+        $startfile = 1;
+        while (isset($_FILES["$startfile"])) {
+            
+            /*if (is_mime_valid($_FILES["$startfile"])) {
+                
+            }
+            else {
+                $error = true;
+                array_push($errors, "File $startfile has an invalid document type.");
+            }*/
+        }
+    }
+    else {
+        $error = true;
+        array_push($errors, 'No files were submitted with your review');
     }
 }
 
@@ -47,24 +63,56 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 
 // Get information on the critical incident and display for download
 if (!$error) {
-    $errorloc = 'critical incident display';
-    
+    $errorloc = 'displaying information for this critical incident';
+    $q_submission = "CALL spSubmissionGetInfo($subID);";
+    if ($r_submission = mysqli_query($dbc, $q_submission) && mysqli_num_rows($r_submission) > 0) {
+        $row_submission = mysqli_fetch_array($r_submission, MYSQLI_ASSOC)
+        $sub_title = $row_submission['IncidentTitle'];
+        $sub_abstract = $row_submission['Abstract'];
+        $sub_keywords = $row_submission['Keywords'];
+        $sub_status = $row_submission['SubmissionStatus'];
+        // expecting one row
+        ignore_remaining_output($r_submission);
+        complete_procedure($dbc);
+        echo "<h1 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h1><br />\r\n";
+        echo "<h1 class=\"PLACEHOLDER\">Abstract: </h1><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
+        $q_subfiles = "CALL spSubmissionGetFilesList($subID);";
+        if ($r_subfiles = mysqli_query($dbc, $q_subfiles) && mysqli_num_rows($r_subfiles) > 0) {
+            while ($row_subfiles = mysqli_fetch_array($r_subfiles)) {
+                $fid = $row_subfiles['FileMetaDataID'];
+                $fname = $row_subfiles['FileName'];
+                $fsize = $row_subfiles['FileSize'];
+                $ftype = $row_subfiles['FileType'];
+                create_download_link($fid, $ftype . ': ' . $fname, $fsize);
+            }
+            complete_procedure($r_subfiles);
+        }
+        else {
+            $error = true;
+            array_push($errors, 'Author files were not found for this submission.');
+        }
+    }
+    else {
+        $error = true;
+        array_push($errors, 'Critical Incident information could not be retrieved.');
+    }
     
 }
 
 // Provide form for reviewer to submit review documents
 if (!$error) {
-    $errorloc = 'file upload form generation';
+    $errorloc = 'building a file upload form';
     
-    $q_filetypes = 'CALL spGetFileTypes(2)';
-    if ($r_filetypes = mysqli_query($dbc, $q_filetypes)) {
+    $q_filetypes = 'CALL spGetFileTypes(2);';
+    if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
         
-        echo "\t\t<form>\r\n";
+        echo "\t\t<form action=\"review_submission.php?sid=$subID\">\r\n";
         while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
             $typeId = $row_filetypes['FileTypeID'];
             $typeName = $row_filetypes['FileType'];
             create_upload_input('fileup-' . $typeId, $typeName, 'reviewer');
         }
+        echo "\t\t\t<input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
         echo "\t\t</form>\r\n";
         complete_procedure($dbc);
     }
