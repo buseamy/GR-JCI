@@ -20,18 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$errors[] = 'The password must be at least 6 characters long.';
 	}
 	// checks if password matches
-	if (isset($_POST['pass1'])) {
-	if ($_POST['pass1'] != $_POST['pass2']) {
-		$errors[] = 'Your password did not match the confirmed password.';
-	} else {
-		$password = mysqli_real_escape_string($dbc, trim($_POST['pass1']));
-	}
+	if (!empty($_POST['pass1'])) {
+		if ($_POST['pass1'] != $_POST['pass2']) {
+			$errors[] = 'Your password did not match the confirmed password.';
+		} else {
+			$password = mysqli_real_escape_string($dbc, trim($_POST['pass1']));
+		}
 	} else {
 		$errors[] = 'You forgot to enter a password.';
 	}
 	
 	// checks if email matches
-	if (isset($_POST['email'])) {
+	if (!empty($_POST['email'])) {
 		if ($_POST['email'] != $_POST['email2']) {
 			$errors[] = 'The E-mail addresses do not match.';
 		} elseif (preg_match('/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2}|aero|biz|com|coop|edu|gov|info|jobs|mil|mobi|museum|name|net|org|travel)$/i', $_POST['email'])) {
@@ -89,37 +89,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['zip'])) {
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}else {
-		$errors[] = 'Zip/postal codes should be formated as "00000" or "00000-0000".';
+		$errors[] = 'Zip/postal codes should be formated as "#####" or "#####-#####".';
 	}	
 
-	if (preg_match('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone'])) {
-		$rphone = preg_replace('\(?[2-9][0-8][0-9]\)?[-. ]?[0-9]{3}[-. ]?[0-9]{4}', $_POST['phone']);
-		$phone = mysqli_real_escape_string($dbc, trim($rphone));
+	if (($_POST['phone']) == '##########') {
+		$phone = null;
+	}elseif ((Is_numeric($POST['phone'])) && ((strlen($_POST['phone']) == 7 ) || (strlen($_POST['phone']) == 10 ))) {
+		$phone = mysqli_real_escape_string($dbc, trim($phone));
 	} else {
-		$errors[] = 'Phone numbers should be formated "(000) 000-0000".';
+		$errors[] = 'Phone numbers should be formated "##########" and should be seven or ten digits long.';
 	}
 
 	
-	if (isset($_POST['code'])) {
+	if (!empty($_POST['code'])) {
 		$code = mysqli_real_escape_string($dbc, trim($_POST['code']));
 	} else {
 		$code = null;
 	}
 	
-	if (isset($_POST['association'])) {
+	if (!empty($_POST['association'])) {
 		$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
 	} else {
 		$association = null;
 	}
 	$atype = $_POST['atype'];
 	$ptype = $_POST['ptype'];
-	// check to see if address or phone number are primary.
-	if ($_POST['atype'] = 2){
-		$aprime = 1;
-	}
-	if ($_POST['ptype'] = 2){
-		$pprime = 1;
-	}
+	$aprime = 1;
+	$pprime = 1;
+
 	
 	if (empty($errors)) { // If everything's OK.
 	
@@ -139,26 +136,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			complete_procedure($dbc);
 			
 			// Send the users address information to the database
-			if ((isset($_post['address1'])) || (isset($_post['address2']))) {
+			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
 				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
 				mysqli_query ($dbc, $q_address);
 				complete_procedure($dbc);
 			}
 			
 			// Send the users phone information to the database.
-			if (isset($_post['phone'])){
+			if (($_post['phone']) != '##########'){
 				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', '$pprime')";
 				mysqli_query ($dbc, $q_phone);
 				complete_procedure($dbc);
 			}
 			
            
-			if (isset($_POST['checkeditor'])){
+			if (!empty($_POST['checkeditor'])){
 				$q_role = "Call spUserAddRole ($r_userID, 3);";
 				mysqli_query ($dbc, $q_role);
 				complete_procedure($dbc);
 			}
-			if (isset($_POST['checkreviewer'])){
+			if (!empty($_POST['checkreviewer'])){
 				$q_role = "Call spUserAddRole ($r_userID, 2);";
 				mysqli_query ($dbc, $q_role);
 				complete_procedure($dbc);
@@ -188,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else { // Report the errors.
 	
 		echo '<h1 class="swatch alert_text">Error!</h1>
-		<p>The following error(s) occurred:<br />';
+		<p><br><br>The following error(s) occurred:<br />';
 		foreach ($errors as $msg) { // Print each error.
 			echo " - $msg<br />\n";
 		}
@@ -209,11 +206,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<div class="contentwidth">
 		<div class="row flush">
 			<div class="col s7">
-				<div>
-					<h1>Create User</h1>
+				<div class="editor roundcorner">
+					<h3 class="title">Create User</h3>
 				</div>
 				<div>
 					<form action="editor_create_user.php" method="post">
+						<br>
 						<label for="email">Email Address: <span class="required">*</span></label>
 						<input type="text" name="email" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  />
 						<br>
@@ -273,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						?>
 						<br>
 						<label for="phone">Phone Number: </label>
-						<input type="text" name="phone" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } else {echo '(000) 000-0000';} ?>" />
+						<input type="text" name="phone" class="regular" size="10" maxlength="10" placeholder="##########" value="<?php if (isset($_POST['phone'])){ echo $_POST['phone']; } ?>" />
 						<br>
 						<label for="ptype">Phone Type:</label>
 						<?php

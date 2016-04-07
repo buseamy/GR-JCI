@@ -4,6 +4,9 @@
 
 $page_title = 'Update E-mail Address';
 
+require ('./includes/header.php'); // Include the site header
+require ('./includes/subnav.php'); // Dashboard navigation
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (empty($errors)) { // If everything's OK.
 	
 		// Add the user in the database...
-		$uid = $_SESSION['id'];
+		$uid = $_SESSION['USERID'];
 		// Make the query:
 		$q_email = "Call spUpdateUserEmailAddress($uid, '$email');";
 				
@@ -81,12 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <!-- create the form-->
-<?php if (isset($_SESSION['id'])) { // only display if logged in ?>
+<?php if (isset($_SESSION['UserID'])) { // only display if logged in ?>
 	<div class="contentwidth">
 		<div class="row flush">
 			<div class="col s7">
-				<div>
-					<h1>Change E-mail</h1>
+				<div class="author roundcorner">
+					<h3 class="title">Change E-mail</h3>
 				</div>
 				<div>
 					<form action="user_update_email.php" method="post">
