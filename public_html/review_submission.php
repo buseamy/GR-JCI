@@ -5,7 +5,7 @@ $page_title = 'Review Critical Incident';
 
 require('../mysqli_connect.php');
 require('./include_utils/procedures.php');
-require('./include_utils/files.php'); // download links, upload inputs
+require('./include_utils/files.php'); // download links, upload inputs, mime-check
 
 $error = false;
 $incomplete = false;
@@ -115,6 +115,19 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = true;
         array_push($errors, 'No files were submitted with your review');
     }
+    
+    if (!$error && !$incomplete) {
+        // TODO: create radio button pair for 'needs revision' and 'publishable'
+        $q_update_review = "CALL spReviewerUpdateReviewStatus($userID, $subID, 2);";
+        if ($r_update_review = mysqli_query($dbc, $q_update_review) && mysqli_num_rows($r_update_review) == 0) {
+            ignore_remaining_output($r_update_review);
+            complete_procedure($dbc);
+        }
+        else {
+            $error = true;
+            array_push($errors, 'Review could not be committed');
+        }
+    }
 }
 
 // Display section
@@ -163,7 +176,7 @@ if (!$error) {
 
 // Provide form for reviewer to submit review documents
 if (!$error) {
-    $errorloc = 'building a file upload form';
+    $errorloc = 'building the file upload form';
     
     $q_filetypes = 'CALL spGetFileTypes(2);';
     if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
