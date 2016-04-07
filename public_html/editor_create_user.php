@@ -108,10 +108,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['association'])) {
-		$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
+		if (Is_numeric($POST['association'])) {
+			$errors[] = 'Professional associations should not contain numbers.';
+		} else {
+			$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
+		}
 	} else {
 		$association = null;
 	}
+	
 	$atype = $_POST['atype'];
 	$ptype = $_POST['ptype'];
 	$aprime = 1;
