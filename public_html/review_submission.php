@@ -1,6 +1,9 @@
 <?php
 $page_title = 'Review Critical Incident';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
 // Purpose: allow a reviewer to review a singlular Critical Incident
 //      - reviewer can download submission files and upload review files
 
