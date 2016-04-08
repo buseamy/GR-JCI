@@ -9,7 +9,7 @@ DETERMINISTIC
 BEGIN
   Select Year
   From Publications
-  Order By Year;
+  Order By Year Desc;
 END$$
 
 DELIMITER ;
