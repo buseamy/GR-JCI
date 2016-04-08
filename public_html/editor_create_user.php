@@ -89,15 +89,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}elseif (preg_match('/^[0-9]{5,5}([- ]?[0-9]{4,4})?$/', $_POST['zip'])) {
 		$zip = mysqli_real_escape_string($dbc, trim($_POST['zip']));
 	}else {
-		$errors[] = 'Zip/postal codes should be formated as "#####" or "#####-#####".';
+		$errors[] = 'Zip/postal codes should be formated as "#####".';
 	}	
 
 	if (($_POST['phone']) == '##########') {
 		$phone = null;
-	}elseif ((Is_numeric($POST['phone'])) && ((strlen($_POST['phone']) == 7 ) || (strlen($_POST['phone']) == 10 ))) {
+	}elseif ((Is_numeric($_POST['phone'])) && (strlen($_POST['phone']) == 10 )) {
 		$phone = mysqli_real_escape_string($dbc, trim($phone));
 	} else {
-		$errors[] = 'Phone numbers should be formated "##########" and should be seven or ten digits long.';
+		$errors[] = 'Phone numbers should be formated "##########" and should ten digits long.';
 	}
 
 	
@@ -119,9 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	$atype = $_POST['atype'];
 	$ptype = $_POST['ptype'];
-	$aprime = 1;
-	$pprime = 1;
-
 	
 	if (empty($errors)) { // If everything's OK.
 	
@@ -142,14 +139,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
 			// Send the users address information to the database
 			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
-				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
+				$q_address = "CALL spCreateAddress('$r_userID', '$atype', '$address1', '$address2', '$city', '$stateID', '$zip', 1 )";
 				mysqli_query ($dbc, $q_address);
 				complete_procedure($dbc);
 			}
 			
 			// Send the users phone information to the database.
 			if (($_post['phone']) != '##########'){
-				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', '$pprime')";
+				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', 1 )";
 				mysqli_query ($dbc, $q_phone);
 				complete_procedure($dbc);
 			}
@@ -170,6 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             sendNotificationEmail($dbc, $r_userID, $password);
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
+			mysqli_close($dbc); // Close the database connection.
+			
 		} else { // If it did not run OK.
 			
 			// Public message:
@@ -187,18 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //quit the script:
 		exit();
 	
-	} else { // Report the errors.
+	} 
 	
-		echo '<h1 class="swatch alert_text">Error!</h1>
-		<p><br><br>The following error(s) occurred:<br />';
-		foreach ($errors as $msg) { // Print each error.
-			echo " - $msg<br />\n";
-		}
-		echo '</p><p>Please try again.</p><p><br /></p>';
-		
-	} // End of if (empty($errors)) IF.
-	
-	mysqli_close($dbc); // Close the database connection.
 }
 
 ?>
@@ -211,6 +200,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<div class="contentwidth">
 		<div class="row flush">
 			<div class="col s7">
+				<?php
+				if (!empty($errors)) { // Report the errors.
+					echo '<div>';
+					echo '<h1 class="swatch alert_text">Error!</h1>
+					<p><br><br>The following error(s) occurred:<br />';
+					foreach ($errors as $msg) { // Print each error.
+						echo " - $msg<br />\n";
+					}
+					echo '</p><p>Please try again.</p><p><br /></p>';
+					echo '</div>';
+				} // End of if (!empty($errors)).
+				?>
 				<div class="editor roundcorner">
 					<h3 class="title">Create User</h3>
 				</div>
@@ -223,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						<label for="email2">Confirm Email Address: <span class="required">*</span></label>
 						<input type="text" name="email2" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  />
 						<br>
-						<label for="pass1">Password: <span class="required">*</span></label>
+						<label for="pass1">Password: (At least 6 characters long) <span class="required">*</span></label>
 						<input type="password" name="pass1" class="regular" size="10" maxlength="20"  />
 						<br>
 						<label for="pass2">Confirm Password: <span class="required">*</span></label>

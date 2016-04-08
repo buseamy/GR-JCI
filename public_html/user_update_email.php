@@ -67,19 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //quit the script:
 		exit();
-	
-	} else { // Report the errors.
-	
-		echo '<h1 class="swatch alert_text">Error!</h1>
-		<p>The following error(s) occurred:<br />';
-		foreach ($errors as $msg) { // Print each error.
-			echo " - $msg<br />\n";
-		}
-		echo '<p>Please try again.</p><p><br /></p>';
-		
-	} // End of if (empty($errors)) IF.
-	
-	mysqli_close($dbc); // Close the database connection.
+
 }
 ?>
 
@@ -88,6 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<div class="contentwidth">
 		<div class="row flush">
 			<div class="col s7">
+				<?php
+				if (!empty($errors)) { // Report the errors.
+					echo '<div>';
+					echo '<h1 class="swatch alert_text">Error!</h1>
+					<p><br><br>The following error(s) occurred:<br />';
+					foreach ($errors as $msg) { // Print each error.
+						echo " - $msg<br />\n";
+					}
+					echo '</p><p>Please try again.</p><p><br /></p>';
+					echo '</div>';
+				} // End of if (!empty($errors)).
+				?>
 				<div class="author roundcorner">
 					<h3 class="title">Change E-mail</h3>
 				</div>

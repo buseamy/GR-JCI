@@ -153,14 +153,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}else{
 			echo '<p>There was an error updating the submission dates. Please try again.</p><br />,/p>';
 		}
-	} else { // Report the errors.
-		echo '<h1 class="swatch alert_text">Error!</h1>
-		<p>The following error(s) occurred:<br />';
-		foreach ($errors as $msg) { // Print each error.
-			echo " - $msg<br />\n";
-		}
-		echo '</p><p>Please try again.</p><p><br /></p>';
-	}	
+mysqli_close($dbc); // Close the database connection.
+
+
+//quit the script:
+exit();
+}
 }
 ?>
 
@@ -169,6 +167,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<div class="contentwidth">
 		<div class="row flush">
 			<div class="col s7">
+				<?php
+				if (!empty($errors)) { // Report the errors.
+					echo '<div>';
+					echo '<h1 class="swatch alert_text">Error!</h1>
+					<p><br><br>The following error(s) occurred:<br />';
+					foreach ($errors as $msg) { // Print each error.
+						echo " - $msg<br />\n";
+					}
+					echo '</p><p>Please try again.</p><p><br /></p>';
+					echo '</div>';
+				} // End of if (!empty($errors)).
+				?>
 				<div class="editor roundcorner">
 					<h3>Set Important Submission Dates for the Year</h3>
 				</div>
@@ -212,9 +222,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						<input type="text" name="pdate" class="regular" placeholder="mm/dd/yyyy"/>
 						<br>
 						<input type="submit" class="editor" name="submit" value="Submit Changes" />
-						<input class="alert" type="button" onclick="window.location.replace('index.php')" value="Cancel" />
+						<input class="alert" type="button" onclick="location.href='editor_system_settings.php'" value="Cancel" />
 					</form>
-					<a href="index.php" class="button">Cancel</a>
 				</div>
 			</div>
 			<?php require ('./includes/sidebar.php'); // Include the site sidebar

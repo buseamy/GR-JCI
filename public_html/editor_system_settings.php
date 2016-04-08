@@ -12,7 +12,7 @@ include ('includes/header.php');
 			<h1>Editor System Settings</h1>
 				<ul>
 					<li><button class="editor" type="button" onClick="#" >Change Date Allowed for Critical Incident Submission</button></li>
-					<p><li><button class="editor" type="button" onClick="#" >Configure Review Open and Closing Dates</button></li></p>
+					<p><li><button class="editor" type="button" onClick="location.href='editor_configure_submission_dates.php'" >Configure Review Open and Closing Dates</button></li></p>
 					<li><button class="editor" type="button" onClick="#" >Configure Reminder Email Intervals</button></li>
 					<li><p><button class="editor" type="button" onClick="#" >Run Reports</button></p></li>
 				</ul>
