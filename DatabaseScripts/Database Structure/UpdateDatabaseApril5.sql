@@ -1,3 +1,5 @@
+Use gr_jci;
+
 /* Create the PublicationCategories table */
 CREATE TABLE PublicationCategories (
 CategoryID int NOT NULL AUTO_INCREMENT,

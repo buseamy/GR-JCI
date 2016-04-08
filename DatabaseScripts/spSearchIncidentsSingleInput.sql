@@ -11,6 +11,7 @@ BEGIN
   If ((_SearchTerm Is Not Null) And (Char_Length(_SearchTerm) > 0)) Then
     /* Make sure the SearchTerm has wildcard chars around it */
     Set _SearchTerm = Concat('%', _SearchTerm, '%');
+    
     Select results.CriticalIncidentID,
            results.Year,
            results.IncidentTitle,
@@ -48,10 +49,7 @@ BEGIN
                p.Year,
                pci.IncidentTitle,
                pci.Abstract,
-               pci.Keywords,
-               pa.LastName,
-               pa.FirstName,
-               pc.Category) As results
+               pci.Keywords) As results
     Group By results.CriticalIncidentID,
              results.Year,
              results.IncidentTitle,
