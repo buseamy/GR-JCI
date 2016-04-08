@@ -145,12 +145,15 @@ if (!$error) {
 					
 		echo '<label for = "chk-case-'.$caseID.'">'.$case_name.'</label>';
 		echo '<input type="checkbox" id = "chk-case-'.$caseID.'" name="selected[]" value="'.$caseID.'"/>';
+		echo '</td>';
 		foreach($editor_list as $editor_row) {	
 		$editor_name = $editor_row['FullName'] ;
 		$editor_ID = $editor_row['UserID'];
 		// radio button goes here
+		echo '<td>';
 		echo '<label for = "radio-editor-'.$editor_ID.'">'.$editor_name.'</label>';
 		echo '<input type="radio" id = "radio-editor-'.$editor_ID.'" name="selected1" value="'.$editor_ID.'"/>';
+		echo '</td>';
 		// echo '<input type="radio" name="editor" value="'.$row_editors['UserID'].'"/>';
 		// case name editors file download
 		}
@@ -158,13 +161,14 @@ if (!$error) {
 			$file_id = $submission_file_row['FileMetaDataID'] ;
 			$filename = $submission_file_row['FileName'] ;
 			$filesize = $submission_file_row['FileSize'] ;
+			echo '<td>';
 			create_download_link ($file_id, $filename, $filesize);
-			
+			echo '<td>';
 			// download link goes here create_download_link($file_id, $filename, $filesize)
 		}
 		
 		}
-        echo '</td>';
+        
 		echo '</tr>';
 		?>
 		
