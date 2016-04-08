@@ -18,17 +18,17 @@ BEGIN
   If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
     /* Make sure RoleID exists */
     If(Select Exists(Select 1 From Roles Where RoleID = _RoleID)) Then
-	  /* Make sure AnnouncementID and RoleID combination doesn't exist */
+      /* Make sure AnnouncementID and RoleID combination doesn't exist */
       If(Select Exists(Select 1 From AccouncementRoles Where AnnouncementID = _AnnouncementID And RoleID = _RoleID)) Then
         Select 'User already has that role' As 'Error';
       Else
-	    /* Make the connection */
+        /* Make the connection */
         Insert Into AccouncementRoles (AnnouncementID,RoleID)
-	    Values (_AnnouncementID,_RoleID);
+        Values (_AnnouncementID,_RoleID);
       End If;
-	Else
-	  Select 'RoleID doesn''t exist' As 'Error';
-	End If;
+    Else
+      Select 'RoleID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'AnnouncementID doesn''t exist' As 'Error';
   End If;
@@ -48,48 +48,48 @@ END$$
 DROP PROCEDURE IF EXISTS `spAuthorAddToSubmission`$$
 CREATE PROCEDURE `spAuthorAddToSubmission`(IN _UserID int,
                                            IN _SubmissionID int,
-										   IN _PrimaryContact tinyint)
+                                           IN _PrimaryContact tinyint)
 DETERMINISTIC
 BEGIN
   Declare _InstitutionAffiliation varchar(150);
   Declare _AuthorSeniority int;
-	
+    
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
-	  
-	  Set _PrimaryContact = IfNull(_PrimaryContact, 0);
-	  
-	  /* Get the user's InstitutionAffiliation */
-	  Select InstitutionAffiliation Into _InstitutionAffiliation
-	  From Users
-	  Where UserID = _UserID;
-	  
-	  /* Get the highest author senority for the submission */
-	  Select Max(AuthorSeniority) + 1 Into _AuthorSeniority
-	  From AuthorsSubmission
-	  Where SubmissionID = _SubmissionID;
-	  
-	  If (_PrimaryContact = 1) Then
-	    Update AuthorsSubmission
-		Set PrimaryContact = 0
-		Where SubmissionID = _SubmissionID;
-	  End If;
-	  
-	  /* Link the UserID to the SubmissionID */
-	  Insert Into AuthorsSubmission (UserID,
-	                                 SubmissionID,
-	                                 InstitutionAffiliation,
-	  							     PrimaryContact,
-	  							     AuthorSeniority)
-	  Values (_UserID,
-	          _SubmissionID,
-	  		  _InstitutionAffiliation,
-	  		  _PrimaryContact,
-	  		  _AuthorSeniority);
-	Else
-	  Select 'SubmissionID doesn''t exist' As 'Error';
-	End If;
+      
+      Set _PrimaryContact = IfNull(_PrimaryContact, 0);
+      
+      /* Get the user's InstitutionAffiliation */
+      Select InstitutionAffiliation Into _InstitutionAffiliation
+      From Users
+      Where UserID = _UserID;
+      
+      /* Get the highest author senority for the submission */
+      Select Max(AuthorSeniority) + 1 Into _AuthorSeniority
+      From AuthorsSubmission
+      Where SubmissionID = _SubmissionID;
+      
+      If (_PrimaryContact = 1) Then
+        Update AuthorsSubmission
+        Set PrimaryContact = 0
+        Where SubmissionID = _SubmissionID;
+      End If;
+      
+      /* Link the UserID to the SubmissionID */
+      Insert Into AuthorsSubmission (UserID,
+                                     SubmissionID,
+                                     InstitutionAffiliation,
+                                       PrimaryContact,
+                                       AuthorSeniority)
+      Values (_UserID,
+              _SubmissionID,
+                _InstitutionAffiliation,
+                _PrimaryContact,
+                _AuthorSeniority);
+    Else
+      Select 'SubmissionID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -99,54 +99,54 @@ END$$
 DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`$$
 CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
                                            IN _IncidentTitle varchar(150),
-										   IN _Abstract varchar(5000),
-										   IN _KeyWords varchar(5000),
-										   IN _PreviousSubmissionID int,
-										   IN _SubmissionNumber TINYINT)
+                                           IN _Abstract varchar(5000),
+                                           IN _KeyWords varchar(5000),
+                                           IN _PreviousSubmissionID int,
+                                           IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
   Declare _SubmissionID int;
   Declare _InstitutionAffiliation varchar(100);
-	
+    
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
   
-	/* Create the actual submission record */
+    /* Create the actual submission record */
     Insert Into Submissions (IncidentTitle,
-	                         Abstract,
-							 Keywords,
-							 SubmissionNumber,
-							 PreviousSubmissionID,
-							 SubmissionDate,
-							 SubmissionStatusID)
-	Values (_IncidentTitle,
-	        _Abstract,
-			_KeyWords,
-			_SubmissionNumber,
-			_PreviousSubmissionID,
-			CURRENT_DATE,
-			1);
-	
-	Set _SubmissionID = last_insert_id();
-	
-	/* Get the user's InstitutionAffiliation */
-	Select InstitutionAffiliation Into _InstitutionAffiliation
-	From Users
-	Where UserID = _UserID;
-	
-	/* Link the UserID to the SubmissionID */
-	Insert Into AuthorsSubmission (UserID,
-	                               SubmissionID,
-	                               InstitutionAffiliation,
-								   PrimaryContact,
-								   AuthorSeniority)
-	Values (_UserID,
-	        _SubmissionID,
-			_InstitutionAffiliation,
-			1,
-			1);
-	
-	Select _SubmissionID As 'SubmissionID';
+                             Abstract,
+                             Keywords,
+                             SubmissionNumber,
+                             PreviousSubmissionID,
+                             SubmissionDate,
+                             SubmissionStatusID)
+    Values (_IncidentTitle,
+            _Abstract,
+            _KeyWords,
+            _SubmissionNumber,
+            _PreviousSubmissionID,
+            CURRENT_DATE,
+            1);
+    
+    Set _SubmissionID = last_insert_id();
+    
+    /* Get the user's InstitutionAffiliation */
+    Select InstitutionAffiliation Into _InstitutionAffiliation
+    From Users
+    Where UserID = _UserID;
+    
+    /* Link the UserID to the SubmissionID */
+    Insert Into AuthorsSubmission (UserID,
+                                   SubmissionID,
+                                   InstitutionAffiliation,
+                                   PrimaryContact,
+                                   AuthorSeniority)
+    Values (_UserID,
+            _SubmissionID,
+            _InstitutionAffiliation,
+            1,
+            1);
+    
+    Select _SubmissionID As 'SubmissionID';
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -159,16 +159,16 @@ DETERMINISTIC
 BEGIN
   Select fmd.FileMetaDataID,
          fmd.FileName,
-		 fmd.FileSize,
-		 ft.FileType
+         fmd.FileSize,
+         ft.FileType
   From Reviewers r
     Inner Join ReviewerFiles rf
-	  On rf.ReviewerUserID = r.ReviewerUserID
-	    And rf.SubmissionID = r.SubmissionID
+      On rf.ReviewerUserID = r.ReviewerUserID
+        And rf.SubmissionID = r.SubmissionID
     Inner Join FileMetaData fmd
-	  On fmd.FileMetaDataID = rf.FileMetaDataID
-	Inner Join FileTypes ft
-	  On ft.FileTypeID = fmd.FileTypeID
+      On fmd.FileMetaDataID = rf.FileMetaDataID
+    Inner Join FileTypes ft
+      On ft.FileTypeID = fmd.FileTypeID
   Where rf.SubmissionID = _SubmissionID
     And r.ReviewCompletionDate Is Not Null;
 END$$
@@ -177,21 +177,21 @@ END$$
 DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`$$
 CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
                                             IN _IncidentTitle varchar(150),
-										    IN _Abstract varchar(5000),
-										    IN _KeyWords varchar(5000),
-										    IN _SubmissionNumber TINYINT)
+                                            IN _Abstract varchar(5000),
+                                            IN _KeyWords varchar(5000),
+                                            IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
   
-	/* Update the submission record */
-	Update Submissions
-	Set IncidentTitle = _IncidentTitle,
-	    Abstract = _Abstract,
-		Keywords = _KeyWords,
-		SubmissionNumber = _SubmissionNumber
-	Where SubmissionID = _SubmissionID;
+    /* Update the submission record */
+    Update Submissions
+    Set IncidentTitle = _IncidentTitle,
+        Abstract = _Abstract,
+        Keywords = _KeyWords,
+        SubmissionNumber = _SubmissionNumber
+    Where SubmissionID = _SubmissionID;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -205,15 +205,15 @@ BEGIN
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
-		 ss.SubmissionStatus,
-		 s.SubmissionDate
+         ss.SubmissionStatus,
+         s.SubmissionDate
   From Submissions s
     Inner Join AuthorsSubmission a
-	  On a.SubmissionID = s.SubmissionID
-	Inner Join SubmissionStatus ss
-	  On ss.SubmissionStatusID = s.SubmissionStatusID
-	Left Join Users eu
-	  On eu.UserID = s.EditorUserID
+      On a.SubmissionID = s.SubmissionID
+    Inner Join SubmissionStatus ss
+      On ss.SubmissionStatusID = s.SubmissionStatusID
+    Left Join Users eu
+      On eu.UserID = s.EditorUserID
   Where a.UserID = _UserID
     And Year(s.SubmissionDate) = _Year
   Order By s.SubmissionDate,
@@ -225,11 +225,11 @@ DROP PROCEDURE IF EXISTS `spCreateAddress`$$
 CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
                                    IN _AddressTypeID int,
                                    IN _AddressLn1 varchar(100),
-								   IN _AddressLn2 varchar(100),
-								   IN _City varchar(30),
-								   IN _StateID int,
-								   IN _PostCode char(5),
-								   IN _PrimaryAddress tinyint
+                                   IN _AddressLn2 varchar(100),
+                                   IN _City varchar(30),
+                                   IN _StateID int,
+                                   IN _PostCode char(5),
+                                   IN _PrimaryAddress tinyint
 ) DETERMINISTIC
 BEGIN
   Declare _AddressCount int;
@@ -238,40 +238,40 @@ BEGIN
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the AddressTypeID exists */
     If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
-	  /* Make sure the StateID exists */
-	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
-	    /* Default _PrimaryAddress to 0 if null is passed in */
+      /* Make sure the StateID exists */
+      If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
+        /* Default _PrimaryAddress to 0 if null is passed in */
         Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
         
-		/* Get the count of PhoneNumbers for the user */
+        /* Get the count of PhoneNumbers for the user */
         Select Count(AddressID) Into _AddressCount
         From Addresses
         Where UserID = _UserID;
       
-		/* New PrimaryAddress, set others for user to 0 */
-	    If (_PrimaryAddress = 1) Then
-		  Update Addresses
-		  Set PrimaryAddress = 0
-		  Where UserID = _UserID;
-		End If;
+        /* New PrimaryAddress, set others for user to 0 */
+        If (_PrimaryAddress = 1) Then
+          Update Addresses
+          Set PrimaryAddress = 0
+          Where UserID = _UserID;
+        End If;
       
         /* If this is the first address, make it the PrimaryAddress */
         If (_AddressCount = 0) Then
           Set _PrimaryAddress = 1;
         End If;
-		
+        
         /* Insert the new address record */
         Insert Into Addresses (UserID,AddressTypeID,AddressLn1,AddressLn2,City,StateID,PostCode,PrimaryAddress,CreateDate)
         Values (_UserID,_AddressTypeID,_AddressLn1,_AddressLn2,_City,_StateID,_PostCode,_PrimaryAddress,CURRENT_DATE);
           
         /* Get the new AddressID */
         Select last_insert_id() As 'AddressID';
-	  Else
-	    Select 'Invalid StateID' As 'Error';
-	  End If;
-	Else
-	  Select 'Invalid AddressTypeID' As 'Error';
-	End If;
+      Else
+        Select 'Invalid StateID' As 'Error';
+      End If;
+    Else
+      Select 'Invalid AddressTypeID' As 'Error';
+    End If;
   Else
     Select 'User doesn''t exist' As 'Error';
   End If;
@@ -287,9 +287,9 @@ BEGIN
     Select 'Address type already exists' As 'Error';
   Else
     Insert Into AddressTypes(AddressType)
-	Values (_AddressType);
-	
-	Select last_insert_id() As 'AddressTypeID';
+    Values (_AddressType);
+    
+    Select last_insert_id() As 'AddressTypeID';
   End If; 
 END$$
 
@@ -297,7 +297,7 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreateAnnouncement`$$
 CREATE PROCEDURE `spCreateAnnouncement`(IN _Title varchar(100),
                                         IN _Message varchar(10000),
-										IN _ExpireDate date
+                                        IN _ExpireDate date
 ) DETERMINISTIC
 BEGIN
   /* Make sure the Title doesn't exist */
@@ -306,15 +306,15 @@ BEGIN
   Else
     /* Create the announcement record */
     Insert Into Announcements (Title,
-	                           Message,
-							   CreateDate,
-							   ExpireDate)
+                               Message,
+                               CreateDate,
+                               ExpireDate)
     Values (_Title,
-	        _Message,
-			CURRENT_DATE,
-			_ExpireDate);
+            _Message,
+            CURRENT_DATE,
+            _ExpireDate);
 
-	/* Return the new AnnouncementID */
+    /* Return the new AnnouncementID */
     Select last_insert_id() As 'AnnouncementID';
   End If;
 END$$
@@ -329,9 +329,9 @@ BEGIN
     Select 'Category already exists' As 'Error';
   Else
     Insert Into Categories(Category)
-	Values (_Category);
-	
-	Select last_insert_id() As 'CategoryID';
+    Values (_Category);
+    
+    Select last_insert_id() As 'CategoryID';
   End If; 
 END$$
 
@@ -339,19 +339,19 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _IncidentTitle varchar(150),
-													 IN _Abstract varchar(5000),
-													 IN _Keywords varchar(5000),
-													 IN _FileMetaDataID int)
+                                                     IN _Abstract varchar(5000),
+                                                     IN _Keywords varchar(5000),
+                                                     IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the PublicationID exists */
     If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
-	  Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
-	  Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
+      Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
+      Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
 
-	  Select last_insert_id() As 'CriticalIncidentID';
+      Select last_insert_id() As 'CriticalIncidentID';
     Else
       Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
     End If;
@@ -365,10 +365,10 @@ DROP PROCEDURE IF EXISTS `spCreateEmailSettings`$$
 CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
                                          IN _AuthorNagDays int,
                                          IN _AuthorSubjectTemplate varchar(50),
-										 IN _AuthorBodyTemplate varchar(10000),
-										 IN _ReviewerNagDays int,
+                                         IN _AuthorBodyTemplate varchar(10000),
+                                         IN _ReviewerNagDays int,
                                          IN _ReviewerSubjectTemplate varchar(50),
-										 IN _ReviewerBodyTemplate varchar(10000))
+                                         IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
   Declare _SettingID int;
@@ -385,19 +385,19 @@ BEGIN
     Insert Into SystemSettings_Email (SettingName,
                                       AuthorNagEmailDays,
                                       AuthorSubjectTemplate,
-	  								  AuthorBodyTemplate,
-	  								  ReviewerNagEmailDays,
-	  								  ReviewerSubjectTemplate,
-	  								  ReviewerBodyTemplate,
-	  								  Active)
+                                        AuthorBodyTemplate,
+                                        ReviewerNagEmailDays,
+                                        ReviewerSubjectTemplate,
+                                        ReviewerBodyTemplate,
+                                        Active)
     Values (_SettingName,
-			_AuthorNagDays,
+            _AuthorNagDays,
             _AuthorSubjectTemplate,
-	  	    _AuthorBodyTemplate,
-	  	    _ReviewerNagDays,
-	  	    _ReviewerSubjectTemplate,
-	  	    _ReviewerBodyTemplate,
-	  	    1);
+              _AuthorBodyTemplate,
+              _ReviewerNagDays,
+              _ReviewerSubjectTemplate,
+              _ReviewerBodyTemplate,
+              1);
     
     /* Grab the new SettingID */
     Set _SettingID = last_insert_id();
@@ -411,20 +411,42 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreateFileContent`$$
 CREATE PROCEDURE `spCreateFileContent`(IN _FileMetaDataID int,
                                        IN _FileContent blob,
-									   IN _SequenceNumber int)
+                                       IN _SequenceNumber int)
 DETERMINISTIC
 BEGIN
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the FileMetaDataID & SequenceNumber doesn't exist */
     If(Select Exists(Select 1 From FileData Where FileMetaDataID = _FileMetaDataID And SequenceNumber = _SequenceNumber)) Then
-	  Select 'FileMetaDataID with this SequenceNumber already exists' As 'Error';
-	Else
-	  Insert Into FileData (FileMetaDataID,FileContents,SequenceNumber)
-	  Values (_FileMetaDataID,_FileContent,_SequenceNumber);
-	End If;
+      Select 'FileMetaDataID with this SequenceNumber already exists' As 'Error';
+    Else
+      Insert Into FileData (FileMetaDataID,FileContents,SequenceNumber)
+      Values (_FileMetaDataID,_FileContent,_SequenceNumber);
+    End If;
   Else
     Select 'FileMetaDataID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
+DROP PROCEDURE IF EXISTS `spCreateFileMetaData`$$
+CREATE PROCEDURE `spCreateFileMetaData`(IN _FileTypeID int,
+                                        IN _FileMime varchar(200),
+                                        IN _sFileName varchar(200),
+                                        IN _sFileSize int)
+DETERMINISTIC
+BEGIN
+  Declare _FileMetaDataID int;
+  
+  /* Make sure the FileTypeID exists */
+  If(Select Exists(Select 1 From FileTypes Where FileTypeID = _FileTypeID)) Then
+    Insert Into FileMetaData (FileTypeID,FileMime,FileName,FileSize)
+    Values (_FileTypeID,_FileMime,_sFileName,_sFileSize);
+    
+    /* Return the new FileMetaDataID */
+    Select last_insert_id() As 'FileMetaDataID';
+  Else
+    Select Concat('FileTypeID ', _FileTypeID,' doesn''t exist') As 'Error';
   End If;
 END$$
 
@@ -433,7 +455,7 @@ DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
 CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-								       IN _PrimaryPhone tinyint
+                                       IN _PrimaryPhone tinyint
 ) DETERMINISTIC
 BEGIN
   Declare _PhoneCount int;
@@ -442,35 +464,35 @@ BEGIN
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the PhoneTypeID exists */
     If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
-	  /* Default _PrimaryPhone to 0 if null is passed in */
+      /* Default _PrimaryPhone to 0 if null is passed in */
       Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
       
       /* Get the count of PhoneNumbers for the user */
       Select Count(PhoneNumberID) Into _PhoneCount
       From PhoneNumbers
       Where UserID = _UserID;
-	  
-	  /* New PrimaryPhone, set others for user to 0 */
-	  If (_PrimaryPhone = 1) Then
-		Update PhoneNumbers
-		Set PrimaryPhone = 0
-		Where UserID = _UserID;
-	  End If;
+      
+      /* New PrimaryPhone, set others for user to 0 */
+      If (_PrimaryPhone = 1) Then
+        Update PhoneNumbers
+        Set PrimaryPhone = 0
+        Where UserID = _UserID;
+      End If;
       
       /* If this is the first number, make it the PrimaryPhone */
       If (_PhoneCount = 0) Then
         Set _PrimaryPhone = 1;
       End If;
-	  
+      
       /* Insert the new phone number record */
       Insert Into PhoneNumbers (UserID,PhoneTypeID,PhoneNumber,PrimaryPhone,CreateDate)
       Values (_UserID,_PhoneTypeID,_PhoneNumber,_PrimaryPhone,CURRENT_DATE);
         
       /* Get the new PhoneNumberID */
       Select last_insert_id() As 'PhoneNumberID';
-	Else
-	  Select 'Invalid PhoneTypeID' As 'Error';
-	End If;
+    Else
+      Select 'Invalid PhoneTypeID' As 'Error';
+    End If;
   Else
     Select 'User doesn''t exist' As 'Error';
   End If; 
@@ -486,9 +508,9 @@ BEGIN
     Select 'Phone type already exists' As 'Error';
   Else
     Insert Into PhoneTypes(PhoneType)
-	Values (_PhoneType);
-	
-	Select last_insert_id() As 'PhoneTypeID';
+    Values (_PhoneType);
+    
+    Select last_insert_id() As 'PhoneTypeID';
   End If; 
 END$$
 
@@ -504,13 +526,13 @@ BEGIN
     Select Concat('Publication for year ', _Year, ' already exists') As 'Error';
   Else
     If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
-	  Insert Into Publications (Year, FileMetaDataID)
-	  Values (_Year, _FileMetaDataID);
-	  
-	  Select last_insert_id() As 'PublicationID';
-	Else
-	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
-	End If;
+      Insert Into Publications (Year, FileMetaDataID)
+      Values (_Year, _FileMetaDataID);
+      
+      Select last_insert_id() As 'PublicationID';
+    Else
+      Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+    End If;
   End If;
 END$$
 
@@ -551,19 +573,19 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _IncidentTitle varchar(150),
-													 IN _Abstract varchar(5000),
-													 IN _Keywords varchar(5000),
-													 IN _FileMetaDataID int)
+                                                     IN _Abstract varchar(5000),
+                                                     IN _Keywords varchar(5000),
+                                                     IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the PublicationID exists */
     If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
-	  Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
-	  Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
+      Insert Into PublishedCriticalIncidents (PublicationID, IncidentTitle, Abstract, Keywords, FileMetaDataID)
+      Values (_PublicationID, _IncidentTitle, _Abstract, _Keywords, _FileMetaDataID);
 
-	  Select last_insert_id() As 'CriticalIncidentID';
+      Select last_insert_id() As 'CriticalIncidentID';
     Else
       Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
     End If;
@@ -595,11 +617,11 @@ END$$
 /* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateReviewerFileMetaData`$$
 CREATE PROCEDURE `spCreateReviewerFileMetaData`(IN _SubmissionID int,
-												IN _ReviewerUserID int,
+                                                IN _ReviewerUserID int,
                                                 IN _FileTypeID int,
-												IN _FileMime varchar(200),
-												IN _sFileName varchar(200),
-												IN _sFileSize int)
+                                                IN _FileMime varchar(200),
+                                                IN _sFileName varchar(200),
+                                                IN _sFileSize int)
 DETERMINISTIC
 BEGIN
   Declare _FileMetaDataID int;
@@ -620,9 +642,9 @@ BEGIN
       
       /* Output the new FileMetaDataID */
       Select _FileMetaDataID As 'FileMetaDataID';
-	Else
-	  Select 'ReviewerUserID doesn''t exist' As 'Error';
-	End If;
+    Else
+      Select 'ReviewerUserID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -632,9 +654,9 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`$$
 CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _FileTypeID int,
-												  IN _FileMime varchar(200),
-												  IN _sFileName varchar(200),
-												  IN _sFileSize int)
+                                                  IN _FileMime varchar(200),
+                                                  IN _sFileName varchar(200),
+                                                  IN _sFileSize int)
 DETERMINISTIC
 BEGIN
   Declare _FileMetaDataID int;
@@ -642,17 +664,17 @@ BEGIN
   /* Make sure the SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     Insert Into FileMetaData (FileTypeID,FileMime,FileName,FileSize)
-	Values (_FileTypeID,_FileMime,_sFileName,_sFileSize);
-	
-	/* Get the new FileMetaDataID */
-	Set _FileMetaDataID = last_insert_id();
-	
-	/* Connect the new FileMetaDataID to the SubmissionID */
-	Insert Into SubmissionFiles(SubmissionID,FileMetaDataID)
-	Values (_SubmissionID,_FileMetaDataID);
-	
-	/* Output the new FileMetaDataID */
-	Select _FileMetaDataID As 'FileMetaDataID';
+    Values (_FileTypeID,_FileMime,_sFileName,_sFileSize);
+    
+    /* Get the new FileMetaDataID */
+    Set _FileMetaDataID = last_insert_id();
+    
+    /* Connect the new FileMetaDataID to the SubmissionID */
+    Insert Into SubmissionFiles(SubmissionID,FileMetaDataID)
+    Values (_SubmissionID,_FileMetaDataID);
+    
+    /* Output the new FileMetaDataID */
+    Select _FileMetaDataID As 'FileMetaDataID';
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -662,8 +684,8 @@ END$$
 DROP PROCEDURE IF EXISTS `spCreateUser`$$
 CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
                                 IN _Password varchar(50),
-								IN _FirstName varchar(15),
-								IN _LastName varchar(30))
+                                IN _FirstName varchar(15),
+                                IN _LastName varchar(30))
 DETERMINISTIC
 BEGIN
   Declare _UserID int;
@@ -674,25 +696,25 @@ BEGIN
   Else
     /* Insert the new User record */
     Insert Into Users (EmailAddress,
-					   NewEmailAddress,
-	                   PasswordHash,
-					   FirstName,
-					   LastName,
-					   EmailStatusID,
-					   EmailVerificationGUID,
-					   NewEmailAddressCreateDate,
-					   Active,
-					   CreateDate)
+                       NewEmailAddress,
+                       PasswordHash,
+                       FirstName,
+                       LastName,
+                       EmailStatusID,
+                       EmailVerificationGUID,
+                       NewEmailAddressCreateDate,
+                       Active,
+                       CreateDate)
     Values (LOWER(_EmailAddress),
-			LOWER(_EmailAddress),
-	        SHA1(_Password),
-			_FirstName,
-			_LastName,
-			1,
-			REPLACE(UUID(),'-',''),
-			CURRENT_DATE,
-			1,
-			CURRENT_DATE);
+            LOWER(_EmailAddress),
+            SHA1(_Password),
+            _FirstName,
+            _LastName,
+            1,
+            REPLACE(UUID(),'-',''),
+            CURRENT_DATE,
+            1,
+            CURRENT_DATE);
     
     /* Get the new UserID */
     Set _UserID = last_insert_id();
@@ -734,8 +756,8 @@ BEGIN
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set Active = 0, NonActiveNote = _NonActiveNote
-	Where UserID = _UserID;
+    Set Active = 0, NonActiveNote = _NonActiveNote
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If; 
@@ -745,10 +767,10 @@ END$$
 DROP PROCEDURE IF EXISTS `spEditorCreateUser`$$
 CREATE PROCEDURE `spEditorCreateUser`(IN _EmailAddress varchar(200),
                                 IN _Password varchar(50),
-								IN _FirstName varchar(15),
-								IN _LastName varchar(30),
-								IN _InstitutionAffiliation varchar(100),
-								IN _MemberCode varchar(20))
+                                IN _FirstName varchar(15),
+                                IN _LastName varchar(30),
+                                IN _InstitutionAffiliation varchar(100),
+                                IN _MemberCode varchar(20))
 DETERMINISTIC
 BEGIN
   Declare _UserID int;
@@ -759,29 +781,29 @@ BEGIN
   Else
     /* Insert the new User record */
     Insert Into Users (EmailAddress,
-					   NewEmailAddress,
-	                   PasswordHash,
-					   FirstName,
-					   LastName,
-					   InstitutionAffiliation,
-					   MemberCode,
-					   EmailStatusID,
-					   EmailVerificationGUID,
-					   NewEmailAddressCreateDate,
-					   Active,
-					   CreateDate)
+                       NewEmailAddress,
+                       PasswordHash,
+                       FirstName,
+                       LastName,
+                       InstitutionAffiliation,
+                       MemberCode,
+                       EmailStatusID,
+                       EmailVerificationGUID,
+                       NewEmailAddressCreateDate,
+                       Active,
+                       CreateDate)
     Values (LOWER(_EmailAddress),
-			LOWER(_EmailAddress),
-	        SHA1(_Password),
-			_FirstName,
-			_LastName,
-			_InstitutionAffiliation,
-			_MemberCode,
-			3,
-			NULL,
-			NULL,
-			1,
-			CURRENT_DATE);
+            LOWER(_EmailAddress),
+            SHA1(_Password),
+            _FirstName,
+            _LastName,
+            _InstitutionAffiliation,
+            _MemberCode,
+            3,
+            NULL,
+            NULL,
+            1,
+            CURRENT_DATE);
     
     /* Get the new UserID */
     Set _UserID = last_insert_id();
@@ -805,29 +827,29 @@ BEGIN
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
-		 GROUP_CONCAT(CONCAT('''',ua.FirstName,' ',ua.LastName,'''')) As 'Authors',
-		 GROUP_CONCAT(CONCAT('''',ur.FirstName,' ',ur.LastName,'''')) As 'Reviewers',
-		 ss.SubmissionStatus,
-		 s.SubmissionDate
+         GROUP_CONCAT(CONCAT('''',ua.FirstName,' ',ua.LastName,'''')) As 'Authors',
+         GROUP_CONCAT(CONCAT('''',ur.FirstName,' ',ur.LastName,'''')) As 'Reviewers',
+         ss.SubmissionStatus,
+         s.SubmissionDate
   From Submissions s
-	Left Join Users eu
-	  On eu.UserID = s.EditorUserID
+    Left Join Users eu
+      On eu.UserID = s.EditorUserID
     Inner Join Reviewers r
-	  On r.SubmissionID = s.SubmissionID
+      On r.SubmissionID = s.SubmissionID
     Inner Join Users ur
-	  On ur.UserID = r.ReviewerUserID
+      On ur.UserID = r.ReviewerUserID
     Inner Join AuthorsSubmission a
-	  On a.SubmissionID = s.SubmissionID
-	Inner Join Users ua
-	  On ua.UserID = a.UserID
-	Inner Join SubmissionStatus ss
-	  On ss.SubmissionStatusID = s.SubmissionStatusID
+      On a.SubmissionID = s.SubmissionID
+    Inner Join Users ua
+      On ua.UserID = a.UserID
+    Inner Join SubmissionStatus ss
+      On ss.SubmissionStatusID = s.SubmissionStatusID
   Where Year(s.SubmissionDate) = _Year
   Group By s.SubmissionID,
            s.IncidentTitle,
            s.EditorUserID,
            ss.SubmissionStatus,
-		   s.SubmissionDate
+           s.SubmissionDate
   Order By s.SubmissionDate,
            s.IncidentTitle;
 END$$
@@ -840,8 +862,8 @@ BEGIN
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set Active = 1, NonActiveNote = Null
-	Where UserID = _UserID;
+    Set Active = 1, NonActiveNote = Null
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If; 
@@ -878,14 +900,14 @@ BEGIN
   Select a.Title,
          GROUP_CONCAT(r.RoleTitle) As 'Roles',
          a.CreateDate,
-		 IfNull(a.ExpireDate,'') As 'ExpireDate'
+         IfNull(a.ExpireDate,'') As 'ExpireDate'
   From Announcements a
     Inner Join AccouncementRoles ar
-	  On ar.AnnouncementID = a.AnnouncementID
-	Inner Join Roles r
-	  On r.RoleID = ar.RoleID
-	Order By CreateDate,
-	         Title;
+      On ar.AnnouncementID = a.AnnouncementID
+    Inner Join Roles r
+      On r.RoleID = ar.RoleID
+    Order By CreateDate,
+             Title;
 END$$
 
 /* Gets the List of available Article Dates for a year */
@@ -981,7 +1003,7 @@ BEGIN
   Order By Category;
 END$$
 
-/* Gets the List of available Publications */
+/* Gets the List of available Publications in decending order */
 DROP PROCEDURE IF EXISTS `spGetPublicationsList`$$
 CREATE PROCEDURE `spGetPublicationsList`()
 DETERMINISTIC
@@ -1011,11 +1033,11 @@ BEGIN
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract,
-		 pci.Keywords,
-		 p.Year
+         pci.Keywords,
+         p.Year
   From PublishedCriticalIncidents pci
     Inner Join Publications p
-	  On p.PublicationID = pci.PublicationID
+      On p.PublicationID = pci.PublicationID
   Where pci.CriticalIncidentID = _CriticalIncidentID
   Order By pci.IncidentTitle;
 END$$
@@ -1027,10 +1049,10 @@ DETERMINISTIC
 BEGIN
   Select Concat(pa.LastName, ', ', pa.FirstName) As 'FullName',
          pa.EmailAddress,
-		 pa.InstitutionAffiliation
+         pa.InstitutionAffiliation
   From PublishedAuthors pa
     Inner Join PublishedIncidentsAuthors pca
-	  On pca.AuthorID = pa.AuthorID
+      On pca.AuthorID = pa.AuthorID
   Where pca.CriticalIncidentID = _CriticalIncidentID
   Order By pa.LastName, pa.FirstName;
 END$$
@@ -1043,7 +1065,7 @@ BEGIN
   Select pc.CategoryID, pc.Category
   From PublicationCategories pc
     Inner Join PublishedCriticalIncidentCategories pcic
-	  On pcic.CategoryID = pc.CategoryID
+      On pcic.CategoryID = pc.CategoryID
   Where pcic.CriticalIncidentID = _CriticalIncidentID
   Order By pc.Category;
 END$$
@@ -1058,7 +1080,7 @@ BEGIN
          pci.Abstract
   From PublishedCriticalIncidents pci
     Inner Join Publications p
-	  On p.PublicationID = pci.PublicationID
+      On p.PublicationID = pci.PublicationID
   Where p.Year = _Year
   Order By pci.IncidentTitle;
 END$$
@@ -1092,19 +1114,19 @@ BEGIN
   Select a.Title,
          a.Message,
          a.CreateDate,
-		 a.ExpireDate
+         a.ExpireDate
   From Announcements a
     Inner Join AccouncementRoles ar
-	  On ar.AnnouncementID = a.AnnouncementID
-	Inner Join Roles r
-	  On r.RoleID = ar.RoleID
-	Inner Join UserRoles ur
-	  On ur.RoleID = r.RoleID
+      On ar.AnnouncementID = a.AnnouncementID
+    Inner Join Roles r
+      On r.RoleID = ar.RoleID
+    Inner Join UserRoles ur
+      On ur.RoleID = r.RoleID
   Where ur.UserID = _UserID
   Group By a.Title,
            a.Message,
            a.CreateDate,
-		   a.ExpireDate
+           a.ExpireDate
   Order By a.CreateDate,
            a.Title;
 END$$
@@ -1120,7 +1142,7 @@ BEGIN
   From Users u
   Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password);
-	
+    
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
 
@@ -1131,11 +1153,11 @@ DETERMINISTIC
 BEGIN
   Select FirstName,
          LastName,
-		 EmailAddress,
-		 MemberCode,
-		 InstitutionAffiliation,
-		 IF(ValidMembership, 'Y', 'N') As 'IsValidMember',
-		 IF(Active, 'Y', 'N') As 'IsActive'
+         EmailAddress,
+         MemberCode,
+         InstitutionAffiliation,
+         IF(ValidMembership, 'Y', 'N') As 'IsValidMember',
+         IF(Active, 'Y', 'N') As 'IsActive'
   From Users
   Where UserID = _UserID;
 END$$
@@ -1160,10 +1182,10 @@ BEGIN
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
-	  On ur.UserID = u.UserID
+      On ur.UserID = u.UserID
   Where ur.RoleID = 1
     And u.Active = 1
-	And u.EmailStatusID != 2
+    And u.EmailStatusID != 2
   Order By u.LastName, u.FirstName;
 END$$
 
@@ -1175,10 +1197,10 @@ BEGIN
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
-	  On ur.UserID = u.UserID
+      On ur.UserID = u.UserID
   Where ur.RoleID = 3
     And u.Active = 1
-	And u.EmailStatusID != 2
+    And u.EmailStatusID != 2
   Order By u.LastName, u.FirstName;
 END$$
 
@@ -1215,10 +1237,10 @@ BEGIN
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
-	  On ur.UserID = u.UserID
+      On ur.UserID = u.UserID
   Where ur.RoleID = 2
     And u.Active = 1
-	And u.EmailStatusID != 2
+    And u.EmailStatusID != 2
   Order By u.LastName, u.FirstName;
 END$$
 
@@ -1229,8 +1251,8 @@ DETERMINISTIC
 BEGIN
   Select FirstName,
          LastName,
-		 NewEmailAddress,
-		 EmailVerificationGUID
+         NewEmailAddress,
+         EmailVerificationGUID
   From Users
   Where UserID = _UserID;
 END$$
@@ -1246,27 +1268,27 @@ BEGIN
   Insert Into SystemSettings_ArticleDates (Year,
                                            AuthorFirstSubmissionStartDate,
                                            AuthorFirstSubmissionDueDate,
-										   FirstReviewStartDate,
-										   FirstReviewDueDate,
-										   AuthorSecondSubmissionStartDate,
-										   AuthorSecondSubmissionDueDate,
-										   SecondReviewStartDate,
-										   SecondReviewDueDate,
-										   AuthorPublicationSubmissionStartDate,
-										   AuthorPublicationSubmissionDueDate,
-										   PublicationDate)
+                                           FirstReviewStartDate,
+                                           FirstReviewDueDate,
+                                           AuthorSecondSubmissionStartDate,
+                                           AuthorSecondSubmissionDueDate,
+                                           SecondReviewStartDate,
+                                           SecondReviewDueDate,
+                                           AuthorPublicationSubmissionStartDate,
+                                           AuthorPublicationSubmissionDueDate,
+                                           PublicationDate)
   Select _CurrYear As 'Year',
          CONCAT(_CurrYear, RIGHT(AuthorFirstSubmissionStartDate,6)) As 'AuthorFirstSubmissionStartDate',
          CONCAT(_CurrYear, RIGHT(AuthorFirstSubmissionDueDate,6)) As 'AuthorFirstSubmissionDueDate',
-		 CONCAT(_CurrYear, RIGHT(FirstReviewStartDate,6)) As 'FirstReviewStartDate',
-		 CONCAT(_CurrYear, RIGHT(FirstReviewDueDate,6)) As 'FirstReviewDueDate',
-		 CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionStartDate,6)) As 'AuthorSecondSubmissionStartDate',
-		 CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionDueDate,6)) As 'AuthorSecondSubmissionDueDate',
-		 CONCAT(_CurrYear, RIGHT(SecondReviewStartDate,6)) As 'SecondReviewStartDate',
-		 CONCAT(_CurrYear, RIGHT(SecondReviewDueDate,6)) As 'SecondReviewDueDate',
-		 CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionStartDate,6)) As 'AuthorPublicationSubmissionStartDate',
-		 CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionDueDate,6)) As 'AuthorPublicationSubmissionDueDate',
-		 CONCAT(_CurrYear, RIGHT(PublicationDate,6)) As 'PublicationDate'
+         CONCAT(_CurrYear, RIGHT(FirstReviewStartDate,6)) As 'FirstReviewStartDate',
+         CONCAT(_CurrYear, RIGHT(FirstReviewDueDate,6)) As 'FirstReviewDueDate',
+         CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionStartDate,6)) As 'AuthorSecondSubmissionStartDate',
+         CONCAT(_CurrYear, RIGHT(AuthorSecondSubmissionDueDate,6)) As 'AuthorSecondSubmissionDueDate',
+         CONCAT(_CurrYear, RIGHT(SecondReviewStartDate,6)) As 'SecondReviewStartDate',
+         CONCAT(_CurrYear, RIGHT(SecondReviewDueDate,6)) As 'SecondReviewDueDate',
+         CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionStartDate,6)) As 'AuthorPublicationSubmissionStartDate',
+         CONCAT(_CurrYear, RIGHT(AuthorPublicationSubmissionDueDate,6)) As 'AuthorPublicationSubmissionDueDate',
+         CONCAT(_CurrYear, RIGHT(PublicationDate,6)) As 'PublicationDate'
   From SystemSettings_ArticleDates
   Where Year = _CurrYear - 1;
 END$$
@@ -1290,9 +1312,9 @@ BEGIN
   Delete From AccouncementRoles
   Where AnnouncementID IN (
         Select AnnouncementID
-		From Announcements
-		Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE
-	);
+        From Announcements
+        Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE
+    );
 
   /* Remove the expired announcements */
   Delete From Announcements
@@ -1308,8 +1330,8 @@ BEGIN
   Update Users
   Set EmailStatusID = 2,
       NewEmailAddressCreateDate = Null,
-	  EmailVerificationGUID = Null,
-	  NewEmailAddress = Null
+      EmailVerificationGUID = Null,
+      NewEmailAddress = Null
   Where EmailStatusID = 1
     And NewEmailAddress = EmailAddress
     And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 5 DAY;
@@ -1318,8 +1340,8 @@ BEGIN
   Update Users
   Set EmailStatusID = 3,
       NewEmailAddressCreateDate = Null,
-	  EmailVerificationGUID = Null,
-	  NewEmailAddress = Null
+      EmailVerificationGUID = Null,
+      NewEmailAddress = Null
   Where EmailStatusID = 1
     And NewEmailAddress != EmailAddress
     And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 5 DAY;
@@ -1351,10 +1373,10 @@ BEGIN
 
   Select u.UserID,
          u.EmailStatusID,
-		 u.Active
+         u.Active
   Into _UserID,
        _EmailStatusID,
-	   _Active
+       _Active
   From Users u
   Where u.EmailAddress = LOWER(_EmailAddress)
     And u.PasswordHash = SHA1(_Password);
@@ -1363,21 +1385,21 @@ BEGIN
   Set _EmailStatusID = IfNull(_EmailStatusID, -1);
   Set _Active = IfNull(_Active, -1);
   
-  /* Check if a new email address reset needs to occure */	
+  /* Check if a new email address reset needs to occure */    
   If (_EmailStatusID = 2 && _Active = 1) Then
     /* Reset the GUID info */
     Update Users
-	Set NewEmailAddress = LOWER(_EmailAddress),
-	    EmailVerificationGUID = REPLACE(UUID(),'-',''),
-		NewEmailAddressCreateDate = CURRENT_DATE,
-		EmailStatusID = 1
-	Where UserID = _UserID;
+    Set NewEmailAddress = LOWER(_EmailAddress),
+        EmailVerificationGUID = REPLACE(UUID(),'-',''),
+        NewEmailAddressCreateDate = CURRENT_DATE,
+        EmailStatusID = 1
+    Where UserID = _UserID;
   End If;
   
   /* Return the info */
   Select _UserID As 'UserID',
          _EmailStatusID As 'EmailStatusID',
-		 _Active As 'Active';
+         _Active As 'Active';
 END$$
 
 /* Deletes an existing announcement */
@@ -1434,20 +1456,20 @@ BEGIN
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the SubmissionID exists */
     If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
-	  /* Link the UserID to the SubmissionID */
-	  Insert Into Reviewers (ReviewerUserID,
-	                         SubmissionID,
-							 ReviewStatusID,
-							 CreateDate,
-							 LastUpdatedDate)
-	  Values (_UserID,
-	          _SubmissionID,
-			  1,
-			  CURRENT_DATE,
-			  CURRENT_DATE);
-	Else
-	  Select 'SubmissionID doesn''t exist' As 'Error';
-	End If;
+      /* Link the UserID to the SubmissionID */
+      Insert Into Reviewers (ReviewerUserID,
+                             SubmissionID,
+                             ReviewStatusID,
+                             CreateDate,
+                             LastUpdatedDate)
+      Values (_UserID,
+              _SubmissionID,
+              1,
+              CURRENT_DATE,
+              CURRENT_DATE);
+    Else
+      Select 'SubmissionID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -1460,13 +1482,13 @@ DETERMINISTIC
 BEGIN
   Select fmd.FileMetaDataID,
          fmd.FileName,
-		 fmd.FileSize,
-		 ft.FileType
+         fmd.FileSize,
+         ft.FileType
   From ReviewerFiles rf
     Inner Join FileMetaData fmd
-	  On fmd.FileMetaDataID = rf.FileMetaDataID
-	Inner Join FileTypes ft
-	  On ft.FileTypeID = fmd.FileTypeID
+      On fmd.FileMetaDataID = rf.FileMetaDataID
+    Inner Join FileTypes ft
+      On ft.FileTypeID = fmd.FileTypeID
   Where rf.SubmissionID = _SubmissionID
     And rf.ReviewerUserID = _ReviewerUserID;
 END$$
@@ -1475,7 +1497,7 @@ END$$
 DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`$$
 CREATE PROCEDURE `spReviewerUpdateReviewStatus`(IN _ReviewerUserID int,
                                                 IN _SubmissionID int,
-												IN _ReviewStatusID int)
+                                                IN _ReviewStatusID int)
 DETERMINISTIC
 BEGIN
   Declare _TotalReviewers int;
@@ -1485,34 +1507,34 @@ BEGIN
   If(Select Exists(Select 1 From ReviewStatus Where ReviewStatusID = _ReviewStatusID)) Then
     /* Make sure the ReviewerUserID and SubmissionID combination exists */
     If(Select Exists(Select 1 From Reviewers Where ReviewerUserID = _ReviewerUserID And SubmissionID = _SubmissionID)) Then
-	  /* Update the Reviewer record */
-	  Update Reviewers
-	  Set ReviewStatusID = _ReviewStatusID,
-	      ReviewCompletionDate = CURRENT_DATE,
-		  LastUpdatedDate = CURRENT_DATE
-	  Where ReviewerUserID = _ReviewerUserID
-	    And SubmissionID = _SubmissionID;
-	  
-	  /* Get the total Reviewers count for the submision */
-	  Select Count(ReviewerUserID) Into _TotalReviewers
-	  From Reviewers
-	  Where SubmissionID = _SubmissionID;
-	  
-	  /* Get the reviews completed count for the submission */
-	  Select Count(ReviewerUserID) Into _ReviewCompleted
-	  From Reviewers
-	  Where SubmissionID = _SubmissionID
-	    And ReviewCompletionDate Is Not Null;
-	  
-	  /* Update the submission status if this is last review completion */
-	  If (_TotalReviewers - _ReviewCompleted = 0) Then
-	    Update Submissions
-	    Set SubmissionStatusID = 5
-	    Where SubmissionID = _SubmissionID;
-	  End If;
-	Else
-	  Select 'ReviewerUserID and SubmissionID combination doesn''t exist' As 'Error';
-	End If;
+      /* Update the Reviewer record */
+      Update Reviewers
+      Set ReviewStatusID = _ReviewStatusID,
+          ReviewCompletionDate = CURRENT_DATE,
+          LastUpdatedDate = CURRENT_DATE
+      Where ReviewerUserID = _ReviewerUserID
+        And SubmissionID = _SubmissionID;
+      
+      /* Get the total Reviewers count for the submision */
+      Select Count(ReviewerUserID) Into _TotalReviewers
+      From Reviewers
+      Where SubmissionID = _SubmissionID;
+      
+      /* Get the reviews completed count for the submission */
+      Select Count(ReviewerUserID) Into _ReviewCompleted
+      From Reviewers
+      Where SubmissionID = _SubmissionID
+        And ReviewCompletionDate Is Not Null;
+      
+      /* Update the submission status if this is last review completion */
+      If (_TotalReviewers - _ReviewCompleted = 0) Then
+        Update Submissions
+        Set SubmissionStatusID = 5
+        Where SubmissionID = _SubmissionID;
+      End If;
+    Else
+      Select 'ReviewerUserID and SubmissionID combination doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'ReviewStatusID doesn''t exist' As 'Error';
   End If;
@@ -1526,15 +1548,15 @@ BEGIN
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
-		 ss.SubmissionStatus,
-		 s.SubmissionDate
+         ss.SubmissionStatus,
+         s.SubmissionDate
   From Submissions s
     Inner Join Reviewers r
-	  On r.SubmissionID = s.SubmissionID
-	Inner Join SubmissionStatus ss
-	  On ss.SubmissionStatusID = s.SubmissionStatusID
-	Left Join Users eu
-	  On eu.UserID = s.EditorUserID
+      On r.SubmissionID = s.SubmissionID
+    Inner Join SubmissionStatus ss
+      On ss.SubmissionStatusID = s.SubmissionStatusID
+    Left Join Users eu
+      On eu.UserID = s.EditorUserID
   Where r.ReviewerUserID = _UserID
     And Year(s.SubmissionDate) = _Year
   Order By s.SubmissionDate,
@@ -1550,15 +1572,15 @@ BEGIN
   
   Select UserID,
          CONCAT(LastName,', ',FirstName) As 'FullName',
-		 EmailAddress,
-		 MemberCode,
-		 InstitutionAffiliation
+         EmailAddress,
+         MemberCode,
+         InstitutionAffiliation
   From Users
   Where EmailAddress Like CONCAT('%',_EmailAddress,'%')
   Group By UserID,
            EmailAddress,
-		   MemberCode,
-		   InstitutionAffiliation
+           MemberCode,
+           InstitutionAffiliation
   Order By LastName, FirstName;
 END$$
 
@@ -1573,16 +1595,16 @@ BEGIN
   
   Select UserID,
          CONCAT(LastName,', ',FirstName) As 'FullName',
-		 EmailAddress,
-		 MemberCode,
-		 InstitutionAffiliation
+         EmailAddress,
+         MemberCode,
+         InstitutionAffiliation
   From Users
   Where LastName Like CONCAT('%',_LastName,'%')
     Or FirstName Like CONCAT('%',_FirstName,'%')
   Group By UserID,
            EmailAddress,
-		   MemberCode,
-		   InstitutionAffiliation
+           MemberCode,
+           InstitutionAffiliation
   Order By LastName, FirstName;
 END$$
 
@@ -1595,17 +1617,17 @@ BEGIN
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure CategoryID exists */
     If(Select Exists(Select 1 From Categories Where CategoryID = _CategoryID)) Then
-	  /* Make sure SubmissionID and CategoryID combination doesn't exist */
+      /* Make sure SubmissionID and CategoryID combination doesn't exist */
       If(Select Exists(Select 1 From SubmissionCategories Where SubmissionID = _SubmissionID And CategoryID = _CategoryID)) Then
         Select 'Submission already has that Category' As 'Error';
       Else
-	    /* Make the connection */
+        /* Make the connection */
         Insert Into SubmissionCategories (SubmissionID,CategoryID)
-	    Values (_SubmissionID,_CategoryID);
+        Values (_SubmissionID,_CategoryID);
       End If;
-	Else
-	  Select 'CategoryID doesn''t exist' As 'Error';
-	End If;
+    Else
+      Select 'CategoryID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -1620,17 +1642,17 @@ BEGIN
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure CategoryID exists */
     If(Select Exists(Select 1 From Categories Where CategoryID = _CategoryID)) Then
-	  /* Make sure SubmissionID and CategoryID combination doesn't exist */
+      /* Make sure SubmissionID and CategoryID combination doesn't exist */
       If(Select Exists(Select 1 From SubmissionCategories Where SubmissionID = _SubmissionID And CategoryID = _CategoryID)) Then
         Select 'Submission already has that Category' As 'Error';
       Else
-	    /* Make the connection */
+        /* Make the connection */
         Insert Into SubmissionCategories (SubmissionID,CategoryID)
-	    Values (_SubmissionID,_CategoryID);
+        Values (_SubmissionID,_CategoryID);
       End If;
-	Else
-	  Select 'CategoryID doesn''t exist' As 'Error';
-	End If;
+    Else
+      Select 'CategoryID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'SubmissionID doesn''t exist' As 'Error';
   End If;
@@ -1644,13 +1666,13 @@ BEGIN
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure UserID exists */
-	If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
-	  Update Submissions
-	  Set EditorUserID = _UserID
-	  Where SubmissionID = _SubmissionID;
-	Else
-	  Select 'User doesn''t exist' As 'Error';
-	End If;
+    If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
+      Update Submissions
+      Set EditorUserID = _UserID
+      Where SubmissionID = _SubmissionID;
+    Else
+      Select 'User doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'Submission doesn''t exist' As 'Error';
   End If;
@@ -1663,13 +1685,13 @@ DETERMINISTIC
 BEGIN
   Select fmd.FileMetaDataID,
          fmd.FileName,
-		 fmd.FileSize,
-		 ft.FileType
+         fmd.FileSize,
+         ft.FileType
   From SubmissionFiles sf
     Inner Join FileMetaData fmd
-	  On fmd.FileMetaDataID = sf.FileMetaDataID
-	Inner Join FileTypes ft
-	  On ft.FileTypeID = fmd.FileTypeID
+      On fmd.FileMetaDataID = sf.FileMetaDataID
+    Inner Join FileTypes ft
+      On ft.FileTypeID = fmd.FileTypeID
   Where sf.SubmissionID = _SubmissionID;
 END$$
 
@@ -1680,13 +1702,13 @@ DETERMINISTIC
 BEGIN
   Select s.IncidentTitle,
          s.Abstract,
-		 s.Keywords,
-		 s.SubmissionDate,
-		 s.SubmissionNumber,
-		 ss.SubmissionStatus
+         s.Keywords,
+         s.SubmissionDate,
+         s.SubmissionNumber,
+         ss.SubmissionStatus
   From Submissions s
     Inner Join SubmissionStatus ss
-	  On ss.SubmissionStatusID = s.SubmissionStatusID
+      On ss.SubmissionStatusID = s.SubmissionStatusID
   Where s.SubmissionID = _SubmissionID;
 END$$
 
@@ -1705,11 +1727,11 @@ DROP PROCEDURE IF EXISTS `spUpdateAddress`$$
 CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
                                    IN _AddressTypeID int,
                                    IN _AddressLn1 varchar(100),
-								   IN _AddressLn2 varchar(100),
-								   IN _City varchar(30),
-								   IN _StateID int,
-								   IN _PostCode char(5),
-								   IN _PrimaryAddress tinyint
+                                   IN _AddressLn2 varchar(100),
+                                   IN _City varchar(30),
+                                   IN _StateID int,
+                                   IN _PostCode char(5),
+                                   IN _PrimaryAddress tinyint
 ) DETERMINISTIC
 BEGIN
 
@@ -1719,39 +1741,39 @@ BEGIN
   If(Select Exists(Select 1 From Addresses Where AddressID = _AddressID)) Then
     /* Make sure the AddressTypeID exists */
     If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
-	  /* Make sure the StateID exists */
-	  If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
-	    /* Default _PrimaryAddress to 0 if null is passed in */
+      /* Make sure the StateID exists */
+      If(Select Exists(Select 1 From States Where StateID = _StateID)) Then
+        /* Default _PrimaryAddress to 0 if null is passed in */
         Set _PrimaryAddress = IFNULL(_PrimaryAddress, 0);
-		
-		/* Get the UserID for this address */
-		Select UserID Into _UserID
-		From Addresses
-		Where AddressID = _AddressID;
-		
-	    /* New PrimaryAddress, set others for user to 0 */
-	    If (_PrimaryAddress = 1) Then
-		  Update Addresses
-		  Set PrimaryAddress = 0
-		  Where UserID = _UserID;
-		End If;
-		
+        
+        /* Get the UserID for this address */
+        Select UserID Into _UserID
+        From Addresses
+        Where AddressID = _AddressID;
+        
+        /* New PrimaryAddress, set others for user to 0 */
+        If (_PrimaryAddress = 1) Then
+          Update Addresses
+          Set PrimaryAddress = 0
+          Where UserID = _UserID;
+        End If;
+        
         /* Updates the address record */
-		Update Addresses
-		Set AddressTypeID = _AddressTypeID,
-		    AddressLn1 = _AddressLn1,
-			AddressLn2 = _AddressLn2,
-			City = _City,
-			StateID = _StateID,
-			PostCode = _PostCode,
-			PrimaryAddress = _PrimaryAddress
-		Where AddressID = _AddressID;
-	  Else
-	    Select 'Invalid StateID' As 'Error';
-	  End If;
-	Else
-	  Select 'Invalid AddressTypeID' As 'Error';
-	End If;
+        Update Addresses
+        Set AddressTypeID = _AddressTypeID,
+            AddressLn1 = _AddressLn1,
+            AddressLn2 = _AddressLn2,
+            City = _City,
+            StateID = _StateID,
+            PostCode = _PostCode,
+            PrimaryAddress = _PrimaryAddress
+        Where AddressID = _AddressID;
+      Else
+        Select 'Invalid StateID' As 'Error';
+      End If;
+    Else
+      Select 'Invalid AddressTypeID' As 'Error';
+    End If;
   Else
     Select 'Address doesn''t exist' As 'Error';
   End If;
@@ -1767,13 +1789,13 @@ BEGIN
   If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
     /* Make sure the new PhoneType doesn't already exist */
     If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
-	  Select 'AddressType already exists' As 'Error';
-	Else
+      Select 'AddressType already exists' As 'Error';
+    Else
       /* Update the Address Type record */
-	  Update AddressTypes
-	  Set AddressType = _AddressType
-	  Where AddressTypeID = _AddressTypeID;
-	End If;
+      Update AddressTypes
+      Set AddressType = _AddressType
+      Where AddressTypeID = _AddressTypeID;
+    End If;
   Else
     Select 'AddressTypeID doesn''t exist' As 'Error';
   End If;
@@ -1784,7 +1806,7 @@ DROP PROCEDURE IF EXISTS `spUpdateAnnouncement`$$
 CREATE PROCEDURE `spUpdateAnnouncement`(IN _AnnouncementID int,
                                         IN _Title varchar(100),
                                         IN _Message varchar(10000),
-										IN _ExpireDate date
+                                        IN _ExpireDate date
 ) DETERMINISTIC
 BEGIN
   /* Make sure the AnnouncementID exists */
@@ -1796,9 +1818,9 @@ BEGIN
       /* Create the announcement record */
       Update Announcements
       Set Title = _Title,
-	      Message = _Message,
-		  ExpireDate = _ExpireDate
-	  Where AnnouncementID = _AnnouncementID;
+          Message = _Message,
+          ExpireDate = _ExpireDate
+      Where AnnouncementID = _AnnouncementID;
     End If;
   Else
     Select 'AnnouncementID doesn''t exist' As 'Error';
@@ -1809,16 +1831,16 @@ END$$
 DROP PROCEDURE IF EXISTS `spUpdateArticleDates`$$
 CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
                                         IN _AuthorFirstSubmissionStartDate date,
-										IN _AuthorFirstSubmissionDueDate date,
-										IN _FirstReviewStartDate date,
-										IN _FirstReviewDueDate date,
-										IN _AuthorSecondSubmissionStartDate date,
-										IN _AuthorSecondSubmissionDueDate date,
-										IN _SecondReviewStartDate date,
-										IN _SecondReviewDueDate date,
-										IN _AuthorPublicationSubmissionStartDate date,
-										IN _AuthorPublicationSubmissionDueDate date,
-										IN _PublicationDate date)
+                                        IN _AuthorFirstSubmissionDueDate date,
+                                        IN _FirstReviewStartDate date,
+                                        IN _FirstReviewDueDate date,
+                                        IN _AuthorSecondSubmissionStartDate date,
+                                        IN _AuthorSecondSubmissionDueDate date,
+                                        IN _SecondReviewStartDate date,
+                                        IN _SecondReviewDueDate date,
+                                        IN _AuthorPublicationSubmissionStartDate date,
+                                        IN _AuthorPublicationSubmissionDueDate date,
+                                        IN _PublicationDate date)
 DETERMINISTIC
 BEGIN
   Update SystemSettings_ArticleDates
@@ -1847,8 +1869,8 @@ BEGIN
     Select 'Category already exists' As 'Error';
   Else
     Update Categories
-	Set Category = _Category
-	Where CategoryID = _CategoryID;
+    Set Category = _Category
+    Where CategoryID = _CategoryID;
   End If;
 END$$
 
@@ -1860,13 +1882,13 @@ BEGIN
   /* Make sure the SettingID exists */
   If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
     /* Mark all settings as inactive */
-	Update SystemSettings_Email
-	Set Active = 0;
-	
-	/* Mark the specific ID as active */
-	Update SystemSettings_Email
-	Set Active = 0
-	Where SettingID = _SettingID;
+    Update SystemSettings_Email
+    Set Active = 0;
+    
+    /* Mark the specific ID as active */
+    Update SystemSettings_Email
+    Set Active = 0
+    Where SettingID = _SettingID;
   Else
     Select 'SettingID doesn''t exist' As 'Error';
   End If;
@@ -1888,22 +1910,22 @@ BEGIN
   If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
     /* Make sure the SettingName doesn't already exist */
     If(Select Exists(Select 1 From SystemSettings_Email Where SettingName = _SettingName And SettingID != _SettingID)) Then
-	  Select 'SettingName already exists' As 'Error';
+      Select 'SettingName already exists' As 'Error';
     Else
       /* Deactivate all other records */
       Update SystemSettings_Email
       Set Active = 0;
       
       /* Update the record */
-	  Update SystemSettings_Email
-	  Set SettingName = _SettingName,
-	      AuthorNagEmailDays = _AuthorNagDays,
-		  AuthorSubjectTemplate = _AuthorSubjectTemplate,
-		  AuthorBodyTemplate = _AuthorBodyTemplate,
-		  ReviewerNagEmailDays = _ReviewerNagDays,
-		  ReviewerSubjectTemplate = _ReviewerSubjectTemplate,
-		  ReviewerBodyTemplate = _ReviewerBodyTemplate,
-		  Active = 1;
+      Update SystemSettings_Email
+      Set SettingName = _SettingName,
+          AuthorNagEmailDays = _AuthorNagDays,
+          AuthorSubjectTemplate = _AuthorSubjectTemplate,
+          AuthorBodyTemplate = _AuthorBodyTemplate,
+          ReviewerNagEmailDays = _ReviewerNagDays,
+          ReviewerSubjectTemplate = _ReviewerSubjectTemplate,
+          ReviewerBodyTemplate = _ReviewerBodyTemplate,
+          Active = 1;
     End If;
   Else
     Select 'SettingName doesn''t exist' As 'Error';
@@ -1914,24 +1936,24 @@ END$$
 DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`$$
 CREATE PROCEDURE `spUpdateFileMetaData`(IN _FileMetaDataID int,
                                         IN _FileTypeID int,
-										IN _FileMime varchar(200),
-										IN _sFileName varchar(200),
-										IN _sFileSize int)
+                                        IN _FileMime varchar(200),
+                                        IN _sFileName varchar(200),
+                                        IN _sFileSize int)
 DETERMINISTIC
 BEGIN
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Deletes the Contents records */
     Delete From FileData
-	Where FileMetaDataID = _FileMetaDataID;
-	
-	/* Set's the new meta data info */
+    Where FileMetaDataID = _FileMetaDataID;
+    
+    /* Set's the new meta data info */
     Update FileMetaData
-	Set FileTypeID = _FileTypeID,
-	    FileMime = _FileMime,
-		FileName = _sFileName,
-		FileSize = _sFileSize
-	Where FileMetaDataID = _FileMetaDataID;
+    Set FileTypeID = _FileTypeID,
+        FileMime = _FileMime,
+        FileName = _sFileName,
+        FileSize = _sFileSize
+    Where FileMetaDataID = _FileMetaDataID;
   Else
     Select 'FileMetaDataID doesn''t exist' As 'Error';
   End If;
@@ -1942,7 +1964,7 @@ DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`$$
 CREATE PROCEDURE `spUpdatePhoneNumber`(IN _PhoneNumberID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-								       IN _PrimaryPhone tinyint
+                                       IN _PrimaryPhone tinyint
 ) DETERMINISTIC
 BEGIN
 
@@ -1952,30 +1974,30 @@ BEGIN
   If(Select Exists(Select 1 From PhoneNumbers Where PhoneNumberID = _PhoneNumberID)) Then
     /* Make sure the PhoneTypeID exists */
     If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
-	  /* Default _PrimaryPhone to 0 if null is passed in */
+      /* Default _PrimaryPhone to 0 if null is passed in */
       Set _PrimaryPhone = IFNULL(_PrimaryPhone, 0);
-		
-		/* Get the UserID for this phone number */
-		Select UserID Into _UserID
-		From PhoneNumbers
-		Where PhoneNumberID = _PhoneNumberID;
-	  
-	  /* New PrimaryPhone, set others for user to 0 */
-	  If (_PrimaryPhone = 1) Then
-		Update PhoneNumbers
-		Set PrimaryPhone = 0
-		Where UserID = _UserID;
-	  End If;
-	  
+        
+        /* Get the UserID for this phone number */
+        Select UserID Into _UserID
+        From PhoneNumbers
+        Where PhoneNumberID = _PhoneNumberID;
+      
+      /* New PrimaryPhone, set others for user to 0 */
+      If (_PrimaryPhone = 1) Then
+        Update PhoneNumbers
+        Set PrimaryPhone = 0
+        Where UserID = _UserID;
+      End If;
+      
       /* Update the phone number record */
-	  Update PhoneNumbers
-	  Set PhoneTypeID = _PhoneTypeID,
-	      PhoneNumber = _PhoneNumber,
-		  PrimaryPhone = _PrimaryPhone
-	  Where PhoneNumberID = _PhoneNumberID;
-	Else
-	  Select 'Invalid PhoneTypeID' As 'Error';
-	End If;
+      Update PhoneNumbers
+      Set PhoneTypeID = _PhoneTypeID,
+          PhoneNumber = _PhoneNumber,
+          PrimaryPhone = _PrimaryPhone
+      Where PhoneNumberID = _PhoneNumberID;
+    Else
+      Select 'Invalid PhoneTypeID' As 'Error';
+    End If;
   Else
     Select 'Phone Number doesn''t exist' As 'Error';
   End If;
@@ -1991,13 +2013,13 @@ BEGIN
   If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
     /* Make sure the new PhoneType doesn't already exist */
     If(Select Exists(Select 1 From PhoneTypes Where PhoneType = _PhoneType)) Then
-	  Select 'PhoneType already exists' As 'Error';
-	Else
+      Select 'PhoneType already exists' As 'Error';
+    Else
       /* Update the phone number record */
-	  Update PhoneTypes
-	  Set PhoneType = _PhoneType
-	  Where PhoneTypeID = _PhoneTypeID;
-	End If;
+      Update PhoneTypes
+      Set PhoneType = _PhoneType
+      Where PhoneTypeID = _PhoneTypeID;
+    End If;
   Else
     Select 'PhoneTypeID doesn''t exist' As 'Error';
   End If;
@@ -2012,12 +2034,12 @@ BEGIN
   If(Select Exists(Select 1 From Publications Where Year = _Year)) Then
     /* Make sure the FileMetaDataID exists */
     If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
-	  Update Publications
-	  Set FileMetaDataID = _FileMetaDataID
-	  Where Year = _Year;
-	Else
-	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
-	End If;
+      Update Publications
+      Set FileMetaDataID = _FileMetaDataID
+      Where Year = _Year;
+    Else
+      Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+    End If;
   Else
     Select Concat('Publication for year ', _Year, ' doesn''t exist') As 'Error';
   End If;
@@ -2064,30 +2086,30 @@ DROP PROCEDURE IF EXISTS `spUpdatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
                                                      IN _PublicationID int,
                                                      IN _IncidentTitle varchar(150),
-													 IN _Abstract varchar(5000),
-													 IN _Keywords varchar(5000),
-													 IN _FileMetaDataID int)
+                                                     IN _Abstract varchar(5000),
+                                                     IN _Keywords varchar(5000),
+                                                     IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
   /* Make sure the CriticalIncidentID exists */
   If(Select Exists(Select 1 From CriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
     /* Make sure the FileMetaDataID exists */
     If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
-	  /* Make sure the PublicationID exists */
-	  If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
-	    Update CriticalIncidents
-	    Set PublicationID = _PublicationID,
-		    IncidentTitle = _IncidentTitle,
-			Abstract = _Abstract,
-			Keywords = _Keywords,
-		    FileMetaDataID = _FileMetaDataID
-	    Where CriticalIncidentID = _CriticalIncidentID;
-	  Else
-	    Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
-	  End If;
-	Else
-	  Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
-	End If;
+      /* Make sure the PublicationID exists */
+      If(Select Exists(Select 1 From Publications Where PublicationID = _PublicationID)) Then
+        Update CriticalIncidents
+        Set PublicationID = _PublicationID,
+            IncidentTitle = _IncidentTitle,
+            Abstract = _Abstract,
+            Keywords = _Keywords,
+            FileMetaDataID = _FileMetaDataID
+        Where CriticalIncidentID = _CriticalIncidentID;
+      Else
+        Select Concat('PublicationID ', _PublicationID, ' doesn''t exist') As 'Error';
+      End If;
+    Else
+      Select Concat('FileMetaDataID ', _FileMetaDataID, ' doesn''t exist') As 'Error';
+    End If;
   Else
     Select Concat('CriticalIncidentID ', _CriticalIncidentID, ' doesn''t exist') As 'Error';
   End If;
@@ -2112,9 +2134,9 @@ BEGIN
     /* Make sure the SubmissionStatusID exists */
     If(Select Exists(Select 1 From SubmissionStatus Where SubmissionStatusID = _SubmissionStatusID)) Then
       /* Update the Submission record */
-	  Update Submissions
-	  Set SubmissionStatusID = _SubmissionStatusID
-	  Where SubmissionID = _SubmissionID;
+      Update Submissions
+      Set SubmissionStatusID = _SubmissionStatusID
+      Where SubmissionID = _SubmissionID;
     Else
       Select 'SubmissionStatusID doesn''t exist' As 'Error';
     End If;
@@ -2131,14 +2153,14 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set NewEmailAddress = LOWER(_EmailAddress),
-	    EmailVerificationGUID = REPLACE(UUID(),'-',''),
-		NewEmailAddressCreateDate = CURRENT_DATE,
-		EmailStatusID = 1
-	Where UserID = _UserID;
-	
-	/* Get the new GUID for email verification */
-	Select EmailVerificationGUID
+    Set NewEmailAddress = LOWER(_EmailAddress),
+        EmailVerificationGUID = REPLACE(UUID(),'-',''),
+        NewEmailAddressCreateDate = CURRENT_DATE,
+        EmailStatusID = 1
+    Where UserID = _UserID;
+    
+    /* Get the new GUID for email verification */
+    Select EmailVerificationGUID
     From Users
     Where UserID = _UserID;
   Else
@@ -2150,19 +2172,19 @@ END$$
 DROP PROCEDURE IF EXISTS `spUpdateUserInfo`$$
 CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
                                     IN _FirstName varchar(15),
-									IN _LastName varchar(30),
-									IN _MemberCode varchar(20),
-									IN _InstitutionAffiliation varchar(100))
+                                    IN _LastName varchar(30),
+                                    IN _MemberCode varchar(20),
+                                    IN _InstitutionAffiliation varchar(100))
 DETERMINISTIC
 BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set FirstName = _FirstName,
-	    LastName = _LastName,
-		MemberCode = _MemberCode,
-		InstitutionAffiliation = _InstitutionAffiliation
-	Where UserID = _UserID;
+    Set FirstName = _FirstName,
+        LastName = _LastName,
+        MemberCode = _MemberCode,
+        InstitutionAffiliation = _InstitutionAffiliation
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2176,8 +2198,8 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set PasswordHash = SHA1(_Password)
-	Where UserID = _UserID;
+    Set PasswordHash = SHA1(_Password)
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2191,12 +2213,12 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 3)) Then
-	  Select 'UserID is already an editor' As 'Error';
-	Else
+      Select 'UserID is already an editor' As 'Error';
+    Else
       Update Users
-	  Set RequestBecomeEditor = 1
-	  Where UserID = _UserID;
-	End If;
+      Set RequestBecomeEditor = 1
+      Where UserID = _UserID;
+    End If;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2210,12 +2232,12 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 2)) Then
-	  Select 'UserID is already a reviewer' As 'Error';
-	Else
+      Select 'UserID is already a reviewer' As 'Error';
+    Else
       Update Users
-	  Set RequestBecomeReviewer = 1
-	  Where UserID = _UserID;
-	End If;
+      Set RequestBecomeReviewer = 1
+      Where UserID = _UserID;
+    End If;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2230,17 +2252,17 @@ BEGIN
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure RoleID exists */
     If(Select Exists(Select 1 From Roles Where RoleID = _RoleID)) Then
-	  /* Make sure UserID and RoleID combination doesn't exist */
+      /* Make sure UserID and RoleID combination doesn't exist */
       If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = _RoleID)) Then
         Select 'User already has that role' As 'Error';
       Else
-	    /* Make the connection */
+        /* Make the connection */
         Insert Into UserRoles (UserID,RoleID)
-	    Values (_UserID,_RoleID);
+        Values (_UserID,_RoleID);
       End If;
-	Else
-	  Select 'RoleID doesn''t exist' As 'Error';
-	End If;
+    Else
+      Select 'RoleID doesn''t exist' As 'Error';
+    End If;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2254,8 +2276,8 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set RequestBecomeEditor = 0
-	Where UserID = _UserID;
+    Set RequestBecomeEditor = 0
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2269,8 +2291,8 @@ BEGIN
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
-	Set RequestBecomeReviewer = 0
-	Where UserID = _UserID;
+    Set RequestBecomeReviewer = 0
+    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
@@ -2304,12 +2326,12 @@ BEGIN
     /* Copy the new email address into the EmailAddress field and clear out the changing fields */
     Update Users
     Set EmailAddress = NewEmailAddress,
-	    EmailStatusID = 3,
-		EmailVerificationGUID = Null,
-		NewEmailAddressCreateDate = Null
+        EmailStatusID = 3,
+        EmailVerificationGUID = Null,
+        NewEmailAddressCreateDate = Null
     Where UserID = _UserID;
 
-	/* Clear out the NewEmailAddress field */
+    /* Clear out the NewEmailAddress field */
     Update Users
     Set NewEmailAddress = Null
     Where UserID = _UserID;

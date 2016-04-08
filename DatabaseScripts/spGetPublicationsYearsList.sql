@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the List of available years from Publications */
+/* Gets the List of available years from Publications in decending order */
 DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`$$
 CREATE PROCEDURE `spGetPublicationsYearsList`()
 DETERMINISTIC
