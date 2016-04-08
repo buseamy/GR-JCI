@@ -124,9 +124,6 @@
 		</div>
 		<?php require 'includes/sidebar.php'; // Include sidebar ?>
 	</div>
-	<div class="guest row flush">
-		<div class="col s5 footerleft"><a href="https://www.sfcr.org"><img class="logo footericon" src="images/logo2.png"><p>SOCIETY FOR CASE RESEARCH</p></a></div>
-		<div class="col s5 footerright"><p><small><a class="shortcut" href="index.html">&copy;</a>2016. All Rights Reserved.</small></p></div>
-	</div>
+
 </div>
 <?php require 'includes/footer.php'; // Include footer ?>

@@ -126,14 +126,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// check to see if address or phone number are primary.
 
 		// if main is selected change the primary field to active in database
-
+/*
 	if ($_POST['atype'] = 2){
 		$aprime = 1;
 	}
 	if ($_POST['ptype'] = 2){
 		$pprime = 1;
 	}
-
+)*/
 	if (!empty($_POST['atype'])){
 		$atypeID = mysqli_real_escape_string($dbc, trim($_POST['atype']));
 	}
@@ -162,12 +162,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$r_userID = $row_verify["UserID"];
 			complete_procedure($dbc);
 			if ((!empty($_post['address1'])) || (!empty($_post['address2']))) {
-				$q_address = "CALL spCreateAddress('$r_userID', '$atypeID', '$address1', '$address2', '$city', '$stateID', '$zip', '$aprime')";
+				$q_address = "CALL spCreateAddress('$r_userID', '$atypeID', '$address1', '$address2', '$city', '$stateID', '$zip', 1)";
 				mysqli_query ($dbc, $q_address);
 			}
 			complete_procedure($dbc);
 			if (!empty($_post['phone'])){
-				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptypeID', '$phone', '$pprime')";
+				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptypeID', '$phone', 1)";
 				mysqli_query ($dbc, $q_phone);
 			}
 
@@ -219,6 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             	<h3 class="title">Create an Account</h3>
             </div>
 			<div class="box_guest guest_alt account">
+            <form method="post" action="register.php">
                  <label for="first_name">First Name: <span class="required">*</span></label>
 				 <input type="text" name="first_name" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['first_name'])) echo $_POST['first_name']; ?>" />
                  <br>
@@ -297,6 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				<br>
 				<p>*asterisk indicates a required field </p>
 				<input type="submit" class="guest" name="submit" value="Register" />
+                </form>
             </div>
 		</div>
 		<?php require ('./includes/sidebar.php'); // Include the site sidebar
