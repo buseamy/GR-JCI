@@ -1,5 +1,6 @@
 <?php
 $page_title = 'Review Critical Incident';
+session_start();
 // Purpose: allow a reviewer to review a singlular Critical Incident
 //      - reviewer can download submission files and upload review files
 
@@ -13,7 +14,7 @@ $errorloc = '';
 $errors = array();
 
 // Make sure the user is a reviewer
-if (!isset($_SESSION) || (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer'])) {
+if (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer']) {
     $errorloc = 'verifying reviewer status';
     $error = true;
     array_push($errors, 'Only reviewers may review critical incidents.');
@@ -41,7 +42,7 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$error && isset($_FILES)) {
         $q_filetypes = 'CALL spGetFileTypes(2);';
         $filetypes[] = array();
-        if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
+        if ($r_filetypes = mysqli_query($dbc, $q_filetypes)) {
             // defer to array so the connection can be cleared
             while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
                 array_push($filetypes, $row_filetypes);
@@ -49,61 +50,68 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
             complete_procedure($dbc);
             
             foreach ($filetypes as $filerow) {
-                $typeId = $filerow['FileTypeID'];
-                $typeName = $filerow['FileType'];
-                $inName = 'fileup-' . $typeId
-                if (!$error && isset($_FILES["$inName"]) && isset($_FILES["$inName"]["type"])) {
-                    // adapted from prototyped file_upload_view_download
-                    $DstFileName = $_FILES["$inName"]["name"];
-                    $SrcFileType = $_FILES["$inName"]["type"];
-                    $SrcFilePath = $_FILES["$inName"]["tmp_name"];
-                    $FileErrorVal = $_FILES["$inName"]["error"];
-                    $FileSize = $_FILES["$inName"]["size"];
-                    if (is_mime_valid($SrcFileType) && $FileSize < 2097152) {
-                        $q_create_rfmd = "CALL spCreateReviewerFileMetaData($subID, $userID, $typeId, $SrcFileType, $DstFileName, $FileSize);";
-                        $r_create_rfmd = mysqli_query($dbc, $q_create_rfmd);
-                        $row_create_rfmd = mysqli_fetch_array($r_create_rfmd, MYSQLI_ASSOC);
-                        $fmdId = $row_create_rfmd['FileMetaDataID'];
-                        // TODO: verify this check works as intended
-                        if (isset($row_create_rfmd['Error']) || $fmdId == 0) {
-                            $error = true;
-                            $incomplete = true;
-                            $ret_err = $row_create_rfmd['Error'];
-                            array_push($errors, "File for $typeName could not be uploaded because $ret_err."
-                        }
-                        ignore_remaining_output($r_create_rfmd);
-                        complete_procedure($dbc);
-                        
-                        // File Processing
-                        if (!$error && file_exists($SrcFilePath)) {
-                            $fp = fopen($SrcFilePath, "rb");
-                            $segment = 1;
-                            while (!feof($fp)) {
-                                // Make the data mysql insert safe
-                                $binarydata = addslashes(fread($fp, 65535));
-                                $SQL = "CALL spCreateFileContent ('$fmdId', '$binarydata', $segment);";
-                                if (!$result = mysqli_query($dbc, $SQL)) {
+                if (sizeof($filerow) > 0) { // an extra object appears to be initialized into the array
+                    $typeId = $filerow['FileTypeID'];
+                    $typeName = $filerow['FileType'];
+                    $inName = 'fileup-' . $typeId;
+                    if ($typeName != '' && isset($_FILES["$inName"]) && isset($_FILES["$inName"]["type"])) {
+                        // adapted from prototyped file_upload_view_download
+                        $DstFileName = $_FILES["$inName"]["name"];
+                        $SrcFileType = $_FILES["$inName"]["type"];
+                        $SrcFilePath = $_FILES["$inName"]["tmp_name"];
+                        $FileErrorVal = $_FILES["$inName"]["error"];
+                        $FileSize = $_FILES["$inName"]["size"];
+                        if (is_mime_valid($SrcFileType) && $FileSize < 2097152) {
+                            $q_create_rfmd = "CALL spCreateReviewerFileMetaData($subID, $userID, $typeId, '$SrcFileType', '$DstFileName', $FileSize);";
+                            if ($r_create_rfmd = mysqli_query($dbc, $q_create_rfmd)) {
+                                $row_create_rfmd = mysqli_fetch_array($r_create_rfmd, MYSQLI_ASSOC);
+                                $fmdId = $row_create_rfmd['FileMetaDataID'];
+                                // TODO: verify this check works as intended
+                                if (isset($row_create_rfmd['Error']) || $fmdId == 0) {
                                     $error = true;
                                     $incomplete = true;
-                                    $ret_err = $dbc->error;
-                                    array_push($errors, "Segment $segment of file for $typeName could not be uploaded because $ret_err.";
+                                    $ret_err = $row_create_rfmd['Error'];
+                                    array_push($errors, "File for $typeName could not be uploaded because $ret_err.");
                                 }
+                                ignore_remaining_output($r_create_rfmd);
                                 complete_procedure($dbc);
-                                $segment ++;
+                                
+                                // File Processing
+                                if (!$error && file_exists($SrcFilePath)) {
+                                    $fp = fopen($SrcFilePath, "rb");
+                                    $segment = 1;
+                                    while (!feof($fp)) {
+                                        // Make the data mysql insert safe
+                                        $binarydata = addslashes(fread($fp, 65535));
+                                        $SQL = "CALL spCreateFileContent ('$fmdId', '$binarydata', $segment);";
+                                        if (!$result = mysqli_query($dbc, $SQL)) {
+                                            $error = true;
+                                            $incomplete = true;
+                                            $ret_err = $dbc->error;
+                                            array_push($errors, "Segment $segment of file for $typeName could not be uploaded because $ret_err.");
+                                        }
+                                        complete_procedure($dbc);
+                                        $segment ++;
+                                    }
+                                    fclose($fp);
+                                }
                             }
-                            fclose($fp);
+                            else {
+                                $incomplete = true;
+                                array_push($errors, 'File could not be uploaded for ' . $typeName . '.');
+                            }
+                        }
+                        else {
+                            $error = true;
+                            $incomplete = true;
+                            array_push($errors, 'Uploaded documents must be less than 2MB and in Word-document or PDF format.');
                         }
                     }
                     else {
-                        $error = true;
                         $incomplete = true;
-                        array_push($errors, 'Uploaded documents must be less than 2MB and in Word-document or PDF format.');
+                        array_push($errors, 'Review file was missing for ' . $typeName . '.');
                     }
-                }
-                else {
-                    $incomplete = true;
-                    array_push($errors, 'Review file was missing for ' . $typeName . '.');
-                }
+                } // this condition has no error, it is filtering out the blank entry
             }
         }
         else {
@@ -119,13 +127,20 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$error && !$incomplete) {
         // TODO: create radio button pair for 'needs revision' and 'publishable'
         $q_update_review = "CALL spReviewerUpdateReviewStatus($userID, $subID, 2);";
-        if ($r_update_review = mysqli_query($dbc, $q_update_review) && mysqli_num_rows($r_update_review) == 0) {
-            ignore_remaining_output($r_update_review);
+        if ($r_update_review = mysqli_query($dbc, $q_update_review)) {
+            // expecting 0 rows... or one error
+            if ($r_update_review != 1) {
+                $row_err = mysqli_fetch_array($r_update_review, MYSQLI_ASSOC);
+                $ret_err = $row_err['Error'];
+                $error = true;
+                array_push($errors, "Review could not be committed because: $ret_err.");
+                ignore_remaining_output($r_update_review);
+            }
             complete_procedure($dbc);
         }
         else {
             $error = true;
-            array_push($errors, 'Review could not be committed');
+            array_push($errors, 'Review could not be committed.');
         }
     }
 }
@@ -140,8 +155,8 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
     $errorloc = 'displaying information for this critical incident';
     $q_submission = "CALL spSubmissionGetInfo($subID);";
-    if ($r_submission = mysqli_query($dbc, $q_submission) && mysqli_num_rows($r_submission) > 0) {
-        $row_submission = mysqli_fetch_array($r_submission, MYSQLI_ASSOC)
+    if ($r_submission = mysqli_query($dbc, $q_submission)) {
+        $row_submission = mysqli_fetch_array($r_submission, MYSQLI_ASSOC);
         $sub_title = $row_submission['IncidentTitle'];
         $sub_abstract = $row_submission['Abstract'];
         $sub_keywords = $row_submission['Keywords'];
@@ -152,7 +167,7 @@ if (!$error) {
         echo "<h1 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h1><br />\r\n";
         echo "<h1 class=\"PLACEHOLDER\">Abstract: </h1><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
         $q_subfiles = "CALL spSubmissionGetFilesList($subID);";
-        if ($r_subfiles = mysqli_query($dbc, $q_subfiles) && mysqli_num_rows($r_subfiles) > 0) {
+        if ($r_subfiles = mysqli_query($dbc, $q_subfiles)) {
             while ($row_subfiles = mysqli_fetch_array($r_subfiles)) {
                 $fid = $row_subfiles['FileMetaDataID'];
                 $fname = $row_subfiles['FileName'];
@@ -160,7 +175,7 @@ if (!$error) {
                 $ftype = $row_subfiles['FileType'];
                 create_download_link($fid, $ftype . ': ' . $fname, $fsize);
             }
-            complete_procedure($r_subfiles);
+            complete_procedure($dbc);
         }
         else {
             $error = true;
@@ -179,7 +194,7 @@ if (!$error) {
     $errorloc = 'building the file upload form';
     
     $q_filetypes = 'CALL spGetFileTypes(2);';
-    if ($r_filetypes = mysqli_query($dbc, $q_filetypes) && mysqli_num_rows($r_filetypes) > 0) {
+    if ($r_filetypes = mysqli_query($dbc, $q_filetypes)) {
         
         echo "\t\t<form method=\"post\" action=\"review_submission.php?sid=$subID\" enctype=\"multipart/form-data\">\r\n";
         while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {

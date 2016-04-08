@@ -29,6 +29,7 @@ function create_download_link ($file_id, $filename, $filesize) {
 function is_mime_valid ($mime) {
     // valid MIMEs are:
     $doc = 'application/msword';
+    // rtf shares mime with doc
     $docx = 'application/vnd.openxmlformats-officedocument.wordprocessing';
     $pdf = 'application/pdf';
     return ($mime == $doc || $mime == $docx || $mime == $pdf);
@@ -37,7 +38,7 @@ function is_mime_valid ($mime) {
 // create_upload_input - expects string for input-id name,
 // expects string for display text, expects string for CSS class
 function create_upload_input ($inputname, $filename, $inputrole) {
-    echo "\t<p><label for=\"$inputname\">$filename: span class=\"required\">*</span></label>\n";
+    echo "\t<p><label for=\"$inputname\">$filename: <span class=\"required\">*</span></label>\n";
     echo "\t<input class=\"$inputrole\" type=\"file\" name=\"$inputname\" id=\"$inputname\"></p>\n";
 }
 ?>
