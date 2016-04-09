@@ -1,6 +1,14 @@
 <?php // assign_editor created by Jamal Ahmed
 
+
+
+
 $page_title = 'assign_editor' ;
+
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
 require('../mysqli_connect.php');
 require('./include_utils/procedures.php');
 require('./include_utils/files.php'); // for create_download_link
@@ -20,6 +28,11 @@ $is_editor = false;
 }              
 
 /*
+used to check what sessions are active
+foreach ($_SESSION as $key => $value) 
+{    
+echo "<p>Key-$key, Val-$value</p>";
+}
 In PHP, there are three kind of arrays:
 
 Numeric array - An array with a numeric index
@@ -34,19 +47,26 @@ if (!$error) {
 		if(isset($_POST['submit'])) {
 			
 			/*
-			foreach ($_POST as $field => $value) 
-			{   // echo "<p>$field, $value</p>";   
+			foreach ($_POST as $field => $value) {   
+				// echo "<p>$field, $value</p>";   
 			if ($field != 'submit' && $value != 'Record Results' && $value != 'empty') 
-			{    $source = substr($field, 8);    $item = $value;        $q_r = "CALL AddRecord('$item', '$source', '$time');";    $r_r = mysqli_query($dbc, $q_r);    if ($r_r) 
-			{     echo "<p>Source: $source and Item: $item successfully recorded.</p>";    }    else {     echo '<p class="error">';   
-			echo "Could not process Source $source: and Item: $item.</p>";    }        while (mysqli_more_results($dbc)) {     mysqli_next_result($dbc);    }   }  }
+				{    $source = substr($field, 8);    $item = $value;        $q_r = "CALL AddRecord('$item', '$source', '$time');";    $r_r = mysqli_query($dbc, $q_r);   
+			if ($r_r) 
+			{     echo "<p>Source: $source and Item: $item successfully recorded.</p>";   
+			}   	
+			else {     echo '<p class="error">';   
+			echo "Could not process Source $source: and Item: $item.</p>";    }  
+			while (mysqli_more_results($dbc)) {     mysqli_next_result($dbc);    }
+			
+			}  
+			}
 			*/
 		
 		
 		
-		$q_assign_case = " CALL spUpdateSubmissionAssignEditor('$caseID' ,'$editor_id') " ;
+		$q_assign_case = " CALL spUpdateSubmissionAssignEditor('$caseID' ,'$editor_id') ;" ;
 		$r_assign_case = @mysqli_query ($dbc, $q_assign_case);
-		while($row_assign_case = mysqli_fetch_array($r_assign_case, mysqli_ASSOC)) {
+		while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
 			echo 'The following cases have been assigned to the chosen editor' ;
 			print_r($row_assign_case);
 		}
@@ -54,12 +74,16 @@ if (!$error) {
 		}  // Everything above this is processing the page
 		
 		// Everything below is preparing to display the form
-		$q_cases = "CALL spEditorViewSubmissions" . date("Y") ;
+		$submission_list = array();
+		$case_list = array();
+		$editor_list = array();
+		
+		$q_cases = "CALL spEditorViewSubmissions('" . date("Y") ."');" ;
 		$r_cases = @mysqli_query ($dbc, $q_cases);
 		if(mysqli_num_rows($r_cases) > 0) {
 
-	$case_list = array();
-		while($row_cases = mysqli_fetch_array($r_cases, mysqli_ASSOC)) 
+		
+		while($row_cases = mysqli_fetch_array($r_cases, MYSQLI_ASSOC)) 
 				
 				// source http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
 				{
@@ -77,10 +101,11 @@ if (!$error) {
 					$caseID = $case_row['SubmissionID'] ;
 					
 				
-			$q_submission = "CALL spSubmissionGetInfo ($caseID)";
+			$q_submission = "CALL spSubmissionGetInfo ($caseID);";
 			
 			$r_submission = @mysqli_query ($dbc, $q_submission);
-			while($row_submission = mysqli_fetch_array($r_submission, mysqli_ASSOC)) {
+			
+			while($row_submission = mysqli_fetch_array($r_submission, MYSQLI_ASSOC)) {
 				// echo '< name="case" value="'.$row_submission['IncidentTitle'].'"/>';
 				
 				$row_submission['SubmissionID'] = $caseID ; // check to see if this works
@@ -93,9 +118,9 @@ if (!$error) {
 				complete_procedure($dbc);
 			}
 			 $submission_fileIDs = array();
-			$q_submission_file = "CALL spSubmissionGetFilesList ($caseID)";
+			$q_submission_file = "CALL spSubmissionGetFilesList ($caseID);";
 			$r_submission_file = @mysqli_query ($dbc, $q_submission_file);
-			while($row_submission_file = mysqli_fetch_array($r_submission_file, mysqli_ASSOC)) {
+			while($row_submission_file = mysqli_fetch_array($r_submission_file, MYSQLI_ASSOC)) {
 				// download link taken from author_view_critical incident page
 				// echo '< name="ID" value="'.$row_submission_file['FileMetaDataID'].'"/>';
 				 // echo "<td><a href='download.php?fid=$file_ID'>Download</a></td>";
@@ -116,9 +141,9 @@ if (!$error) {
 			?>
 		
 		<?php
-		$q_editors = " CALL spGetUsersEditorsList" ;
+		$q_editors = " CALL spGetUsersEditorsList ;" ;
 		$r_editors = @mysqli_query ($dbc, $q_editors);
-		while($row_editors = mysqli_fetch_array($r_editors, mysqli_ASSOC))
+		while($row_editors = mysqli_fetch_array($r_editors, MYSQLI_ASSOC))
 		{
 			// echo '<input type="radio" name="editor" value="'.$row_editors['UserID'].'"/>';
 			array_push($editor_list, $row_editors); 
