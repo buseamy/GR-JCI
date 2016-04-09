@@ -1,12 +1,14 @@
 <?php $page_title = 'JCI Website - Search Critical Incidents'; // search cases.php Written by Jamal Ahmed
 	require ('./includes/header.php'); // Include the site header
-
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+	$case_list = array();
+	$errors = array(); // Initialize an error array.
+	
 	require('../mysqli_connect.php');
 	require('./include_utils/procedures.php');
 	require('./include_utils/files.php');
-	$errors = array(); // Initialize an error array.
+	
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
 
 
 	// if nothing is entered give an error message
@@ -60,27 +62,41 @@
 	where SubmissionID like $case_ID AND CaseTitle like $case_title
 	AND Keywords like $keyword AND (select FirstName, LastName from Users) like $author AND Category like $category" ;
 */
-	$q_search = "CALL spSearchIncidents ('$year', '$case_ID', '$case_title', '$keyword', '$author', '$category' ); " ;
+
+//echo "$case_title', '$keyword', '$author', '$category";
+	$q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
+	//echo "$q_search";
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	// $r_search = @mysqli_query ($dbc, $q_search); // Run the query.
 	//  if results found
-	if ($r_search = mysqli_query($dbc, $q_search)) {
-		if(mysqli_num_rows($r_search) > 1) {
-		echo '<p>testing</p>';
+	
+	$r_search = mysqli_query($dbc, $q_search);
+	
+		
+		
+		if (mysqli_num_rows($r_search) > 0) {
+			
+		
 	
 	
 	//dispay results
-		while($case_row = mysqli_fetch_array($r_search, mysqli_ASSOC)) {
-			print_r($case_row);
-			echo '<p>testing11</p>';
+		while($case_row = mysqli_fetch_array($r_search, MYSQLI_ASSOC)) {
+			array_push($case_list, $case_row);
+			// print_r($case_row);
+			
 
 		}
 	}
 	else {
-		echo 'No results Found' ;
+		echo '<p>No results Found</p>' ;
 		
 	}
+	
+	/* To see errors in the database
+	else {
+		echo '<p>'.$dbc->error.' </p>' ;
 	}
+	*/
 	
 	
 	complete_procedure($dbc);
@@ -121,7 +137,7 @@
              		<div class="guest">
                 		<h3 class="title">Search</h3>
             		</div>
-		            <form class="archivesearch"action="search_cases.php" method="post">
+		            <form class="archivesearch"action="" method="post">
 						<input placeholder="Case Title" class="regular" type="text" name="case_title" size="15" maxlength="40" value="<?php if (isset($_POST['case_title'])) echo $_POST['case_title']; ?>" /><br>
 						<input placeholder="Keywords" class="regular" type="text" name="keyword" size="20" maxlength="60" value="<?php if (isset($_POST['keyword'])) echo $_POST['keyword']; ?>"  /><br>
 						<input placeholder="Author" class="regular" type="text" name="author" size="10" maxlength="20" value="<?php if (isset($_POST['author'])) echo $_POST['author']; ?>"  /><br>
@@ -129,10 +145,42 @@
 						<input type="submit" name="submit" value="search" /></p>
 					</form>
 				</div>
-				<div class="col s8 nopadding alt">
+				<div class="col s8 nopadding alt"> 
+				
+					<?php 
+					/*
+					echo '<p> case list size of'.sizeof($case_list).'</p>';
+					foreach($case_list as $critical_incident) {
+						echo '<p> critical incident size of'.sizeof($critical_incident).'</p>';
+						foreach ($critical_incident as $key => $value) 
+						{    
+						echo "<p>Key-$key, Val-$value</p>";
+						}
+						*/
+					foreach($case_list as $critical_incident) {
+						
+						$title = $critical_incident['IncidentTitle'];
+						$ID = $critical_incident['CriticalIncidentID'];
+						$authors = $critical_incident['Authors'];
+						
+						echo "<p>Incident Title: $title Author(s): $authors </p>" ;
+						
+					}
+					/*
+					results.CriticalIncidentID,
+         results.Year,
+         results.IncidentTitle,
+         results.Abstract,
+         results.Keywords,
+         results.Authors,
+         results.Categories
 					<object class="pdfviewer" data="files/jci2014.pdf" type="application/pdf">
+					
 		  				<p>Alternative text - include a link <a href="images/jci2014.pdf">to the PDF!</a></p>
-					</object>
+					</object>  
+					*/
+					?>
+					
 				</div>
 			</div>
 		</div>
