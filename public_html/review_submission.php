@@ -13,6 +13,7 @@ require('./include_utils/files.php'); // download links, upload inputs, mime-che
 
 $error = false;
 $incomplete = false;
+$success = false;
 $errorloc = '';
 $errors = array();
 
@@ -128,23 +129,34 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if (!$error && !$incomplete) {
-        // TODO: create radio button pair for 'needs revision' and 'publishable'
-        $q_update_review = "CALL spReviewerUpdateReviewStatus($userID, $subID, 2);";
-        if ($r_update_review = mysqli_query($dbc, $q_update_review)) {
-            // expecting 0 rows... or one error
-            if ($r_update_review != 1) {
-                $row_err = mysqli_fetch_array($r_update_review, MYSQLI_ASSOC);
-                $ret_err = $row_err['Error'];
-                $error = true;
-                array_push($errors, "Review could not be committed because: $ret_err.");
-                ignore_remaining_output($r_update_review);
+        if (isset($_POST['status'])) {
+            $rev_status = $_POST['status'];
+            $q_update_review = "CALL spReviewerUpdateReviewStatus($userID, $subID, $rev_status);";
+            if ($r_update_review = mysqli_query($dbc, $q_update_review)) {
+                // expecting 0 rows... or one error
+                if ($r_update_review->num_rows != 1) {
+                    $row_err = mysqli_fetch_array($r_update_review, MYSQLI_ASSOC);
+                    $ret_err = $row_err['Error'];
+                    $error = true;
+                    array_push($errors, "Review could not be committed because: $ret_err.");
+                    ignore_remaining_output($r_update_review);
+                }
+                complete_procedure($dbc);
             }
-            complete_procedure($dbc);
+            else {
+                $error = true;
+                array_push($errors, 'Review could not be committed.');
+            }
         }
         else {
             $error = true;
-            array_push($errors, 'Review could not be committed.');
+            array_push($errors, 'Status was not selected for review.');
         }
+    }
+    
+    // can only be successful if processing happened
+    if (!$error && !$incomplete) {
+        $success = true;
     }
 }
 
@@ -155,6 +167,11 @@ echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 
 // Get information on the critical incident and display for download
+if ($success) {
+    // processing happened, display message
+    echo "\t\t<h3>Review Successfully Processed.</h3>";
+    echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>";
+}
 if (!$error) {
     $errorloc = 'displaying information for this critical incident';
     $q_submission = "CALL spSubmissionGetInfo($subID);";
@@ -167,8 +184,8 @@ if (!$error) {
         // expecting one row
         ignore_remaining_output($r_submission);
         complete_procedure($dbc);
-        echo "<h1 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h1><br />\r\n";
-        echo "<h1 class=\"PLACEHOLDER\">Abstract: </h1><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
+        echo "<h3 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h3><br />\r\n";
+        echo "<h3 class=\"PLACEHOLDER\">Abstract: </h3><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
         $q_subfiles = "CALL spSubmissionGetFilesList($subID);";
         if ($r_subfiles = mysqli_query($dbc, $q_subfiles)) {
             while ($row_subfiles = mysqli_fetch_array($r_subfiles)) {
@@ -193,7 +210,7 @@ if (!$error) {
 }
 
 // Provide form for reviewer to submit review documents
-if (!$error) {
+if (!$error && !$success) {
     $errorloc = 'building the file upload form';
     
     $q_filetypes = 'CALL spGetFileTypes(2);';
@@ -205,7 +222,16 @@ if (!$error) {
             $typeName = $row_filetypes['FileType'];
             create_upload_input('fileup-' . $typeId, $typeName, 'reviewer');
         }
-        echo "\t\t\t<input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
+        // TODO: un-hardcode radio input
+        // NOTE - Radio Button inputs are accessible from POST through the NAME of the input
+        // NAME also determines the selection grouping, so radio inputs with the same NAME and different ID are mutually-exclusive
+        // VALUE is the value retrieved by pulling NAME from POST, e.g. "$_POST['NAME']"
+        echo "\t\t\t<h3>Review Status:</h3>\r\n";
+        echo "\t\t\t<label for=\"status-needsrevision\">Needs Revision</label>\r\n";
+        echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"status-needsrevision\" value=\"2\" /><br />\r\n";
+        echo "\t\t\t<label for=\"status-publishable\">Publishable</label>\r\n";
+        echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"status-publishable\" value=\"3\" /><br />\r\n";
+        echo "\t\t\t<br /><input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
         echo "\t\t</form>\r\n";
         complete_procedure($dbc);
     }
@@ -228,6 +254,7 @@ if ($error || $incomplete) {
         echo "\t\t\t<br /> - $msg\r\n";
     }
     echo "\t\t</p>\r\n";
+    echo "\t\t<p><a href=\"review_submission.php?sid=$subID\">Retry Review</a></p>";
 }
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
