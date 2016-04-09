@@ -3,7 +3,9 @@
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	require ('../mysqli_connect.php');
+	require('../mysqli_connect.php');
+	require('./include_utils/procedures.php');
+	require('./include_utils/files.php');
 	$errors = array(); // Initialize an error array.
 
 
@@ -44,6 +46,8 @@
 	} else {
 		$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
 	}
+	// testing
+	$year = null;
 
 	// run only if one or more fields has been entered
 	if (empty($errors)) {
@@ -56,18 +60,29 @@
 	where SubmissionID like $case_ID AND CaseTitle like $case_title
 	AND Keywords like $keyword AND (select FirstName, LastName from Users) like $author AND Category like $category" ;
 */
-	$q_search = "CALL spSearchCases ('$case_ID', '$case_title', '$keyword', '$author', '$category' )" ;
+	$q_search = "CALL spSearchIncidents ('$year', '$case_ID', '$case_title', '$keyword', '$author', '$category' ); " ;
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
-	$r = @mysqli_query ($dbc, $q_search); // Run the query.
-	//  if no results found
-	if(mysqli_num_rows($r) < 1) {
-		echo 'No results Found' ;
-	}
+	// $r_search = @mysqli_query ($dbc, $q_search); // Run the query.
+	//  if results found
+	if ($r_search = mysqli_query($dbc, $q_search)) {
+		if(mysqli_num_rows($r_search) > 1) {
+		echo '<p>testing</p>';
+	
+	
 	//dispay results
-		while($row = mysqli_fetch_array($r, mysqli_ASSOC)) {
-			print_r($row);
+		while($case_row = mysqli_fetch_array($r_search, mysqli_ASSOC)) {
+			print_r($case_row);
+			echo '<p>testing11</p>';
 
 		}
+	}
+	else {
+		echo 'No results Found' ;
+		
+	}
+	}
+	
+	
 	complete_procedure($dbc);
 	} else { // Report the errors.
 
@@ -107,7 +122,6 @@
                 		<h3 class="title">Search</h3>
             		</div>
 		            <form class="archivesearch"action="search_cases.php" method="post">
-						<input placeholder="Case ID" class="regular" type="text" name="case_ID" size="15" maxlength="20" value="<?php if (isset($_POST['case_ID'])) echo $_POST['case_ID']; ?>" /><br>
 						<input placeholder="Case Title" class="regular" type="text" name="case_title" size="15" maxlength="40" value="<?php if (isset($_POST['case_title'])) echo $_POST['case_title']; ?>" /><br>
 						<input placeholder="Keywords" class="regular" type="text" name="keyword" size="20" maxlength="60" value="<?php if (isset($_POST['keyword'])) echo $_POST['keyword']; ?>"  /><br>
 						<input placeholder="Author" class="regular" type="text" name="author" size="10" maxlength="20" value="<?php if (isset($_POST['author'])) echo $_POST['author']; ?>"  /><br>
