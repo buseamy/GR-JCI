@@ -37,7 +37,7 @@
                             <input class="regular required" placeholder="Title" type="text" name="title" id="title" size="30" maxlength="100">
                             <div id="dynamicAuthor">
                                 <div>
-                                    <h3>Author</h3>
+                                    <h3>Author 1 (Primary Contact)</h3>
                                     <input class="regular" value="<?php echo $membercode; ?>" placeholder="SCR Member Code (Optional)" type="text" name="memberCode" id="memberCode" size="30" maxlength="60">
                                     <input class="regular required" value="<?php echo $email; ?>" placeholder="Email" type="text" id="email" size="30" maxlength="100" name="email">
                                     <input class="regular required" value="<?php echo $firstname; ?>" placeholder="First Name" type="text" id="authorFirst" size="30" maxlength="100" name="authorFirst">
@@ -45,6 +45,7 @@
                                 </div>
                             </div>
                             <button class="author" type="button" onClick="addInput('dynamicAuthor');">Add another author</button>
+                            <button id="removeAuthor" style="display:none;" class="author" type="button" onClick='removeInput();'>Remove author</button>
                             <p><input type="hidden" name="counter" id="counter" value="1"></p>
                             <h3>Please provide all the following documents:</h3>
                             <span class="jcf-file jcf-pressed">
@@ -97,7 +98,7 @@
                             <span id="remaining_characters">There is a 300 Character limit</span><p>
                             <p><input type="submit" class="author" value="Submit Critical Incident" name="submit"></p>
                         </form>
-                        <!--<script type="text/javascript"> var formValidator  = new Validator("submit_criticalIncident");
+                        <script type="text/javascript"> var formValidator  = new Validator("submit_criticalIncident");
                             formValidator.EnableMsgsTogether();
 
                             formValidator.addValidation("title", "req", "Please enter a title");//Title required
@@ -119,7 +120,7 @@
                             formValidator.addValidation("memo","req_file","Memo is required");//memo required
                             //summary validation
                             formValidator.addValidation("summary","file_extn=doc;docx;rtf","Allowed files types for summary are: .doc, .docx, and .rtf");//Check file type
-                        </script>-->
+                        </script>
                     </div>
                 <?php } else { echo '<div class="contentwidth"><div class="row flush"><div class="col s7"><p>You do not have permission</p>'; }?>
             </div>

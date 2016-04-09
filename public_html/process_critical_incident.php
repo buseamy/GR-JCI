@@ -81,8 +81,30 @@ $Summary = $_POST['summary'];
 $KeyWords = $_POST['keywords'];
 $Abstract = $_POST['abstract'];
 
-if (isset($_POST['submit']) && $Error == false) {
+// Check if authors are registered users
+if($Error == false) {
+    $count = $counter;
+    while ($count > 1 && $Error == false) {
 
+        //Check if users exist
+        $results = $dbc->query("Call spSearchGetUsersEmail('${'Email' . $count}');"); // Run procedure
+        complete_procedure($dbc);
+
+        if ($results->num_rows > 0) {
+            // output data of each row
+            while($row = $results->fetch_assoc()) {
+                ${'AdditionalAuthorUserID' . $count} = $row["UserID"];
+            }
+        } else {
+            echo "Author " . $count . " not found";
+            $Error = true;
+        }
+        $count--;
+    }
+}
+
+if (isset($_POST['submit']) && $Error == false) {
+    // create the initial submission
     $q_AuthorCreateSubmission = "Call spAuthorCreateSubmission($UserID, '$IncidentTitle', '$Abstract', '$KeyWords', $PreviousSubmissionID, $SubmissionNumber);"; // Call to stored procedure
     $results = $dbc->query($q_AuthorCreateSubmission); // Run procedure
 
@@ -96,49 +118,53 @@ if (isset($_POST['submit']) && $Error == false) {
         }
     }
     complete_procedure($dbc); // Complete SP Create submission
-
-    if (!$SubmissionID && isset($Email)) {
+    // If submission creation was successful
+    if (!$SubmissionID) {
         $Error = true;
     } elseif($Error == false) {
         $count = $counter;
         while ($count > 1 && $Error == false) {
-
-            $q_SearchGetUsersEmail = "Call spSearchGetUsersEmail('${'Email' . $count}');"; // Call to stored procedure
-            $results = $dbc->query($q_SearchGetUsersEmail); // Run procedure
+            $PrimaryContact = 0;
+            $AdditionalAuthorUserID = ${'AdditionalAuthorUserID' . $count};
+            $checkAuthor = $dbc->query("Call spAuthorAddToSubmission('$AdditionalAuthorUserID', '$SubmissionID', '$PrimaryContact');"); // Run procedure
             complete_procedure($dbc);
-
-            if ($results->num_rows > 0) {
-                // output data of each row
-                while($row = $results->fetch_assoc()) {
-                    $AdditionalAuthorUserID = $row["UserID"];
-
-                    $PrimaryContact = 0;
-
-                    $check = $dbc->query("Call spAuthorAddToSubmission('$AdditionalAuthorUserID', '$SubmissionID', '$PrimaryContact');"); // Run procedure
-                    complete_procedure($dbc);
-                    if ($check == false) {
-                        echo "There was an issue, please try again";
-                        $Error = true;
-                    }elseif (is_bool($check) === false){
-                        while($checkrow = $check->fetch_assoc()) {
-                            if ($checkrow["Error"] == true){
-                                echo "The following errors occured: <br>";
-                                echo $checkrow["Error"];
-                                $Error = true;
-                            }
-    			        }
-                    }else {
-                        echo "success";
-                    }
-                }
-            } else {
-                echo "Author " . $count . " not found";
+            if ($checkAuthor == false) {
+                echo "problem with spAuthorAddToSubmission";
                 $Error = true;
+            }elseif (is_bool($checkAuthor) === false){
+                while($checkAuthorRow = $checkAuthor->fetch_assoc()) {
+                    if ($checkAuthorRow["Error"] == true){
+                        echo "The following errors occured with spAuthorAddToSubmission: <br>";
+                        echo $checkAuthorRow["Error"];
+                        $Error = true;
+                    }
+		        }
+            }elseif ($checkAuthor == true) {
+                echo "success adding author";
             }
             $count--;
         }
     }
+    if ($Error == false) {
+        // run Submission Update if there are no errors
+        $checkSubmission = $dbc->query("Call spAuthorUpdateSubmission('$SubmissionID', '$IncidentTitle', '$Abstract', '$KeyWords', '$SubmissionNumber');");
+        complete_procedure($dbc);
 
-} else { echo "Error with submission.";}
+        if ($checkSubmission == false) {
+            echo "problem with spAuthorAddToSubmission";
+            $Error = true;
+        }elseif (is_bool($checkSubmission) === false){
+            while($checkSubmissionRow = $checkSubmission->fetch_assoc()) {
+                if ($checkSubmissionRow["Error"] == true){
+                    echo "The following errors occured with spAuthorUpdateSubmission: <br>";
+                    echo $checkSubmissionRow["Error"];
+                    $Error = true;
+                }
+            }
+        }elseif ($checkSubmission == true) {
+            echo "success updating submission";
+        }
+    }
+}else { echo "Error with submission.";}
 require "./includes/footer.php";
  ?>

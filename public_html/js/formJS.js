@@ -16,10 +16,21 @@
  function addInput(dName){
  //Add author
  var newd = document.createElement('div');
+ newd.setAttribute("id", "Author" + (counter + 1));
  newd.innerHTML = "<h3>Author " + (counter + 1) + "</h3><input class='regular required' placeholder='SCR Member Code' type='text' name='memberCode" + (counter + 1) + "' id='memberCode" + (counter + 1) + "' size='30' maxlength='60'><input class='regular required' placeholder='Email' type='text' id='email" + (counter + 1) + "' size='30' maxlength='100' name='email" + (counter + 1) + "'><input class='regular required' placeholder='First Name' type='text' id='authorFirst" + (counter + 1) + "' size='30' maxlength='100' name='authorFirst" + (counter + 1) + "'><input class='regular required' placeholder='Last Name' type='text' id='authorLast" + (counter + 1) + "' size='30' maxlength='100' name='authorLast" + (counter + 1) + "'></p>"
            document.getElementById(dName).appendChild(newd); //Place after last author
            counter++;
            document.getElementById("counter").value = counter;
+           document.getElementById("removeAuthor").style.display = "inline";
+ };
+ function removeInput(){
+ //Remove author
+        document.getElementById("Author" + counter).remove();
+        counter--;
+        document.getElementById("counter").value = counter;
+        if (counter == 1) {
+            document.getElementById("removeAuthor").style.display = "none";
+        }
  };
 
 //Count and display remaining characters
