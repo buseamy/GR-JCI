@@ -254,7 +254,12 @@ if ($error || $incomplete) {
         echo "\t\t\t<br /> - $msg\r\n";
     }
     echo "\t\t</p>\r\n";
-    echo "\t\t<p><a href=\"review_submission.php?sid=$subID\">Retry Review</a></p>";
+    if (isset($subID)) {
+        echo "\t\t<p><a href=\"review_submission.php?sid=$subID\">Retry Review</a></p>";
+    }
+    else {
+        echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>";
+    }
 }
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
