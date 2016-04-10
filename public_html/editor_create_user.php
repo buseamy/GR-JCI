@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Add the user in the database...
 		
 		// Make the query:
-		$q_users = "Call spEditorCreateUser('$email', '$password', '$firstname', '$lastname');";
+		$q_users = "Call spEditorCreateUser('$email', '$password', '$firstname', '$lastname', '$association', '$code');";
 				
 		// Run the query.
 		if ($r_users = mysqli_query ($dbc, $q_users)) { // If it ran OK.
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
 			$row_verify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
 			$r_userID = $row_verify["UserID"];
-			$r_everify = $row_verify["EmailVerificationGUID"];
+		//	$r_everify = $row_verify["EmailVerificationGUID"];
 			complete_procedure($dbc);
 			
 			// Send the users address information to the database
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			}
 			
 			// Send the users phone information to the database.
-			if (($_post['phone']) != '##########'){
+			if (($_POST['phone']) != '##########'){
 				$q_phone = "CALL spCreatePhoneNumber('$r_userID', '$ptype', '$phone', 1 )";
 				mysqli_query ($dbc, $q_phone);
 				complete_procedure($dbc);
@@ -167,22 +167,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             sendNotificationEmail($dbc, $r_userID, $password);
 		
 			echo '<p>You have successfully created the user.</p><p><br /></p>';
-			mysqli_close($dbc); // Close the database connection.
 			
 		} else { // If it did not run OK.
 			
-			// Public message:
-			echo '<h1 class="swatch alert_text">System Error</h1>
-			<p class="swatch alert_text">user could not be created due to a system error.</p>'; 
-			
-			// Debugging message:
-			echo '<p>' . mysqli_error($dbc) . '</p>';
+			// DB error message:
+			$errors[] = 'System error, failed to create account: '.mysqli_error($dbc);
 						
 		} // End of if ($r) IF.
 		
 		mysqli_close($dbc); // Close the database connection.
-
-
+		
         //quit the script:
 		exit();
 	
@@ -191,10 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 ?>
-
-<!-- script files-->
-<script src="js/jcf.checkbox.js"></script>
-
 <!-- create the form-->
 <?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
 	<div class="contentwidth">

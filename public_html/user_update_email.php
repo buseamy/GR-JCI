@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (empty($errors)) { // If everything's OK.
 	
 		// Add the user in the database...
-		$uid = $_SESSION['USERID'];
+		$uid = $_SESSION['UserID'];
 		// Make the query:
 		$q_email = "Call spUpdateUserEmailAddress($uid, '$email');";
 				
