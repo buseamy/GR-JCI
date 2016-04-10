@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (($_POST['phone']) == '##########') {
 		$phone = null;
 	}elseif ((Is_numeric($_POST['phone'])) && (strlen($_POST['phone']) == 10 )) {
-		$phone = mysqli_real_escape_string($dbc, trim($phone));
+		$phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
 	} else {
 		$errors[] = 'Phone numbers should be formated "##########" and should ten digits long.';
 	}
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['association'])) {
-		if (Is_numeric($POST['association'])) {
+		if (Is_numeric($_POST['association'])) {
 			$errors[] = 'Professional associations should not contain numbers.';
 		} else {
 			$association = mysqli_real_escape_string($dbc, trim($_POST['association']));
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						?>
 						<br>
 						<label for="zip">Postal code (zip): </label>
-						<input type="text" name="zip" class="regular" size="15" maxlength="40" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" />
+						<input type="text" name="zip" class="regular" size="5" maxlength="5" value="<?php if (isset($_POST['zip'])) echo $_POST['zip']; ?>" />
 						<br>
 						<label for="atype">Address Type: </label>
 						<?php

@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Send welcome E-mail for verification
             sendVerificationEmail($dbc, $uid, 2);
 			
-			echo '<p>The E-mail address has been successfully updated, please check your inbox for a verification message.</p><p><br /></p>';
+			echo '<p>The E-mail address has been successfully updated, please check your inbox for a verification message. you should recieve it within 5 minutes.</p><p><br /></p>';
 
 		} else { // If it did not run OK.
 			
@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //quit the script:
 		exit();
 
+	}
 }
 ?>
 
