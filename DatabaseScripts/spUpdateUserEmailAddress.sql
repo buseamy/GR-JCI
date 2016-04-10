@@ -4,7 +4,7 @@ DELIMITER $$
 
 /* Update the EmailAddress for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`$$
-CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(50))
+CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(200))
 DETERMINISTIC
 BEGIN
   /* Make sure UserID exists */
@@ -15,11 +15,6 @@ BEGIN
 		NewEmailAddressCreateDate = CURRENT_DATE,
 		EmailStatusID = 1
 	Where UserID = _UserID;
-	
-	/* Get the new GUID for email verification */
-	Select EmailVerificationGUID
-    From Users
-    Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
   End If;
