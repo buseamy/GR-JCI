@@ -11,8 +11,8 @@ CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
 								   IN _City varchar(30),
 								   IN _StateID int,
 								   IN _PostCode char(5),
-								   IN _PrimaryAddress tinyint
-) DETERMINISTIC
+								   IN _PrimaryAddress tinyint)
+DETERMINISTIC
 BEGIN
 
   Declare _UserID int;

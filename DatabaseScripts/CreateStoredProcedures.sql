@@ -1318,6 +1318,47 @@ BEGIN
   Order By Abbr;
 END$$
 
+/* Gets the address info for an id */
+DROP PROCEDURE IF EXISTS `spGetUserAddressInfo`$$
+CREATE PROCEDURE `spGetUserAddressInfo`(IN _AddressID int)
+DETERMINISTIC
+BEGIN
+  Select AddressID,
+         UserID,
+         AddressTypeID,
+         AddressLn1,
+         AddressLn2,
+         City,
+         StateID,
+         PostCode,
+         PrimaryAddress
+  From Addresses
+  Where AddressID = _AddressID
+  Order By CreateDate;
+END$$
+
+/* Gets the user's address list */
+DROP PROCEDURE IF EXISTS `spGetUserAddressList`$$
+CREATE PROCEDURE `spGetUserAddressList`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select a.AddressID,
+         t.AddressType,
+         a.AddressLn1,
+         a.AddressLn2,
+         a.City,
+         s.Abbr As 'State',
+         a.PostCode,
+         a.PrimaryAddress
+  From Addresses a
+    Inner Join AddressTypes t
+      On t.AddressTypeID = a.AddressTypeID
+    Inner Join States s
+      On s.StateID = a.StateID
+  Where UserID = _UserID
+  Order By a.CreateDate;
+END$$
+
 /* Gets a list of announcements for a UserID */
 DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`$$
 CREATE PROCEDURE `spGetUserAnnouncements`(IN _UserID int)
@@ -1372,6 +1413,36 @@ BEGIN
          IF(Active, 'Y', 'N') As 'IsActive'
   From Users
   Where UserID = _UserID;
+END$$
+
+/* Gets the phone info for an id */
+DROP PROCEDURE IF EXISTS `spGetUserPhoneInfo`$$
+CREATE PROCEDURE `spGetUserPhoneInfo`(IN _PhoneNumberID int)
+DETERMINISTIC
+BEGIN
+  Select PhoneNumberID,
+         UserID,
+         PhoneTypeID,
+         PhoneNumber,
+         PrimaryPhone
+  From PhoneNumbers
+  Where PhoneNumberID = _PhoneNumberID;
+END$$
+
+/* Gets the user's phone list */
+DROP PROCEDURE IF EXISTS `spGetUserPhoneList`$$
+CREATE PROCEDURE `spGetUserPhoneList`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select p.PhoneNumberID,
+         t.PhoneType,
+         p.PhoneNumber,
+         p.PrimaryPhone
+  From PhoneNumbers p
+    Inner Join PhoneTypes t
+      On t.PhoneTypeID = p.PhoneTypeID
+  Where p.UserID = _UserID
+  Order By p.CreateDate;
 END$$
 
 /* Gets the roles associated with a UserID */
@@ -1820,7 +1891,7 @@ BEGIN
   Order By LastName, FirstName;
 END$$
 
-/* Searches Published Incidents from a multiple input parameters */
+/* Searches Published Incidents from multiple input parameters */
 DROP PROCEDURE IF EXISTS `spSearchIncidents`$$
 CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Keyword varchar(20),
@@ -2116,6 +2187,34 @@ BEGIN
   End If;
 END$$
 
+/* Updates an existing address, sets it to be the primary */
+DROP PROCEDURE IF EXISTS `spUpdateAddressMakePrimary`$$
+CREATE PROCEDURE `spUpdateAddressMakePrimary`(IN _AddressID int)
+DETERMINISTIC
+BEGIN
+  Declare _UserID int;
+  
+  /* Make sure the AddressID exists */
+  If(Select Exists(Select 1 From Addresses Where AddressID = _AddressID)) Then
+    /* Get the UserID for this address */
+    Select UserID Into _UserID
+    From Addresses
+    Where AddressID = _AddressID;
+    
+    /* Set all user's addresses primary to 0 */
+    Update Addresses
+    Set PrimaryAddress = 0
+    Where UserID = _UserID;
+    
+    /* Updates the address record */
+    Update Addresses
+    Set PrimaryAddress = 1
+    Where AddressID = _AddressID;
+  Else
+    Select 'Address doesn''t exist' As 'Error';
+  End If;
+END$$
+
 /* Updates an existing address type */
 DROP PROCEDURE IF EXISTS `spUpdateAddressType`$$
 CREATE PROCEDURE `spUpdateAddressType`(IN _AddressTypeID int,
@@ -2293,6 +2392,34 @@ BEGIN
     Where FileMetaDataID = _FileMetaDataID;
   Else
     Select 'FileMetaDataID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing phone number, sets it to be the primary */
+DROP PROCEDURE IF EXISTS `spUpdatePhoneMakePrimary`$$
+CREATE PROCEDURE `spUpdatePhoneMakePrimary`(IN _PhoneNumberID int)
+DETERMINISTIC
+BEGIN
+  Declare _UserID int;
+  
+  /* Make sure the PhoneNumberID exists */
+  If(Select Exists(Select 1 From PhoneNumbers Where PhoneNumberID = _PhoneNumberID)) Then
+    /* Get the UserID for this phone */
+    Select UserID Into _UserID
+    From PhoneNumbers
+    Where PhoneNumberID = _PhoneNumberID;
+    
+    /* Set all user's phones primary to 0 */
+    Update PhoneNumbers
+    Set PrimaryPhone = 0
+    Where UserID = _UserID;
+    
+    /* Updates the phone record */
+    Update PhoneNumbers
+    Set PrimaryPhone = 1
+    Where PhoneNumberID = _PhoneNumberID;
+  Else
+    Select 'Phone number doesn''t exist' As 'Error';
   End If;
 END$$
 
@@ -2484,7 +2611,7 @@ END$$
 
 /* Update the EmailAddress for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`$$
-CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(50))
+CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(200))
 DETERMINISTIC
 BEGIN
   /* Make sure UserID exists */
@@ -2494,11 +2621,6 @@ BEGIN
         EmailVerificationGUID = REPLACE(UUID(),'-',''),
         NewEmailAddressCreateDate = CURRENT_DATE,
         EmailStatusID = 1
-    Where UserID = _UserID;
-    
-    /* Get the new GUID for email verification */
-    Select EmailVerificationGUID
-    From Users
     Where UserID = _UserID;
   Else
     Select 'UserID doesn''t exist' As 'Error';
