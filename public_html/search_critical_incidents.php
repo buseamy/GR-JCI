@@ -145,8 +145,13 @@
 						<input type="submit" name="submit" value="search" /></p>
 					</form>
 				</div>
-				<div class="col s8 nopadding alt"> 
-				
+				<div class="guest"> <!-- The class may need to be changed -->
+				<table>
+				<tr>
+				<th>Incident Title</th>
+				<th>Author(s)</th>
+				<th>Download</th>
+				</tr>
 					<?php 
 					/*
 					echo '<p> case list size of'.sizeof($case_list).'</p>';
@@ -162,24 +167,23 @@
 						$title = $critical_incident['IncidentTitle'];
 						$ID = $critical_incident['CriticalIncidentID'];
 						$authors = $critical_incident['Authors'];
-						
-						echo "<p>Incident Title: $title Author(s): $authors </p>" ;
+						echo "<tr>";
+						echo "<td>$title</td>";
+						echo "<td>$authors</td>";
+						echo "<td>Incident download Link</td>";
+						echo "</tr>";
+						// echo "<p>Incident Title: $title Author(s): $authors </p>" ;
 						
 					}
+					
 					/*
-					results.CriticalIncidentID,
-         results.Year,
-         results.IncidentTitle,
-         results.Abstract,
-         results.Keywords,
-         results.Authors,
-         results.Categories
 					<object class="pdfviewer" data="files/jci2014.pdf" type="application/pdf">
 					
 		  				<p>Alternative text - include a link <a href="images/jci2014.pdf">to the PDF!</a></p>
 					</object>  
 					*/
 					?>
+					</table>
 					
 				</div>
 			</div>
