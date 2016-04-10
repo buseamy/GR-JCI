@@ -22,7 +22,8 @@ BEGIN
          results.Abstract,
          results.Keywords,
          results.Authors,
-         results.Categories
+         results.Categories,
+         results.FileMetaDataID
   From (
     Select pci.CriticalIncidentID,
            p.Year,
@@ -30,7 +31,8 @@ BEGIN
            pci.Abstract,
            pci.Keywords,
            GROUP_CONCAT(Concat(pa.LastName, ' ,', pa.FirstName) SEPARATOR '; ') As 'Authors',
-           GROUP_CONCAT(pc.Category SEPARATOR '; ') As 'Categories'
+           GROUP_CONCAT(pc.Category SEPARATOR '; ') As 'Categories',
+           pci.FileMetaDataID
     From Publications p
       Inner Join PublishedCriticalIncidents pci
         On pci.PublicationID = p.PublicationID
