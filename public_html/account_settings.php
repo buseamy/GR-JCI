@@ -161,9 +161,24 @@ if (!isset($_SESSION['UserID']) || ($_SESSION['UserID'] < 1)) {
                     <h3 class="title">Phone Numbers</h3>
                 </div>
                 <div class="box_guest author_alt">
-                    <form method="post">
-                        <button class="author buttonform" type="submit" onclick="window.location.replace('user_addupdate_phone.php')">Add Phone Number</button>
-                    </form>
+                    <table border="0">
+                      <tr><th>Primary</th><th>Type</th><th>Phone Number</th><th></th></tr>
+                    <?php
+                    $phones = mysqli_query($dbc, "Call spGetUserPhoneList($UserID);");
+                    complete_procedure($dbc);
+                    
+                    while ($row = $phones->fetch_assoc()) {
+                        echo '<tr>';
+                        echo '<td align="center">'.($row["PrimaryPhone"] == 1 ? '✔' : '').'</td>';
+                        echo '<td align="left">'.$row["PhoneType"].'</td>';
+                        echo '<td align="left">'.$row["PhoneNumber"].'</td>';
+                        echo '<td align="left">'.($row["PrimaryPhone"] == 1 ? '' : '<a href="phone_setprimary.php?p='.$row["PhoneNumberID"].'">Make Primary</a><br />').'<a href="phone_update.php?p='.$row["PhoneNumberID"].'">Update</a><br /><br /><a href="phone_delete.php?p='.$row["PhoneNumberID"].'">Delete</a></td>';
+                        echo '</tr>';
+                    }
+                    ?>
+                    </table>
+                    <br />
+                    <button class="author buttonform" type="submit" onclick="window.location.replace('phone_new.php')">Add Phone Number</button>
                 </div>
             </div>
             <?php require 'includes/sidebar.php'; // Include sidebar ?>

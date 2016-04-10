@@ -1415,6 +1415,36 @@ BEGIN
   Where UserID = _UserID;
 END$$
 
+/* Gets the phone info for an id */
+DROP PROCEDURE IF EXISTS `spGetUserPhoneInfo`$$
+CREATE PROCEDURE `spGetUserPhoneInfo`(IN _PhoneNumberID int)
+DETERMINISTIC
+BEGIN
+  Select PhoneNumberID,
+         UserID,
+         PhoneTypeID,
+         PhoneNumber,
+         PrimaryPhone
+  From PhoneNumbers
+  Where PhoneNumberID = _PhoneNumberID;
+END$$
+
+/* Gets the user's phone list */
+DROP PROCEDURE IF EXISTS `spGetUserPhoneList`$$
+CREATE PROCEDURE `spGetUserPhoneList`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select p.PhoneNumberID,
+         t.PhoneType,
+         p.PhoneNumber,
+         p.PrimaryPhone
+  From PhoneNumbers p
+    Inner Join PhoneTypes t
+      On t.PhoneTypeID = p.PhoneTypeID
+  Where p.UserID = _UserID
+  Order By p.CreateDate;
+END$$
+
 /* Gets the roles associated with a UserID */
 DROP PROCEDURE IF EXISTS `spGetUserRoles`$$
 CREATE PROCEDURE `spGetUserRoles`(IN _UserID int)
@@ -2362,6 +2392,34 @@ BEGIN
     Where FileMetaDataID = _FileMetaDataID;
   Else
     Select 'FileMetaDataID doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing phone number, sets it to be the primary */
+DROP PROCEDURE IF EXISTS `spUpdatePhoneMakePrimary`$$
+CREATE PROCEDURE `spUpdatePhoneMakePrimary`(IN _PhoneNumberID int)
+DETERMINISTIC
+BEGIN
+  Declare _UserID int;
+  
+  /* Make sure the PhoneNumberID exists */
+  If(Select Exists(Select 1 From PhoneNumbers Where PhoneNumberID = _PhoneNumberID)) Then
+    /* Get the UserID for this phone */
+    Select UserID Into _UserID
+    From PhoneNumbers
+    Where PhoneNumberID = _PhoneNumberID;
+    
+    /* Set all user's phones primary to 0 */
+    Update PhoneNumbers
+    Set PrimaryPhone = 0
+    Where UserID = _UserID;
+    
+    /* Updates the phone record */
+    Update PhoneNumbers
+    Set PrimaryPhone = 1
+    Where PhoneNumberID = _PhoneNumberID;
+  Else
+    Select 'Phone number doesn''t exist' As 'Error';
   End If;
 END$$
 
