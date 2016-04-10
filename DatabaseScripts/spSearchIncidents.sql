@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Searches Published Incidents from a multiple input parameters */
+/* Searches Published Incidents from multiple input parameters */
 DROP PROCEDURE IF EXISTS `spSearchIncidents`$$
 CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Keyword varchar(20),

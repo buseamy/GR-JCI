@@ -1318,6 +1318,47 @@ BEGIN
   Order By Abbr;
 END$$
 
+/* Gets the address info for an id */
+DROP PROCEDURE IF EXISTS `spGetUserAddressInfo`$$
+CREATE PROCEDURE `spGetUserAddressInfo`(IN _AddressID int)
+DETERMINISTIC
+BEGIN
+  Select AddressID,
+         UserID,
+         AddressTypeID,
+         AddressLn1,
+         AddressLn2,
+         City,
+         StateID,
+         PostCode,
+         PrimaryAddress
+  From Addresses
+  Where AddressID = _AddressID
+  Order By CreateDate;
+END$$
+
+/* Gets the user's address list */
+DROP PROCEDURE IF EXISTS `spGetUserAddressList`$$
+CREATE PROCEDURE `spGetUserAddressList`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select a.AddressID,
+         t.AddressType,
+         a.AddressLn1,
+         a.AddressLn2,
+         a.City,
+         s.Abbr As 'State',
+         a.PostCode,
+         a.PrimaryAddress
+  From Addresses a
+    Inner Join AddressTypes t
+      On t.AddressTypeID = a.AddressTypeID
+    Inner Join States s
+      On s.StateID = a.StateID
+  Where UserID = _UserID
+  Order By a.CreateDate;
+END$$
+
 /* Gets a list of announcements for a UserID */
 DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`$$
 CREATE PROCEDURE `spGetUserAnnouncements`(IN _UserID int)
@@ -1820,7 +1861,7 @@ BEGIN
   Order By LastName, FirstName;
 END$$
 
-/* Searches Published Incidents from a multiple input parameters */
+/* Searches Published Incidents from multiple input parameters */
 DROP PROCEDURE IF EXISTS `spSearchIncidents`$$
 CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Keyword varchar(20),
@@ -2111,6 +2152,34 @@ BEGIN
     Else
       Select 'Invalid AddressTypeID' As 'Error';
     End If;
+  Else
+    Select 'Address doesn''t exist' As 'Error';
+  End If;
+END$$
+
+/* Updates an existing address, sets it to be the primary */
+DROP PROCEDURE IF EXISTS `spUpdateAddressMakePrimary`$$
+CREATE PROCEDURE `spUpdateAddressMakePrimary`(IN _AddressID int)
+DETERMINISTIC
+BEGIN
+  Declare _UserID int;
+  
+  /* Make sure the AddressID exists */
+  If(Select Exists(Select 1 From Addresses Where AddressID = _AddressID)) Then
+    /* Get the UserID for this address */
+    Select UserID Into _UserID
+    From Addresses
+    Where AddressID = _AddressID;
+    
+    /* Set all user's addresses primary to 0 */
+    Update Addresses
+    Set PrimaryAddress = 0
+    Where UserID = _UserID;
+    
+    /* Updates the address record */
+    Update Addresses
+    Set PrimaryAddress = 1
+    Where AddressID = _AddressID;
   Else
     Select 'Address doesn''t exist' As 'Error';
   End If;
