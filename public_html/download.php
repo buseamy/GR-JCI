@@ -45,7 +45,7 @@ if (isset($_GET["fid"])) {
         $fileMime = $row_FileInfo["FileMime"];
         $fileSize = $row_FileInfo["FileSize"];
         // end the query and free the connection - expected one line
-        ignore_procedure($r_FileInfo);
+        ignore_remaining_output($r_FileInfo);
         complete_procedure($dbc);
         
         // check query before sending header information
