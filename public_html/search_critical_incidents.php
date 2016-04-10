@@ -100,16 +100,7 @@
 	
 	
 	complete_procedure($dbc);
-	} else { // Report the errors.
-
-		echo '<h1>Error!</h1>
-		<p class="error">The following error(s) occurred:<br />';
-		foreach ($errors as $msg) { // Print each error.
-			echo " - $msg<br />\n";
-		}
-		echo '</p><p>Please try Searching again.</p>';
-
-	}
+	} 
 
 
 }
@@ -117,9 +108,21 @@
 <div class="content">
 	<img class="responsive" src="images/glasses.jpg" alt="reading glasses and book">
 </div>
+
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
+<?php
+if (!empty($errors)) {
+                echo '<div>';
+                echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
+                foreach ($errors as $msg) { // Print each error.
+                    echo " - $msg<br />";
+                }
+                echo '</p><p>Please try again.</p>';
+                echo '</div>';
+}
+?>
 			<div class="guest frame1">
 				<h1 class="title">JCI 2014: INCIDENTS</h1>
 			</div>
@@ -146,13 +149,15 @@
 					</form>
 				</div>
 				<div class="guest"> <!-- The class may need to be changed -->
-				<table>
-				<tr>
-				<th>Incident Title</th>
-				<th>Author(s)</th>
-				<th>Download</th>
-				</tr>
-					<?php 
+				<?php
+				if(sizeof($case_list) > 0) {
+					echo '<table>';
+				echo '<tr>';
+				echo '<th>Incident Title</th>';
+				echo '<th>Author(s)</th>';
+				echo '<th>Download</th>';
+				echo '</tr>';
+				
 					/*
 					echo '<p> case list size of'.sizeof($case_list).'</p>';
 					foreach($case_list as $critical_incident) {
@@ -165,12 +170,13 @@
 					foreach($case_list as $critical_incident) {
 						
 						$title = $critical_incident['IncidentTitle'];
-						$ID = $critical_incident['CriticalIncidentID'];
+						$Incident_ID = $critical_incident['CriticalIncidentID'];
 						$authors = $critical_incident['Authors'];
+						$meta_ID = $critical_incident['FileMetaDataID'];
 						echo "<tr>";
 						echo "<td>$title</td>";
 						echo "<td>$authors</td>";
-						echo "<td>Incident download Link</td>";
+						echo "<td><a target=\"_blank\" href=\"download.php?fid=$meta_ID\">Download</a></td>";
 						echo "</tr>";
 						// echo "<p>Incident Title: $title Author(s): $authors </p>" ;
 						
@@ -182,9 +188,10 @@
 		  				<p>Alternative text - include a link <a href="images/jci2014.pdf">to the PDF!</a></p>
 					</object>  
 					*/
-					?>
-					</table>
 					
+					echo '</table>';
+					}
+					?>
 				</div>
 			</div>
 		</div>
