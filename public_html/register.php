@@ -46,12 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if (!empty($_POST['Email1'])) {
         $Email1 = strtolower($_POST['Email1']);
+        if (!filter_var($Email1, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Please provide a valid email address';
+        }
     } else {
         $errors[] = 'Please provide an email address';
     }
     
     if (!empty($_POST['Email2'])) {
         $Email2 = strtolower($_POST['Email2']);
+        if (!filter_var($Email2, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Please provide a valid email address';
+        }
     } else {
         $errors[] = 'Please provide an email confirmation';
     }
@@ -73,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors[] = 'Please provide a password confirmation';
     }
     
-    // Make sure both emails were typed in and see if they are less than 6 chars or do not match
+    // Make sure both passwords were typed in and see if they are less than 6 chars or do not match
     if ((strlen($Password1) > 0) && (strlen($Password2) > 0) && strlen($Password1) < 6) {
         $errors[] = 'Password needs to be at least 6 characters long';
     } else if ((strlen($Password1) > 0) && (strlen($Password2) > 0) && ($Password1 != $Password2)) {
