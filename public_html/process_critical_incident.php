@@ -145,7 +145,7 @@ if (isset($_POST['submit']) && $Error == false) {
             $count--;
         }
     }
-    if ($Error == false) {
+    if ($Error == false ) {
         // run Submission Update if there are no errors
         $checkSubmission = $dbc->query("Call spAuthorUpdateSubmission('$SubmissionID', '$IncidentTitle', '$Abstract', '$KeyWords', '$SubmissionNumber');");
         complete_procedure($dbc);
@@ -164,6 +164,9 @@ if (isset($_POST['submit']) && $Error == false) {
         }elseif ($checkSubmission == true) {
             echo "success updating submission";
         }
+    }
+    if (isset($SubmissionID) && $Error == false) {
+        $CreateSubmissionFileMetaData = $dbc->query("Call spCreateSubmissionFileMetaData('$SubmissionID', '$FileTypeID', '$FileMime', '$sFileName', '$sFileSize');");
     }
 }else { echo "Error with submission.";}
 require "./includes/footer.php";

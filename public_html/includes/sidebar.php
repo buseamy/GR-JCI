@@ -53,7 +53,6 @@
         if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
             echo '<h3 class="reviewer title">Reviewer</h3>';
             echo '<li><a href="reviewer_incident_management.php">Review Critical Incident</a></li>';
-            echo '<li><a href="review_submission.php">Submit Review</a></li>';
 		}
 		?>
     </ul>

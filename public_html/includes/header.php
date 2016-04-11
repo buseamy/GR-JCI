@@ -43,14 +43,20 @@ if (session_status() == PHP_SESSION_NONE) {
                         <?php // Create a logout if logged in, creates login if logged out
            				 //Editor tab is displayed if the user is an editor
            				if (isset($_SESSION['UserID'])) { //if logged in
-                            echo '<li><a href="dashboard.php">Dashboard</a></li>';
-                            echo '<li><a href="search_cases.php">Critical Incidents</a></li>';
+                            if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1) {
+                                echo '<li><a href="editor_incident_management.php">Dashboard</a></li>';
+                            }elseif (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
+                                echo '<li><a href="author_incident_management.php">Dashboard</a></li>';
+                            }if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
+                                echo '<li><a href="reviewer_incident_management.php">Dashboard</a></li>';
+                            }
+                            echo '<li><a href="search_critical_incidents.php">Critical Incidents</a></li>';
                 			echo '<li><a href="contact.php">Contact Us</a></li>';
                             echo '<li><a href="account_settings.php">Account Settings</a></li>';
 							echo '<li><a href="editorial_policy.php">About</a></li>';
            					echo '<li><a href="logout.php">Logout</a></li>';
            				} else { //if logged out
-                            echo '<li><a href="search_cases.php">Critical Incidents</a></li>';
+                            echo '<li><a href="search_critical_incidents.php">Critical Incidents</a></li>';
                 			echo '<li><a href="contact.php">Contact Us</a></li>';
 							echo '<li><a href="editorial_policy.php">About</a></li>';
            					echo '<li><a id="togglelogin" href="login.php" onclick="return false;">Login</a></li>';
