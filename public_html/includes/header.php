@@ -47,7 +47,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 echo '<li><a href="editor_incident_management.php">Dashboard</a></li>';
                             }elseif (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
                                 echo '<li><a href="author_incident_management.php">Dashboard</a></li>';
-                            }if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
+                            }elseif (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
                                 echo '<li><a href="reviewer_incident_management.php">Dashboard</a></li>';
                             }
                             echo '<li><a href="search_critical_incidents.php">Critical Incidents</a></li>';
