@@ -1,112 +1,104 @@
-<?php 
-// This page allows the user to change their email address
-// written by Jon Sankey
+<?php $page_title = 'Update Email Address - SFCI - Journal for Critical Indicents';
+/*
+ * The purpose of this file is to update the user's email address
+ */
 
-$page_title = 'Update E-mail Address';
+require ('../mysqli_connect.php'); // Connect to the database
+require ('./include_utils/login_functions.php');
+require ('./include_utils/procedures.php');
+require ('./includes/header.php');
 
-require ('./includes/header.php'); // Include the site header
-require ('./includes/subnav.php'); // Dashboard navigation
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-	// database connection is required for queries to be inserted in database
-	require ('../mysqli_connect.php');
-	require('./include_utils/procedures.php');
-    require ('./include_utils/email_functions.php');
-		
-	$errors = array(); // Initialize an error array.
-	
+$errors = array(); // Initialize an error array.
 
-	// checks if email matches
-	if (isset($_POST['email'])) {
-		if ($_POST['email'] != $_POST['email2']) {
-			$errors[] = 'The E-mail addresses do not match.';
-		} elseif (preg_match('/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2}|aero|biz|com|coop|edu|gov|info|jobs|mil|mobi|museum|name|net|org|travel)$/i', $_POST['email'])) {
-			$email = mysqli_real_escape_string($dbc, trim($_POST['email']));
-		} else {
-			$errors[] = 'The E-mail address must be in the format "someone@host.com".';
-		}
-	} else {
-		$errors[] = 'You forgot to enter a new E-mail address.';
-	}
-	
+//Default values
+$UserID = -1;
+$Email1 = '';
+$Email2 = '';
+
+if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
+    $UserID = $_SESSION['UserID'];
+    
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        //Verify inputs
+        if (!empty($_POST['Email1'])) {
+            $Email1 = strtolower($_POST['Email1']);
+            if (!filter_var($Email1, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'Please provide a valid email address';
+            }
+        } else {
+            $errors[] = 'Please provide an email address';
+        }
         
-	
-	if (empty($errors)) { // If everything's OK.
-	
-		// Add the user in the database...
-		$uid = $_SESSION['USERID'];
-		// Make the query:
-		$q_email = "Call spUpdateUserEmailAddress($uid, '$email');";
-				
-		// Run the query.
-		if ($r_users = mysqli_query ($dbc, $q_email)) { // If it ran OK.
-		
-			// Finish sending data to database and print a success message:
-			
-			$row_everify = mysqli_fetch_array($r_users, MYSQLI_ASSOC);
-			complete_procedure($dbc);
+        if (!empty($_POST['Email2'])) {
+            $Email2 = strtolower($_POST['Email2']);
+            if (!filter_var($Email2, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'Please provide a valid email address';
+            }
+        } else {
+            $errors[] = 'Please provide an email confirmation';
+        }
+        
+        // Make sure both emails were typed in and see if they do not match
+        if ((strlen($Email1) > 0) && (strlen($Email2) > 0) && ($Email1 != $Email2)) {
+            $errors[] = 'Emails do not match';
+        }
+        
+        if (empty($errors)) {
+            $Email1 = mysqli_real_escape_string($dbc, $Email1);
             
-            // Send welcome E-mail for verification
-            sendVerificationEmail($dbc, $uid, 2);
-			
-			echo '<p>The E-mail address has been successfully updated, please check your inbox for a verification message. you should recieve it within 5 minutes.</p><p><br /></p>';
-
-		} else { // If it did not run OK.
-			
-			// Public message:
-			echo '<h1 class="swatch alert_text">System Error</h1>
-			<p class="swatch alert_text">user could not be created due to a system error.</p>'; 
-			
-			// Debugging message:
-			echo '<p>' . mysqli_error($dbc) . '</p>';
-						
-		} // End of if ($r) IF.
-		
-		mysqli_close($dbc); // Close the database connection.
-
-        //quit the script:
-		exit();
-
-	}
+            //Update the email address
+            mysqli_query($dbc, "Call spUpdateUserEmailAddress($UserID,'$Email1');");
+            complete_procedure($dbc);
+            
+            //Redirect user back to the account settings page
+            redirect_user('account_settings.php');
+        }
+    }
+} else {
+    //Redirect user back to the account settings page
+    redirect_user('account_settings.php');
 }
 ?>
+<div class="content">
+    <img class="responsive" src="images/wood_image.jpg" alt="wood">
+</div>
+<div class="contentwidth">
+    <div class="row flush">
+        <div class="col s7">
+            <div class="author roundcorner">
+                <h3 class="title">Change Email Address</h3>
+            </div>
+            <div class="box_guest author_alt">
+                <?php
+                if (!empty($errors)) {
+                    echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
+                    foreach ($errors as $msg) { // Print each error.
+                        echo " - $msg<br />";
+                    }
+                    echo '</p><p>Please try again.</p><br />';
+                }
+                ?>
+                <form method="post">
+                    <label for="Email1"><span class="required">*</span> Email Address:</label>
+                    <input type="text" class="regular" name="Email1" maxlength="200" value="<?php echo $Email1; ?>" />
+                    <br />
+                    <label for="Email2"><span class="required">*</span> Confirm Email:</label>
+                    <input type="text" class="regular" name="Email2" maxlength="200" autocomplete="off" value="<?php echo $Email2; ?>" />
+                    <br />
+                    <p>* indicates a required field</p>
+                    <button class="author buttonform" type="submit" onclick="window.location.replace('account_settings.php'); return false;">Cancel</button>
+                    <button class="author buttonform" type="submit">Change Email Address</button>
+                </form>
+            </div>
+        </div>
+        <?php require 'includes/sidebar.php'; // Include sidebar ?>
+    </div>
+</div>
+<?php require 'includes/footer.php'; // Include footer
 
-<!-- create the form-->
-<?php if (isset($_SESSION['UserID'])) { // only display if logged in ?>
-	<div class="contentwidth">
-		<div class="row flush">
-			<div class="col s7">
-				<?php
-				if (!empty($errors)) { // Report the errors.
-					echo '<div>';
-					echo '<h1 class="swatch alert_text">Error!</h1>
-					<p><br><br>The following error(s) occurred:<br />';
-					foreach ($errors as $msg) { // Print each error.
-						echo " - $msg<br />\n";
-					}
-					echo '</p><p>Please try again.</p><p><br /></p>';
-					echo '</div>';
-				} // End of if (!empty($errors)).
-				?>
-				<div class="author roundcorner">
-					<h3 class="title">Change E-mail</h3>
-				</div>
-				<div>
-					<form action="user_update_email.php" method="post">
-						<label for="email">New Email Address:  <span class="required"></span></label>
-						<input type="text" name="email" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>"  />
-						<br>
-						<label for="email2">Confirm New Email Address:  <span class="required"></span></label>
-						<input type="text" name="email2" class="regular" size="20" maxlength="60" value="<?php if (isset($_POST['email2'])) echo $_POST['email2']; ?>"  />
-						<br>
-						<input type="submit" class="author" name="submit" value="Change E-mail" />
-						<input class="alert" type="button" onclick="window.location.replace('index.php')" value="Cancel" />
-					</form>
-				</div>
-			</div>
-			<?php require ('./includes/sidebar.php'); // Include the site sidebar
-		echo '</div>';
-	echo '</div>';
-} else { echo '<p class="swatch alert_text">Please login and try again</p>'; }
-require ('./includes/footer.php'); ?>
+mysqli_close($dbc);?>
