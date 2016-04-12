@@ -15,6 +15,12 @@
  */
 require_once ('../mysqli_connect.php');
 require_once ('./include_utils/procedures.php'); // complete_procedure()
+include_once ('./include_utils/date_conversion.php'); // convert_from($date) for display
+
+$sb_uid = -1;
+if (isset($_SESSION['UserID'])) {
+    $sb_uid = $_SESSION['UserID'];
+}
 ?>
 <!--Begin Sidebar-->
 <aside class="col s3 side white">
@@ -42,11 +48,12 @@ require_once ('./include_utils/procedures.php'); // complete_procedure()
     <div class="alert corner">
         <h3 class="title">Resources</h3>
     </div>
-    <ul>
         <div>
-            <li><a href="#">Learn how to submit a Critical Incident</a></li>
-            <li><a href="teaching_notes.php">Get Purchasing Information for Teaching Notes</a></li>
-            <li><a target="_blank" href="https://www.sfcr.org/.">Visit SCR Site</a></li>
+            <ul>
+                <li><a href="#">Learn how to submit a Critical Incident</a></li>
+                <li><a href="teaching_notes.php">Get Purchasing Information for Teaching Notes</a></li>
+                <li><a target="_blank" href="https://www.sfcr.org/.">Visit SCR Site</a></li>
+            </ul>
             <hr>
         </div>
         <div>
@@ -68,23 +75,54 @@ require_once ('./include_utils/procedures.php'); // complete_procedure()
             <!--<p>Submission Deadline: September 1st</p>
             <p>Journal Publication: October 31st</p>-->
             <hr>
-        <div class="scrollable">
-            <div>
-                <h2>Announcement Title</h2>
-                <h4>00/00/0000 Time:Posted PM</h4>
-                <p>The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!</p>
-            </div>
-            <div>
-                <h2>Announcement Title</h2>
-                <h4>00/00/0000 Time:Posted PM</h4>
-                <p>The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!</p>
-            </div>
-            <div>
-                <h2>Announcement Title</h2>
-                <h4>00/00/0000 Time:Posted PM</h4>
-                <p>The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!The new site is now live! Don't forget to register here for an account if you do not have one already!</p>
-            </div>
         </div>
-    </ul>
-    <br>
+        <?php // ANNOUNCEMENTS
+        // class to denote level, ordered by role level
+        // TODO: confirm whether announcements section coloring should change based on role
+        $sb_role = 'guest';
+        if (isset($_SESSION['isAuthor']) && $_SESSION['isAuthor'] == 1) { $sb_role = 'author'; }
+        if (isset($_SESSION['isReviewer']) && $_SESSION['isReviewer'] == 1) { $sb_role = 'reviewer'; }
+        if (isset($_SESSION['isEditor']) && $_SESSION['isEditor'] == 1) { $sb_role = 'editor'; }
+        
+        // escape-characters to match formatting in surrounding HTML
+        echo "\r\n\t\t<div class=\"$sb_role corner\"><h3 class=\"title\">Announcements</h3></div>\r\n";
+        
+        // can be echoed more readily in case debugging is needed
+        $q_announcements = "CALL spGetAllAnnouncementsList($sb_uid);";
+        if ($r_announcements = mysqli_query($dbc, $q_announcements)) {
+            if ($r_announcements->num_rows > 0) {
+                echo "\t\t<div class=\"";
+                if ($r_announcements->num_rows > 1) { echo "scrollable"; }
+                echo "\">\r\n";
+                echo "\t\t\t<ul>\r\n";
+                while ($row_announcements = mysqli_fetch_array($r_announcements, MYSQLI_ASSOC)) {
+                    $sb_title = $row_announcements['Title'];
+                    $sb_msg = $row_announcements['Message'];
+                    $sb_postdate = convert_from($row_announcements['CreateDate']);
+                    $sb_expiredate = $row_announcements['ExpireDate'];
+                    if ($sb_expiredate != '') { $sb_expiredate = convert_from($sb_expiredate); }
+                    
+                    // TODO: handle expired announcements - here or stored-procedure
+                    
+                    echo "\t\t\t<li><div>\r\n";
+                    echo "\t\t\t\t<h2>$sb_title</h2>\r\n";
+                    echo "\t\t\t\t<h4>$sb_postdate</h4>\r\n";
+                    echo "\t\t\t\t<p>$sb_msg</p>\r\n";
+                    echo "\t\t\t</div></li>\r\n";
+                }
+                echo "\t\t\t</ul>\r\n";
+            }
+            else {
+                echo "\t\t<div>\r\n";
+                echo "\t\t\t<h2>No Announcements</h2>\r\n";
+            }
+            complete_procedure($dbc);
+        }
+        else {
+            echo "\t\t<div>\r\n";
+            echo "\t\t\t<h2>Announcement Retreival Failed</h2>\r\n";
+        }
+        echo "\t\t</div>\r\n";
+        ?>
+    <br />
 </aside>
