@@ -120,7 +120,7 @@ if (isset($_SESSION['UserID'])) {
         }
         else {
             echo "\t\t<div>\r\n";
-            echo "\t\t\t<h2>Announcement Retreival Failed</h2>\r\n";
+            echo "\t\t\t<h2>Announcement Retrieval Failed</h2>\r\n";
         }
         echo "\t\t</div>\r\n";
         ?>
