@@ -18,7 +18,7 @@ $errorloc = '';
 $errors = array();
 
 // Make sure the user is a reviewer
-if (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer']) {
+if (!isset($_SESSION['is_reviewer']) || !$_SESSION['is_reviewer']) {
     $errorloc = 'verifying reviewer status';
     $error = true;
     array_push($errors, 'Only reviewers may review critical incidents.');
@@ -26,6 +26,10 @@ if (isset($_SESSION['is_reviewer']) && !$_SESSION['is_reviewer']) {
 // Get UserID
 if (isset($_SESSION['UserID'])) {
     $userID = $_SESSION['UserID'];
+}
+else {
+    $error = true;
+    array_push($errors, 'You must be logged in to access this page.');
 }
 
 // Make sure a submission is selected

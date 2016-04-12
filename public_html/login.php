@@ -52,11 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['isAuthor'] =  0;
                     $_SESSION['isReviewer'] = 0;
                     $_SESSION['isEditor'] = 0;
+                    // boolean set for condition shortcut
+                    $_SESSION['is_author'] = false;
+                    $_SESSION['is_reviewer'] = false;
+                    $_SESSION['is_editor'] = false;
         
                     //Stored procedure for getting the user roles
                     $Roles = mysqli_query($dbc, "Call spGetUserRoles($temp_userid);");
                     complete_procedure($dbc);
                     while ($row = mysqli_fetch_array($Roles, MYSQLI_ASSOC)) {
+                        // short-circuits if already set
+                        $_SESSION['is_author'] = ($_SESSION['is_author'] || $row['RoleTitle'] == 'Author');
+                        $_SESSION['is_reviewer'] = ($_SESSION['is_reviewer'] || $row['RoleTitle'] == 'Reviewer');
+                        $_SESSION['is_editor'] = ($_SESSION['is_editor'] || $row['RoleTitle'] == 'Editor');
+                        // TODO: boolean could be added to the actions per if, or the if could be on the boolean
                         if ($row["RoleTitle"] == 'Author') { $_SESSION['isAuthor'] =  1; }
                         if ($row["RoleTitle"] == 'Reviewer') { $_SESSION['isReviewer'] =  1; }
                         if ($row["RoleTitle"] == 'Editor') { $_SESSION['isEditor'] =  1; }
