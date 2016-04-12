@@ -7,7 +7,8 @@ DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`$$
 CREATE PROCEDURE `spGetPublicationsYearsList`()
 DETERMINISTIC
 BEGIN
-  Select Year
+  Select Year,
+         FileMetaDataID
   From Publications
   Order By Year Desc;
 END$$

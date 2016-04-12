@@ -45,10 +45,10 @@ BEGIN
       Right Join PublicationCategories pc
         On pc.CategoryID = pcic.CategoryID
     Where pci.IncidentTitle Like _Title
-      Or pci.Keywords Like _Keyword
-      Or pa.LastName Like _Author
-      Or pa.FirstName Like _Author
-      Or pc.Category Like _Category
+      And pci.Keywords Like _Keyword
+      And pa.LastName Like _Author
+      And pa.FirstName Like _Author
+      And pc.Category Like _Category
     Group By pci.CriticalIncidentID,
              p.Year,
              pci.IncidentTitle,

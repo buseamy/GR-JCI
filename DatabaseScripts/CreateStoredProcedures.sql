@@ -8,6 +8,7 @@ DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`$$
 DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`$$
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`$$
 DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`$$
 
 /* Connects an AnnouncementID with a RoleID */
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`$$
@@ -893,8 +894,8 @@ BEGIN
 END$$
 
 /* Gets the list of all Announcements */
-DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`$$
-CREATE PROCEDURE `spGetAllAnnouncements`()
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`$$
+CREATE PROCEDURE `spGetAllAnnouncementsList`()
 DETERMINISTIC
 BEGIN
   Select a.Title,
@@ -906,8 +907,53 @@ BEGIN
       On ar.AnnouncementID = a.AnnouncementID
     Inner Join Roles r
       On r.RoleID = ar.RoleID
-    Order By CreateDate,
-             Title;
+  Group By a.Title,
+           a.CreateDate,
+           a.ExpireDate
+  Order By a.CreateDate,
+           a.Title;
+END$$
+
+/* Gets the list of Announcements for a UserID */
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`$$
+CREATE PROCEDURE `spGetAllAnnouncementsList`(IN _UserID int)
+DETERMINISTIC
+BEGIN
+  Select rtn.Title,
+         rtn.Message,
+         rtn.CreateDate,
+         IfNull(rtn.ExpireDate,'') As 'ExpireDate'
+  From (
+    Select Title,
+           Message,
+           CreateDate,
+           ExpireDate
+    From Announcements a
+      Inner Join AccouncementRoles ar
+        On ar.AnnouncementID = a.AnnouncementID 
+    Where ar.RoleID = 6 /* Public announcements */
+    Union All
+    Select a.Title,
+           a.Message,
+           a.CreateDate,
+           a.ExpireDate
+    From Announcements a
+      Inner Join AccouncementRoles ar
+        On ar.AnnouncementID = a.AnnouncementID
+      Inner Join Roles r
+        On r.RoleID = ar.RoleID
+      Inner Join UserRoles ur
+        On ur.RoleID = r.RoleID
+      Inner Join Users u
+        On u.UserID = ur.UserID
+    Where u.UserID = _UserID /* User specific (all roles) announcements */
+  ) rtn
+  Group By rtn.Title,
+           rtn.Message,
+           rtn.CreateDate,
+           rtn.ExpireDate
+  Order By rtn.CreateDate,
+           rtn.Title;
 END$$
 
 /* Gets the List of available Article Dates for a year */
@@ -1201,7 +1247,8 @@ DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`$$
 CREATE PROCEDURE `spGetPublicationsYearsList`()
 DETERMINISTIC
 BEGIN
-  Select Year
+  Select Year,
+         FileMetaDataID
   From Publications
   Order By Year Desc;
 END$$
@@ -1251,7 +1298,7 @@ BEGIN
   Order By pc.Category;
 END$$
 
-/* Gets the list Published Incidents for a year */
+/* Gets the list Published Incidents for a year for editor adding  */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidents`(IN _Year int)
 DETERMINISTIC
@@ -1263,6 +1310,33 @@ BEGIN
     Inner Join Publications p
       On p.PublicationID = pci.PublicationID
   Where p.Year = _Year
+  Order By pci.IncidentTitle;
+END$$
+
+/* Gets the list Published Incidents for a year for search page */
+DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentsList`$$
+CREATE PROCEDURE `spGetPublishedCriticalIncidentsList`(IN _Year int)
+DETERMINISTIC
+BEGIN
+  Select pci.CriticalIncidentID,
+         pci.IncidentTitle,
+         pci.Abstract,
+         pci.Keywords,
+         Group_Concat(concat(pa.LastName, ', ', pa.FirstName)) As 'Authors',
+         pci.FileMetaDataID
+  From PublishedCriticalIncidents pci
+    Inner Join Publications p
+	  On p.PublicationID = pci.PublicationID
+    Right Join PublishedIncidentsAuthors pia
+      On pia.CriticalIncidentID = pci.CriticalIncidentID
+    Right Join PublishedAuthors pa
+      On pa.AuthorID = pia.AuthorID
+  Where p.Year = _Year
+  Group By pci.CriticalIncidentID,
+           pci.IncidentTitle,
+           pci.Abstract,
+           pci.Keywords,
+           pci.FileMetaDataID
   Order By pci.IncidentTitle;
 END$$
 
@@ -1934,10 +2008,10 @@ BEGIN
       Right Join PublicationCategories pc
         On pc.CategoryID = pcic.CategoryID
     Where pci.IncidentTitle Like _Title
-      Or pci.Keywords Like _Keyword
-      Or pa.LastName Like _Author
-      Or pa.FirstName Like _Author
-      Or pc.Category Like _Category
+      And pci.Keywords Like _Keyword
+      And pa.LastName Like _Author
+      And pa.FirstName Like _Author
+      And pc.Category Like _Category
     Group By pci.CriticalIncidentID,
              p.Year,
              pci.IncidentTitle,

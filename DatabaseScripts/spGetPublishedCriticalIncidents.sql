@@ -2,7 +2,7 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the list Published Incidents for a year */
+/* Gets the list Published Incidents for a year for editor adding */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidents`(IN _Year int)
 DETERMINISTIC
