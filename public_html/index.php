@@ -21,14 +21,14 @@ include ('./includes/header.php');
 ?>
 <div class="head">
     <img src="images/home.jpg" class="hero">
-    <div class="join">
+    <!--<div class="join">
         <a href="register.php"><h3>Sign Up<br>Today!</h3></a>
-    </div>
+    </div>-->
 </div>
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
-            <h1>Journal of Critical Incidents</h1>
+            <h1 style="font-family: 'Times New Roman'">Journal of Critical Incidents</h1>
             <!--Page main body-->
             <div id="home_about">
                 <p>The <i>Journal of Critical Incidents</i> does not publish long cases. JCI's focus is on brief incidents that tell about real situation in a real organization.  The incident tells a story about an event, an experience, a blunder, or a success.   Unlike a long case, the incident does not provide historical detail or how the situation developed.  Rather, it provides a snapshot that stimulates student use of their knowledge to arrive at a course of action or analysis.</p>
@@ -38,8 +38,8 @@ include ('./includes/header.php');
                 <p>The Journal of Critical Incidents is listed in Cabels and is published annually in October.</p>
                 <p><b>Editor</b></p>
                 <p>Timothy Brotherton</p>
-                <p> For additional information, visit our website, <a href="http://www.sfcr.org/jci">www.sfcr.org</a>, or contact the Editor directly.</p>
-                <p>*Source: <a href="http://www.sfcr.org/jci">sfcr.org/jci</a></p>
+                <p> For additional information, visit our website, <a target="_blank" href="http://www.sfcr.org/jci">www.sfcr.org</a>, or contact the Editor directly.</p>
+                <p>*Source: <a target="_blank" href="http://www.sfcr.org/jci" >sfcr.org/jci</a></p>
             </div>
         </div>
 

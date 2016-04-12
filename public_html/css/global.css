@@ -135,7 +135,7 @@
 	position:relative;
 }
 .scrollable {
-	height:375px;
+	height:475px;
 	overflow-y:scroll;
 	padding-bottom:0;
 }
@@ -1765,7 +1765,7 @@ ul.bullets {
 }
 
 li {
-	 color: #b2dc68
+	 color: black;
 }
 
 li span {

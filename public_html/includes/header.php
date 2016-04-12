@@ -59,6 +59,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             echo '<li><a href="search_critical_incidents.php">Critical Incidents</a></li>';
                 			echo '<li><a href="contact.php">Contact Us</a></li>';
 							echo '<li><a href="editorial_policy.php">About</a></li>';
+                            echo '<li><a href="register.php">Register</a></li>';
            					echo '<li><a id="togglelogin" href="login.php" onclick="return false;">Login</a></li>';
            				}?>
             		</ul>
