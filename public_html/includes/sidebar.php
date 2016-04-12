@@ -88,7 +88,7 @@ if (isset($_SESSION['UserID'])) {
         echo "\r\n\t\t<div class=\"$sb_role corner\"><h3 class=\"title\">Announcements</h3></div>\r\n";
         
         // can be echoed more readily in case debugging is needed
-        $q_announcements = "CALL spGetAllAnnouncementsList($sb_uid);";
+        $q_announcements = "CALL spGetAnnouncements($sb_uid);";
         if ($r_announcements = mysqli_query($dbc, $q_announcements)) {
             if ($r_announcements->num_rows > 0) {
                 echo "\t\t<div class=\"";
