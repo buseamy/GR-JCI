@@ -48,8 +48,7 @@
 	} else {
 		$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
 	}
-	// testing
-	$year = null;
+	
 
 	// run only if one or more fields has been entered
 	if (empty($errors)) {
@@ -88,7 +87,7 @@
 		}
 	}
 	else {
-		echo '<p>No results Found</p>' ;
+		  $errors[] = 'No results Found' ;
 		
 	}
 	
@@ -113,13 +112,14 @@
     <div class="row flush">
         <div class="col s7">
 <?php
+// Error message modified From Isys288 register page
 if (!empty($errors)) {
                 echo '<div>';
-                echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
+                echo '<p class="error"><br />';
                 foreach ($errors as $msg) { // Print each error.
-                    echo " - $msg<br />";
+                    echo "$msg<br />";
                 }
-                echo '</p><p>Please try again.</p>';
+                echo '</p>';
                 echo '</div>';
 }
 ?>
@@ -176,7 +176,7 @@ if (!empty($errors)) {
 						echo "<tr>";
 						echo "<td>$title</td>";
 						echo "<td>$authors</td>";
-						echo "<td><a target=\"_blank\" href=\"download.php?fid=$meta_ID\">Download</a></td>";
+						echo "<td><a target=\"_blank\" href=\"download.php?fid=$meta_ID\">Download</a></td>"; // TODO: in the future change to create_download_link
 						echo "</tr>";
 						// echo "<p>Incident Title: $title Author(s): $authors </p>" ;
 						

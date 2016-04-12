@@ -1,4 +1,5 @@
-<?php // Registration for all users written by Jamal Ahmed code referred to was from Isys288 register.php
+<?php // Registration for all users orginally written by Jamal Ahmed code referred to was from Isys288 register.php
+// On 4/9/16 Page was rewritten by Jeff Ballard. Jamal will still be responsible for fixing errors that are found in QA.
 
 $page_title = 'Register - SFCI - Journal for Critical Indicents';
 
@@ -204,6 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row flush">
         <div class="col s7">
             <?php
+			// Error message modified From Isys288 register page
             if (!empty($errors)) {
                 echo '<div>';
                 echo '<h1>Error!</h1><p class="error">The following error(s) occurred:<br />';
