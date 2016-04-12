@@ -71,7 +71,8 @@ if (!$error) {
 			print_r($row_assign_case);
 		}
 		
-		}  // Everything above this is processing the page
+		}  
+		// Everything above this is processing the page
 		
 		// Everything below is preparing to display the form
 		$submission_list = array();
@@ -85,15 +86,14 @@ if (!$error) {
 		
 		while($row_cases = mysqli_fetch_array($r_cases, MYSQLI_ASSOC)) 
 				
-				// source http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
-				{
-                array_push($case_list, $row_cases);
 				
-                // foreach ($row_cases as $key => $value)
-                   // echo '<td>'.htmlspecialchars($value).'</td>';
+				{
+				// Mitch helped me learn how to use array_push
+				//array_push(first parameter is the array, second parameter is the value of what is being put in the first parameter)
+                array_push($case_list, $row_cases);
                 
             }
-		// http://stackoverflow.com/questions/4997252/get-post-from-multiple-checkboxes
+		
 		  
     
 			complete_procedure($dbc);
@@ -125,7 +125,7 @@ if (!$error) {
 				// echo '< name="ID" value="'.$row_submission_file['FileMetaDataID'].'"/>';
 				 // echo "<td><a href='download.php?fid=$file_ID'>Download</a></td>";
 				 //echo '</tr>';
-				 //array_push(first parameter is the array, second parameter is the value of what is being put in the first parameter)
+				 
 				 array_push($submission_fileIDs, $row_submission_file);
 				
 				 foreach($submission_file_list as $submission_file_row) {
@@ -138,23 +138,18 @@ if (!$error) {
 			}
 		  
 		  
-			?>
-		
-		<?php
 		$q_editors = " CALL spGetUsersEditorsList ;" ;
 		$r_editors = @mysqli_query ($dbc, $q_editors);
 		while($row_editors = mysqli_fetch_array($r_editors, MYSQLI_ASSOC))
 		{
-			// echo '<input type="radio" name="editor" value="'.$row_editors['UserID'].'"/>';
 			array_push($editor_list, $row_editors); 
 			foreach($editor_list as $editor_row) {
-				$editor_name = $editor_row['FullName'] ;// full name is output same for editorID get userID from array
+				$editor_name = $editor_row['FullName'] ;// These values not used
 				$editor_ID = $editor_row['UserID'];
 			}
-			// foreach ($row_editors as $key => $value)
-               // echo '<td>'.htmlspecialchars($value).'</td>';
+			
 		}
-		// $editor_id = $_POST['editor'] ;
+		
 		complete_procedure($dbc);
 		?>
 		<form action="assign_editor2.php" method="post">
@@ -167,7 +162,8 @@ if (!$error) {
 				
 					
 					
-					
+		// looked at for assistance http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
+		// http://stackoverflow.com/questions/4997252/get-post-from-multiple-checkboxes
 		echo '<label for = "chk-case-'.$caseID.'">'.$case_name.'</label>';
 		echo '<input type="checkbox" id = "chk-case-'.$caseID.'" name="selected[]" value="'.$caseID.'"/>';
 		echo '</td>';
@@ -188,7 +184,7 @@ if (!$error) {
 			$filesize = $submission_file_row['FileSize'] ;
 			echo '<td>';
 			create_download_link ($file_id, $filename, $filesize);
-			echo '<td>';
+			echo '</td>';
 			// download link goes here create_download_link($file_id, $filename, $filesize)
 		}
 		
