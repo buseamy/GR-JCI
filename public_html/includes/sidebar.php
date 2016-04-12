@@ -13,6 +13,8 @@
  * pages throughout the site. The sidebar will hold important links and
  * information based on the user type logged in.
  */
+require_once ('../mysqli_connect.php');
+require_once ('./include_utils/procedures.php'); // complete_procedure()
 ?>
 <!--Begin Sidebar-->
 <aside class="col s3 side white">
@@ -57,7 +59,7 @@
                 if ($results->num_rows > 0) {
                     // output data of each row
                     while($row = $results->fetch_assoc()) {
-                        echo "<p>" $row["Description"] . ": " . $row["Date"] . "</p>";
+                        echo "<p>" . $row["Description"] . ": " . $row["Date"] . "</p>";
                     }
                 } else {
                     echo "There are no upcoming important dates";
