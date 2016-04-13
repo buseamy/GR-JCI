@@ -1,7 +1,7 @@
 <!--This navigation will only be available once a user is logged in-->
 
-    <img class="responsive" src="images/wood_image.jpg" alt="conference">
-    <div class="dashcontent">
+
+    <div class="dashboard">
          <div class="dashboardnav">
             <ul class="row dashnav">
                 <li class="col s1 nomargin nomobile"></li>
@@ -17,3 +17,4 @@
                 }?>
             </ul>
 		</div>
+        <div class="dashcontent">

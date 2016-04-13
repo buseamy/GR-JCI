@@ -60,13 +60,13 @@ if (isset($_SESSION['UserID'])) {
             <h2>Important Dates:</h2>
             <?php
                 //Check if users exist
-                $results = $dbc->query("Call spGetNextDates('3');"); // Run procedure
+                $nextDates = $dbc->query("Call spGetNextDates('3');"); // Run procedure
                 complete_procedure($dbc);
 
-                if ($results->num_rows > 0) {
+                if ($nextDates->num_rows > 0) {
                     // output data of each row
-                    while($row = $results->fetch_assoc()) {
-                        echo "<p>" . $row["Description"] . ": " . $row["Date"] . "</p>";
+                    while($row_dates = $nextDates->fetch_assoc()) {
+                        echo "<p>" . $row_dates["Description"] . ": " . $row_dates["Date"] . "</p>";
                     }
                 } else {
                     echo "There are no upcoming important dates";
@@ -74,7 +74,6 @@ if (isset($_SESSION['UserID'])) {
             ?>
             <!--<p>Submission Deadline: September 1st</p>
             <p>Journal Publication: October 31st</p>-->
-            <hr>
         </div>
         <?php // ANNOUNCEMENTS
         // class to denote level, ordered by role level
@@ -83,10 +82,10 @@ if (isset($_SESSION['UserID'])) {
         if (isset($_SESSION['isAuthor']) && $_SESSION['isAuthor'] == 1) { $sb_role = 'author'; }
         if (isset($_SESSION['isReviewer']) && $_SESSION['isReviewer'] == 1) { $sb_role = 'reviewer'; }
         if (isset($_SESSION['isEditor']) && $_SESSION['isEditor'] == 1) { $sb_role = 'editor'; }
-        
+
         // escape-characters to match formatting in surrounding HTML
         echo "\r\n\t\t<div class=\"$sb_role corner\"><h3 class=\"title\">Announcements</h3></div>\r\n";
-        
+
         // can be echoed more readily in case debugging is needed
         $q_announcements = "CALL spGetAnnouncements($sb_uid);";
         if ($r_announcements = mysqli_query($dbc, $q_announcements)) {
@@ -101,9 +100,9 @@ if (isset($_SESSION['UserID'])) {
                     $sb_postdate = convert_from($row_announcements['CreateDate']);
                     $sb_expiredate = $row_announcements['ExpireDate'];
                     if ($sb_expiredate != '') { $sb_expiredate = convert_from($sb_expiredate); }
-                    
+
                     // TODO: handle expired announcements - here or stored-procedure
-                    
+
                     echo "\t\t\t<li><div>\r\n";
                     echo "\t\t\t\t<h2>$sb_title</h2>\r\n";
                     echo "\t\t\t\t<h4>$sb_postdate</h4>\r\n";

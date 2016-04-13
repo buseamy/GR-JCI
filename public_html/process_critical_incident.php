@@ -41,18 +41,6 @@ if(!isset($_POST['email']) || strlen(trim($_POST['email'])) == 0){
         $count--;
     }
 }
-if(!isset($_POST['authorFirst']) || strlen(trim($_POST['authorFirst'])) == 0){
-    echo 'No Author First Name provided<br/>';
-    $Error = true;
-} else {
-    $AuthorFirst = $_POST['authorFirst'];
-}
-if(!isset($_POST['authorLast']) || strlen(trim($_POST['authorLast'])) == 0){
-    echo 'No Author Last Name provided<br/>';
-    $Error = true;
-} else {
-    $AuthorLast = $_POST['authorLast'];
-}
 if(!isset($_POST['coverPage']) || strlen(trim($_POST['coverPage'])) == 0){
     echo 'No Cover Page provided<br/>';
     $Error = true;

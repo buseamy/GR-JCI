@@ -30,18 +30,21 @@
         <div class="contentwidth">
             <div class="row flush">
                 <div class="col s7">
-                    <h1>Submit a Critical Incident</h1>
+                    <div class="author roundcorner">
+                        <h3 class="title">Submit a Critical Incident</h3>
+                    </div>
                     <!--Page main body-->
-                    <div id="registration-form">
+                    <div style="padding-left:50px;" class="box_guest author_alt" id="registration-form">
+                        <h1>Critical Incident</h1>
                         <form class="submitform" id="submit_criticalIncident" action="process_critical_incident.php" method="post">
                             <input class="regular required" placeholder="Title" type="text" name="title" id="title" size="30" maxlength="100">
                             <div id="dynamicAuthor">
                                 <div>
                                     <h3>Author 1 (Primary Contact)</h3>
+                                    <p>Email Address: <?php echo $email; ?></p>
+                                    <p>First Name: <?php echo $firstname; ?></p>
+                                    <p>Last Name: <?php echo $lastname; ?></p>
                                     <input class="regular" value="<?php echo $membercode; ?>" placeholder="SCR Member Code (Optional)" type="text" name="memberCode" id="memberCode" size="30" maxlength="60">
-                                    <input class="regular required" value="<?php echo $email; ?>" placeholder="Email" type="text" id="email" size="30" maxlength="100" name="email">
-                                    <input class="regular required" value="<?php echo $firstname; ?>" placeholder="First Name" type="text" id="authorFirst" size="30" maxlength="100" name="authorFirst">
-                                    <input class="regular required" value="<?php echo $lastname; ?>" placeholder="Last Name" type="text" id="authorLast" size="30" maxlength="100" name="authorLast">
                                 </div>
                             </div>
                             <button class="author" type="button" onClick="addInput('dynamicAuthor');">Add another author</button>
@@ -102,9 +105,6 @@
                             formValidator.EnableMsgsTogether();
 
                             formValidator.addValidation("title", "req", "Please enter a title");//Title required
-                            formValidator.addValidation("email", "req", "Please enter an email");//author required
-                            formValidator.addValidation("authorFirst", "req", "Please enter an author first name");//author required
-                            formValidator.addValidation("authorLast", "req", "Please enter an author last name");//author required
 
                             //Cover Page validation
                             formValidator.addValidation("coverPage","file_extn=doc;docx;rtf","Allowed files types for cover letter are: .doc, .docx, and .rtf");//check file type

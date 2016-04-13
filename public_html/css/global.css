@@ -203,8 +203,8 @@
 	padding-top:0;
 }
 .pagewidth {
-	width:75%;
-	max-width:960px;
+	width:100%;
+	/*max-width:960px;*/
 	margin: 0px auto;
 	padding:0;
 	overflow:none;
@@ -217,7 +217,7 @@
 	margin-top:4%;
 }
 .dashcontent {
-	margin-top:-9%;
+	margin-top:0%;
 }
 .dashnav {
 	z-index:16;
@@ -247,8 +247,8 @@ small {
 .pagewidth header {
 	position:fixed;
 	top:-3%;
-	width:75%;
-	max-width:960px;
+	width:100%;
+	/*max-width:960px;*/
 	z-index:500;
 }
 .head {
@@ -262,13 +262,15 @@ a.shortcut {
 	text-decoration:none;
 }
 .responsive {
-	max-width:100%;
+	width:100%;
+	max-height: 250px;
 }
 img.hero {
 	position:relative;
 	top:0;
 	left:0;
-	max-width:100%;
+	width:100%;
+	max-height: 500px;
 	margin-bottom:0;
 }
 .join {
@@ -466,7 +468,7 @@ button:hover img.smallicon {
 	width:25px;
 }
 p {
-  max-width: 700px;
+  /*max-width: 700px;*/
 }
 
 .semi {
@@ -539,8 +541,8 @@ div.box_guest.guest_alt.account {
 	margin-bottom:15px;
 }
 .account label {
-	font-size:12px;
-	width:120px;
+	font-size:16px;
+	width:240px;
 	display:inline-block;
 }
 .account button {
@@ -556,7 +558,7 @@ div.box_guest.guest_alt.account {
 input.regular,
 textarea.regular {
     border-radius: 8px;
-	width: 200px;
+	width: 500px;
 	padding: 4px;
 	border: 1px solid #b4b4b4;
 	outline: none;
@@ -584,7 +586,9 @@ button:hover {
 button.buttonform {
 	float:right;
 	margin-right:5%;
-	margin-top:2.5%;
+	margin-top:1%;
+	position: relative;
+	bottom: 15px;
 }
 button.pdf {
 	width:75px;
@@ -1006,9 +1010,20 @@ input.inputForm {
 	margin-bottom:40px;
 }
 
+.dashboardnav {
+	background-image: url("../images/wood_image.jpg");
+	width: 100%;
+    height: 200px;
+    position: relative;
+    top: -45px;
+}
+
 .dashboardnav ul {
 	margin:0;
 	padding:0;
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
 }
 
 .dashboardnav ul li{
@@ -1133,9 +1148,9 @@ input.inputForm {
 
 /* Dropdown */
 select {
-	font-size:14px;
+	font-size:16px;
     border-radius: 8px 8px;
-	width: 200px;
+	width: 500px;
 	padding: 8px;
 	border: 1px solid #b4b4b4;
 	background-color:#fff;
@@ -2189,7 +2204,7 @@ body > .jcf-select-drop.jcf-drop-flipped {
 
 
 /*regular css ends here*/
-@media (max-width:596px) {
+@media (max-width:767px) {
   .page {
     width: 95%;
   }
@@ -2205,7 +2220,7 @@ body > .jcf-select-drop.jcf-drop-flipped {
   }
   .pagewidth header ul.nav {
 	  position:fixed;
-	  bottom:-3%;
+	  bottom:-2%;
 	  background:rgba(180,180,180,0.95);
   }
   .pagewidth header ul.nav li a {
@@ -2248,7 +2263,8 @@ body > .jcf-select-drop.jcf-drop-flipped {
 	  margin-top:0%;
   }
   .responsive {
-	  max-width:100%;
+	  width:100%;
+	  max-height: 200px;
   }
   .padtop {
 	  margin-top:2%;
@@ -2526,25 +2542,15 @@ body > .jcf-select-drop.jcf-drop-flipped {
 	padding-left: 10px;
 }
 
-.editorTable .editorTitle {
-	width:60px;
-}
-.editorTable .editorName, .editorAction {
-	width:50px;
-}
-.editorTable .authorName, .reviewerName {
-	width:100px;
-}
-.editorTable .subStatus, .subDate {
-	width: 100px;
+table {
+	width: 100%;
+	border-collapse: collapse;
 }
 
-.editorTable th, td {
-	font-size: 10px;
+th {
 	text-align: left;
-	padding-left: 40px;
 }
 
-.editorTable th:first-of-type, td:first-of-type {
-	padding-left: 0px;
+table td, table th {
+  border: 1px solid black;
 }
