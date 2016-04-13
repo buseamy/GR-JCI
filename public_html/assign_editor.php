@@ -56,6 +56,7 @@ if (!$error) {
 			
 			}  
 			}
+                $val = $_POST['selected-'.$caseID];
 			*/
             $q_assign_case = " CALL spUpdateSubmissionAssignEditor('$caseID' ,'$editor_id') ;" ;
             $r_assign_case = @mysqli_query ($dbc, $q_assign_case);
@@ -153,9 +154,13 @@ if (!$error) {
                 $editor_name = $editor_row['FullName'] ;
                 $editor_ID = $editor_row['UserID'];
                 // radio button goes here
+                // notes copied from review_submission
+                // NOTE - Radio Button inputs are accessible from POST through the NAME of the input
+                // NAME also determines the selection grouping, so radio inputs with the same NAME and different ID are mutually-exclusive
+                // VALUE is the value retrieved by pulling NAME from POST, e.g. "$_POST['NAME']"
                 echo '<td>';
                 echo '<label for = "radio-editor-'.$editor_ID.'">'.$editor_name.'</label>';
-                echo '<input type="radio" id = "radio-editor-'.$editor_ID.'" name="selected1" value="'.$editor_ID.'"/>';
+                echo '<input type="radio" id = "radio-editor-'.$caseID.'-'.$editor_ID.'" name="selected-'.$caseID.'" value="'.$editor_ID.'"/>';
                 echo '</td>';
                 // echo '<input type="radio" name="editor" value="'.$row_editors['UserID'].'"/>';
                 // case name editors file download
