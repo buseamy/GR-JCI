@@ -39,6 +39,11 @@ Associative array - An array where each ID key is associated with a value
 Multidimensional array - An array containing one or more arrays
 */                   
 
+include('./includes/header.php');
+include('./includes/subnav.php');
+echo "<div class=\"contentwidth row flush\">\r\n";
+echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
+
 if (!$error) {
 	if ($is_editor) {
 		if(isset($_POST['submit'])) {
@@ -201,6 +206,36 @@ if (!$error) {
 	
 	
 	
-
+// copied from review_submission
+$errorloc = '';
+$incomplete = false;
+// Handle error messages
+if ($error || $incomplete) {
+    // print errors
+    if ($error) {
+        echo "\t\t<p class=\"error\">The following issues occurred while $errorloc:\r\n";
+    }
+    /*
+    else {
+        echo "\t\t<p class=\"incomplete\">Your review was partially processed with the following issues:\r\n";
+    }
+    */
+    foreach ($errors as $msg) {
+        echo "\t\t\t<br /> - $msg\r\n";
+    }
+    echo "\t\t</p>\r\n";
+    /*
+    if (isset($subID)) {
+        echo "\t\t<p><a href=\"review_submission.php?sid=$subID\">Retry Review</a></p>";
+    }
+    else {
+        echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>";
+    }
+    */
+}
+echo "\t</div>\r\n";
+include('./includes/sidebar.php');
+echo "</div>\r\n";
+include('./includes/footer.php');
 
 ?>
