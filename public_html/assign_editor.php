@@ -63,6 +63,7 @@ if (!$error) {
                 echo 'The following cases have been assigned to the chosen editor' ;
                 print_r($row_assign_case);
             }
+            complete_procedure($dbc);
         }
 		// Everything above this is processing the page
 		
@@ -97,8 +98,9 @@ if (!$error) {
 				foreach($submission_list as $submission_row) {
                     $case_title = $submission_row['IncidentTitle'] ;
 				}
-				complete_procedure($dbc);
 			}
+            complete_procedure($dbc);
+            
 			$submission_fileIDs = array();
 			$q_submission_file = "CALL spSubmissionGetFilesList ($caseID);";
 			$r_submission_file = @mysqli_query ($dbc, $q_submission_file);
@@ -113,8 +115,8 @@ if (!$error) {
                 foreach($submission_file_list as $submission_file_row) {
                     $file_id = $submission_file_row['FileMetaDataID'] ;
                 }
-                complete_procedure($dbc);
 			}
+            complete_procedure($dbc);
 			$submission_file_list[$caseID] = $submission_fileIDs;
 			// array_push($submission_file_list, $submission_fileIDs);
         }
@@ -131,8 +133,8 @@ if (!$error) {
 			}
 			
 		}
-		
 		complete_procedure($dbc);
+        
 		?>
 		<form action="assign_editor2.php" method="post">
 		<table style="border: 1px solid black">
