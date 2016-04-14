@@ -142,16 +142,19 @@ if (!$error) {
 		complete_procedure($dbc);
         
 		?>
-		<form action="assign_editor2.php" method="post">
+		<form action="assign_editor.php" method="post">
 		<table style="border: 1px solid black">
 		<?php
-		echo '<tr><td>';
+		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
+		
 		foreach($submission_list as $submission_row) {
             $caseID = $submission_row['SubmissionID'] ;
             $case_name = $submission_row['IncidentTitle'] ;
             
             // looked at for assistance http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
             // http://stackoverflow.com/questions/4997252/get-post-from-multiple-checkboxes
+			echo '<tr>';
+			echo '<td>';
             echo '<label for = "chk-case-'.$caseID.'">'.$case_name.'</label>';
             echo '<input type="checkbox" id = "chk-case-'.$caseID.'" name="selected[]" value="'.$caseID.'"/>';
             echo '</td>';
@@ -179,8 +182,9 @@ if (!$error) {
                 echo '</td>';
                 // download link goes here create_download_link($file_id, $filename, $filesize)
             }
+			echo '</tr>';
 		}
-		echo '</tr>';
+		
 		?>
 		
 		</table>
@@ -215,24 +219,14 @@ if ($error || $incomplete) {
     if ($error) {
         echo "\t\t<p class=\"error\">The following issues occurred while $errorloc:\r\n";
     }
-    /*
-    else {
-        echo "\t\t<p class=\"incomplete\">Your review was partially processed with the following issues:\r\n";
-    }
-    */
+
     foreach ($errors as $msg) {
         echo "\t\t\t<br /> - $msg\r\n";
     }
     echo "\t\t</p>\r\n";
-    /*
-    if (isset($subID)) {
-        echo "\t\t<p><a href=\"review_submission.php?sid=$subID\">Retry Review</a></p>";
-    }
-    else {
-        echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>";
-    }
-    */
+
 }
+
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
 echo "</div>\r\n";

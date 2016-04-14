@@ -1,6 +1,9 @@
 <?php // assign reviewer page created by Jamal Ahmed
 
-$page_title = 'assign_editor' ;
+$page_title = 'assign_reviewer' ;
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
 require('../mysqli_connect.php');
 require('./include_utils/procedures.php');
 $error = false;
