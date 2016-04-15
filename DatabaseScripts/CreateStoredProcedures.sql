@@ -1809,6 +1809,16 @@ BEGIN
               1,
               CURRENT_DATE,
               CURRENT_DATE);
+
+      Select s.IncidentTitle,
+             Concat(u.LastName, ', ', u.FirstName) As 'ReviewerFullName'
+      From Reviewers r
+        Inner Join Submissions s
+          On s.SubmissionID = r.SubmissionID
+        Inner Join Users u
+          On u.UserID = r.ReviewerUserID
+      Where r.ReviewerUserID = _UserID
+        And r.SubmissionID = _SubmissionID;
     Else
       Select 'SubmissionID doesn''t exist' As 'Error';
     End If;
