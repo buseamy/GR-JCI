@@ -1,6 +1,8 @@
 <?php $page_title = 'Update Email Address - SFCI - Journal for Critical Indicents';
-/*
- * The purpose of this file is to update the user's email address
+
+/* Created By: Jeff Ballard
+ * On: 9-Apr-2016
+ *  The purpose of this file is to update the user's email address
  */
 
 require ('../mysqli_connect.php'); // Connect to the database

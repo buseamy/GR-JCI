@@ -1,6 +1,7 @@
 <?php $page_title = 'JCI Website - Contact Us';
 
-/*
+/* Created By: Jeff Ballard
+ * On: 2-Apr-2016
  * The purpose of this file is to allow user and visitors of the site to email comments to the editors.
  */
 

@@ -5,9 +5,6 @@
   Description: Functions for sending various emails
 */
 
-//require('../mysqli_connect.php');
-//require('procedures.php');
-
 function sendVerificationEmail($dbc, $UID, $MessageType) {
     $r = mysqli_fetch_array(mysqli_query($dbc, "Call spGetVerificationUserInfo($UID);"), MYSQLI_ASSOC);
     complete_procedure($dbc);

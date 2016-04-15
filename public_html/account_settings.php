@@ -1,7 +1,8 @@
 <?php
 $page_title = 'Account Settings - JCI Website';
 
-/*
+/* Created By: Jeff Ballard
+ * On: 9-Apr-2016
  * The purpose of this file is to allow a user to update their account info:
  * Email Address
  * Password

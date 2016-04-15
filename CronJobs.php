@@ -1,4 +1,10 @@
-<?php 
+<?php
+
+/* Created By: Jeff Ballard
+ * On: 15-Mar-2016
+ * The purpose of this file is allow processing of things at certain intervals throughout the year
+ */
+
 require('mysqli_connect.php');
 require('public_html/include_utils/procedures.php');
 

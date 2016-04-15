@@ -1,5 +1,10 @@
 <?php 
 
+/* Created By: Jeff Ballard
+ * On: 1-Mar-2016
+ * The purpose of this file is to update the database to mark their email address as verified
+ */
+
 if (isset($_GET["e"])) {
     require('../mysqli_connect.php');
     require('./include_utils/procedures.php');
