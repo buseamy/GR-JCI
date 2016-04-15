@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS `spUpdateRejectEmailAddress`;
 DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`;
 DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`;
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`;
+DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`;
 
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`;
 DROP PROCEDURE IF EXISTS `spAnnouncementRemoveRole`;
@@ -63,7 +64,6 @@ DROP PROCEDURE IF EXISTS `spGetSpotInProcess`;
 DROP PROCEDURE IF EXISTS `spGetStates`;
 DROP PROCEDURE IF EXISTS `spGetUserAddressInfo`;
 DROP PROCEDURE IF EXISTS `spGetUserAddressList`;
-DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`;
 DROP PROCEDURE IF EXISTS `spGetUserID`;
 DROP PROCEDURE IF EXISTS `spGetUserInfo`;
 DROP PROCEDURE IF EXISTS `spGetUserPhoneInfo`;

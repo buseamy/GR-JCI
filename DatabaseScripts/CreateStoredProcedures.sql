@@ -915,8 +915,8 @@ BEGIN
 END$$
 
 /* Gets the list of Announcements for a UserID */
-DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`$$
-CREATE PROCEDURE `spGetAllAnnouncementsList`(IN _UserID int)
+DROP PROCEDURE IF EXISTS `spGetAllAnnouncement`$$
+CREATE PROCEDURE `spGetAllAnnouncement`(IN _UserID int)
 DETERMINISTIC
 BEGIN
   Select rtn.Title,
@@ -1431,31 +1431,6 @@ BEGIN
       On s.StateID = a.StateID
   Where UserID = _UserID
   Order By a.CreateDate;
-END$$
-
-/* Gets a list of announcements for a UserID */
-DROP PROCEDURE IF EXISTS `spGetUserAnnouncements`$$
-CREATE PROCEDURE `spGetUserAnnouncements`(IN _UserID int)
-DETERMINISTIC
-BEGIN
-  Select a.Title,
-         a.Message,
-         a.CreateDate,
-         a.ExpireDate
-  From Announcements a
-    Inner Join AccouncementRoles ar
-      On ar.AnnouncementID = a.AnnouncementID
-    Inner Join Roles r
-      On r.RoleID = ar.RoleID
-    Inner Join UserRoles ur
-      On ur.RoleID = r.RoleID
-  Where ur.UserID = _UserID
-  Group By a.Title,
-           a.Message,
-           a.CreateDate,
-           a.ExpireDate
-  Order By a.CreateDate,
-           a.Title;
 END$$
 
 /* Get the UserID (or -1) for the EmailAddress/Password combination */
