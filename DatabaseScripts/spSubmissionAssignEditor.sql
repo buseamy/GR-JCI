@@ -14,6 +14,13 @@ BEGIN
 	  Update Submissions
 	  Set EditorUserID = _UserID
 	  Where SubmissionID = _SubmissionID;
+      
+      Select s.IncidentTitle,
+             Concat(u.LastName, ', ', u.FirstName) As 'EditorFullName'
+      From Submissions s
+        Inner Join Users u
+          On u.UserID = s.EditorUserID
+      Where s.SubmissionID = _SubmissionID;
 	Else
 	  Select 'User doesn''t exist' As 'Error';
 	End If;
