@@ -11,10 +11,13 @@ BEGIN
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
 		 ss.SubmissionStatus,
-		 s.SubmissionDate
+		 s.SubmissionDate,
+         rs.ReviewStatus
   From Submissions s
     Inner Join Reviewers r
 	  On r.SubmissionID = s.SubmissionID
+    Inner Join ReviewStatus rs
+      On rs.ReviewStatusID = r.ReviewStatusID
 	Inner Join SubmissionStatus ss
 	  On ss.SubmissionStatusID = s.SubmissionStatusID
 	Left Join Users eu

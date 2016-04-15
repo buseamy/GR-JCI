@@ -59,6 +59,7 @@ DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentCategories`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`;
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentsList`;
+DROP PROCEDURE IF EXISTS `spGetReviewStatusList`;
 DROP PROCEDURE IF EXISTS `spGetRoles`;
 DROP PROCEDURE IF EXISTS `spGetSpotInProcess`;
 DROP PROCEDURE IF EXISTS `spGetStates`;

@@ -1340,6 +1340,16 @@ BEGIN
   Order By pci.IncidentTitle;
 END$$
 
+/* Gets the list of reviewer statuses */
+DROP PROCEDURE IF EXISTS `spGetReviewStatusList`$$
+CREATE PROCEDURE `spGetReviewStatusList`()
+DETERMINISTIC
+BEGIN
+  Select ReviewStatusID, ReviewStatus
+  From ReviewStatus
+  Order By ReviewStatusID;
+END$$
+
 /* Gets the List of available roles */
 DROP PROCEDURE IF EXISTS `spGetRoles`$$
 CREATE PROCEDURE `spGetRoles`()
@@ -1880,15 +1890,18 @@ BEGIN
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
-         ss.SubmissionStatus,
-         s.SubmissionDate
+		 ss.SubmissionStatus,
+		 s.SubmissionDate,
+         rs.ReviewStatus
   From Submissions s
     Inner Join Reviewers r
-      On r.SubmissionID = s.SubmissionID
-    Inner Join SubmissionStatus ss
-      On ss.SubmissionStatusID = s.SubmissionStatusID
-    Left Join Users eu
-      On eu.UserID = s.EditorUserID
+	  On r.SubmissionID = s.SubmissionID
+    Inner Join ReviewStatus rs
+      On rs.ReviewStatusID = r.ReviewStatusID
+	Inner Join SubmissionStatus ss
+	  On ss.SubmissionStatusID = s.SubmissionStatusID
+	Left Join Users eu
+	  On eu.UserID = s.EditorUserID
   Where r.ReviewerUserID = _UserID
     And Year(s.SubmissionDate) = _Year
   Order By s.SubmissionDate,
