@@ -3,8 +3,8 @@ USE gr_jci;
 DELIMITER $$
 
 /* Gets the list of Announcements for a UserID */
-DROP PROCEDURE IF EXISTS `spGetAllAnnouncement`$$
-CREATE PROCEDURE `spGetAllAnnouncement`(IN _UserID int)
+DROP PROCEDURE IF EXISTS `spGetAnnouncements`$$
+CREATE PROCEDURE `spGetAnnouncements`(IN _UserID int)
 DETERMINISTIC
 BEGIN
   Select rtn.Title,
