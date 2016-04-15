@@ -137,8 +137,8 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $rev_status = $_POST['status'];
             $q_update_review = "CALL spReviewerUpdateReviewStatus($userID, $subID, $rev_status);";
             if ($r_update_review = mysqli_query($dbc, $q_update_review)) {
-                // expecting 0 rows... or one error
-                if ($r_update_review->num_rows != 1) {
+                // type-check the boolean, expecting mysqli_result object if errors occurred
+                if ($r_update_review !== true) {
                     $row_err = mysqli_fetch_array($r_update_review, MYSQLI_ASSOC);
                     $ret_err = $row_err['Error'];
                     $error = true;
