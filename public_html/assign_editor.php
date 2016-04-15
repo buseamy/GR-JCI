@@ -14,6 +14,9 @@ require('./include_utils/procedures.php');
 require('./include_utils/files.php'); // for create_download_link
 $error = false;
 $errors = array();
+$submission_list = array();
+$case_list = array();
+$editor_list = array();
 
 // this code was taken from Mitch
 $is_editor = false;
@@ -46,37 +49,54 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 
 if (!$error) {
 	if ($is_editor) {
+		
 		if(isset($_POST['submit'])) {
+			
 			/*
 			foreach ($_POST as $field => $value) {   
-				// echo "<p>$field, $value</p>";   
-			if ($field != 'submit' && $value != 'Record Results' && $value != 'empty') 
-				{    $source = substr($field, 8);    $item = $value;        $q_r = "CALL AddRecord('$item', '$source', '$time');";    $r_r = mysqli_query($dbc, $q_r);   
-			if ($r_r) 
-			{     echo "<p>Source: $source and Item: $item successfully recorded.</p>";   
-			}   	
-			else {     echo '<p class="error">';   
-			echo "Could not process Source $source: and Item: $item.</p>";    }  
-			while (mysqli_more_results($dbc)) {     mysqli_next_result($dbc);    }
-			
-			}  
+				echo "<p>$field, $value</p>"; 
 			}
+			
                 $val = $_POST['selected-'.$caseID];
-			*/
-            $q_assign_case = " CALL spUpdateSubmissionAssignEditor('$caseID' ,'$editor_id') ;" ;
-            $r_assign_case = @mysqli_query ($dbc, $q_assign_case);
-            while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
-                echo 'The following cases have been assigned to the chosen editor' ;
-                print_r($row_assign_case);
-            }
-            complete_procedure($dbc);
+			*/ 
+			foreach($_POST['selected'] as $caseID) {
+				
+				$editor_id = $_POST['selected-'.$caseID];
+				
+				$q_assign_case = " CALL spSubmissionAssignEditor($caseID ,$editor_id) ;" ;
+				if ($r_assign_case = mysqli_query ($dbc, $q_assign_case)) {
+					if ($r_assign_case !== true) {
+						$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
+						$ret_err = $row_err['Error'];
+						$error = true;
+						array_push($errors, "Review could not be committed because: $ret_err.");
+						ignore_remaining_output($r_assign_case);
+					}
+					else {
+						echo "The selected cases have been assigned to the chosen editor(s)" ;
+						
+					}
+				/*
+					while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
+						echo 'The following cases have been assigned to the chosen editor' ;
+						print_r($row_assign_case);
+					}
+					*/
+				}
+				else {
+					// TODO add partial submission processing
+				}
+				// echo $dbc->error;
+				complete_procedure($dbc);
+				
+			}
+			
+			
+            
         }
 		// Everything above this is processing the page
 		
 		// Everything below is preparing to display the form
-		$submission_list = array();
-		$case_list = array();
-		$editor_list = array();
 		
 		$q_cases = "CALL spEditorViewSubmissions('" . date("Y") ."');" ;
 		$r_cases = @mysqli_query ($dbc, $q_cases);
@@ -188,7 +208,7 @@ if (!$error) {
 		?>
 		
 		</table>
-		<input type="submit"/>
+		<input type="submit" name = "submit" value = "submit" class="editor" />
 		</form>
 		
 		<?php
