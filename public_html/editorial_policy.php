@@ -8,6 +8,9 @@ $page_title = 'Editorial Policy';
 include ('./includes/header.php');
 ?>
 
+<div class="content">
+    <img class="responsive" src="images/glasses.jpg" alt="reading glasses and book">
+</div>
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">

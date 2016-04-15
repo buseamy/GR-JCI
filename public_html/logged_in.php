@@ -1,6 +1,8 @@
 <?php # Script 12.13 - loggedin.php #3
-// The user is redirected here from login.php.
-
+/* This page is based on the logged_in script
+ * from 'PHP and MySQL for Dynamic Websites'. 
+ * The user is redirected here from login.php.
+ **/
 session_start(); // Start the session.
 
 // If no session value is present, redirect the user:
@@ -12,15 +14,22 @@ if (!isset($_SESSION['agent']) OR ($_SESSION['agent'] != md5($_SERVER['HTTP_USER
 	redirect_user();	
 }
 
-// Set the page title and include the HTML header:
+// Set the page title and include the HTML header
 $page_title = 'Logged In!';
 include ('includes/header.php');
 require ('./includes/subnav.php'); // Dashboard navigation
 
-echo "<h1>Logged In</h1>
-<p>You are now logged in!</p>
-<p><a href=\"logout.php\">Logout</a></p>";
-
+// Print a message
+echo "
+<div class=\"contentwidth\">
+    <div class=\"row flush\">
+        <div class=\"col s7\">
+			<h1>Logged In</h1>
+			<p>You are now logged in!</p>
+			<p><a href=\"logout.php\">Logout</a></p>
+		</div>";
+require 'includes/sidebar.php'; // Include sidebar 		
+echo "</div></div>";
 
 include ('includes/footer.php');
 ?>

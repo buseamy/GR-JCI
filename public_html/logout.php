@@ -1,4 +1,8 @@
 <?php 
+/**
+ * Logout page based on isys288 logout page
+ *
+ **/
 
 
 session_start(); // Access the existing session.
@@ -22,9 +26,24 @@ if (!isset($_SESSION['UserID'])) {
 $page_title = 'Logged Out!';
 include ('includes/header.php');
 
-// Print a customized message:
-echo "<h1>Logged Out!</h1>
-<p>You are now logged out!</p>";
+// Print a message
+echo "
+<div class=\"content\">
+    <img class=\"responsive\" src=\"images/glasses.jpg\" alt=\"reading glasses and book\">
+</div>
+<div class=\"contentwidth\">
+    <div class=\"row flush\">
+        <div class=\"col s7\">
+			<h1>Logged Out!</h1>
+			<p>You are now logged out!</p>
+		</div>";
+require 'includes/sidebar.php'; // Include sidebar 		
+echo "</div></div>";
 
-include ('includes/footer.php');
+
+
+?>
+
+<?php
+include ('./includes/footer.php');
 ?>
