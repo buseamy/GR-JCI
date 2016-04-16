@@ -217,6 +217,17 @@ if (!$error) {
 if (!$error && !$success) {
     $errorloc = 'building the file upload form';
     
+    $status_list = array();
+    $q_statuses = 'CALL spGetReviewStatusList();';
+    $r_statuses = mysqli_query($dbc, $q_statuses);
+    while ($row_statuses = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
+        if ($row_statuses['ReviewStatus'] != 'Reviewing')
+        {
+            array_push($status_list, $row_statuses);
+        }
+    }
+    complete_procedure($dbc);
+    
     $q_filetypes = 'CALL spGetFileTypes(2);';
     if ($r_filetypes = mysqli_query($dbc, $q_filetypes)) {
         
@@ -226,15 +237,17 @@ if (!$error && !$success) {
             $typeName = $row_filetypes['FileType'];
             create_upload_input('fileup-' . $typeId, $typeName, 'reviewer');
         }
-        // TODO: un-hardcode radio input
         // NOTE - Radio Button inputs are accessible from POST through the NAME of the input
         // NAME also determines the selection grouping, so radio inputs with the same NAME and different ID are mutually-exclusive
         // VALUE is the value retrieved by pulling NAME from POST, e.g. "$_POST['NAME']"
         echo "\t\t\t<h3>Review Status:</h3>\r\n";
-        echo "\t\t\t<label for=\"status-needsrevision\">Needs Revision</label>\r\n";
-        echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"status-needsrevision\" value=\"2\" /><br />\r\n";
-        echo "\t\t\t<label for=\"status-publishable\">Publishable</label>\r\n";
-        echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"status-publishable\" value=\"3\" /><br />\r\n";
+        foreach ($status_list as $stat_row) {
+            $status_id = $stat_row['ReviewStatusID'];
+            $status_name = $stat_row['ReviewStatus'];
+            $input_id = 'status-' . $status_id;
+            echo "\t\t\t<label for=\"$input_id\"$status_name</label>\r\n";
+            echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"$input_id\" value=\"$status_id\" /><br />\r\n";
+        }
         echo "\t\t\t<br /><input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
         echo "\t\t</form>\r\n";
         complete_procedure($dbc);
