@@ -16,6 +16,7 @@ $incomplete = false;
 $success = false;
 $errorloc = '';
 $errors = array();
+$sub_title = '';
 
 // Make sure the user is a reviewer
 if (!isset($_SESSION['is_reviewer']) || !$_SESSION['is_reviewer']) {
@@ -173,8 +174,8 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 // Get information on the critical incident and display for download
 if ($success) {
     // processing happened, display message
-    echo "\t\t<h3>Review Successfully Processed.</h3>";
-    echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>";
+    echo "\t\t<h3>Review Successfully Processed.</h3>\r\n";
+    echo "\t\t<p><a href=\"reviewer_incident_management.php\">Return to List of Reviewable Critical Incidents</a></p>\r\n";
 }
 if (!$error) {
     $errorloc = 'displaying information for this critical incident';
@@ -188,8 +189,8 @@ if (!$error) {
         // expecting one row
         ignore_remaining_output($r_submission);
         complete_procedure($dbc);
-        echo "<h3 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h3><br />\r\n";
-        echo "<h3 class=\"PLACEHOLDER\">Abstract: </h3><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
+        echo "\t\t<h3 class=\"PLACEHOLDER\">Critical Incident: $sub_title</h3><br />\r\n";
+        echo "\t\t<h3 class=\"PLACEHOLDER\">Abstract: </h3><p class=\"PLACEHOLDER\">$sub_abstract</p><br />\r\n";
         $q_subfiles = "CALL spSubmissionGetFilesList($subID);";
         if ($r_subfiles = mysqli_query($dbc, $q_subfiles)) {
             while ($row_subfiles = mysqli_fetch_array($r_subfiles)) {
@@ -231,7 +232,11 @@ if (!$error && !$success) {
     $q_filetypes = 'CALL spGetFileTypes(2);';
     if ($r_filetypes = mysqli_query($dbc, $q_filetypes)) {
         
-        echo "\t\t<form method=\"post\" action=\"review_submission.php?sid=$subID\" enctype=\"multipart/form-data\">\r\n";
+        echo "\t\t<div class=\"reviewer roundcorner\">\r\n";
+        echo "\t\t\t<h3 class=\"title\">Review Critical Incident: $sub_title </h3>\r\n";
+        echo "\t\t</div>\r\n";
+        echo "\t\t<div style=\"padding-left:50px;\" class=\"box_guest reviewer_alt\" id=\"registration-form\">\r\n";
+        echo "\t\t\t<form class=\"submitform\" method=\"post\" action=\"review_submission.php?sid=$subID\" enctype=\"multipart/form-data\">\r\n";
         while ($row_filetypes = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
             $typeId = $row_filetypes['FileTypeID'];
             $typeName = $row_filetypes['FileType'];
@@ -240,16 +245,17 @@ if (!$error && !$success) {
         // NOTE - Radio Button inputs are accessible from POST through the NAME of the input
         // NAME also determines the selection grouping, so radio inputs with the same NAME and different ID are mutually-exclusive
         // VALUE is the value retrieved by pulling NAME from POST, e.g. "$_POST['NAME']"
-        echo "\t\t\t<h3>Review Status:</h3>\r\n";
+        echo "\t\t\t\t<h3>Review Status:</h3>\r\n";
         foreach ($status_list as $stat_row) {
             $status_id = $stat_row['ReviewStatusID'];
             $status_name = $stat_row['ReviewStatus'];
             $input_id = 'status-' . $status_id;
-            echo "\t\t\t<label for=\"$input_id\">$status_name</label>\r\n";
-            echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"$input_id\" value=\"$status_id\" /><br />\r\n";
+            echo "\t\t\t\t<label for=\"$input_id\">$status_name</label>\r\n";
+            echo "\t\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"$input_id\" value=\"$status_id\" /><br />\r\n";
         }
-        echo "\t\t\t<br /><input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
-        echo "\t\t</form>\r\n";
+        echo "\t\t\t\t<br />\r\n\t\t\t\t<input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
+        echo "\t\t\t</form>\r\n";
+        echo "\t\t</div>\r\n";
         complete_procedure($dbc);
     }
     else {
