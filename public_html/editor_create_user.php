@@ -1,5 +1,7 @@
 <?php 
-// This page allows the Editor to create user acounts. written by Jamal Ahmed and adapted by Jonathan Sankey code referred to was from Isys288 register.php
+
+//Written by: Jonathan Sankey on 4/15/2016
+// This page allows the Editor to create user acounts. code referred to was from Isys288 register.php
 // This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
 
 $page_title = 'Create User';
@@ -7,6 +9,11 @@ require ('./includes/header.php'); // Header
 require ('./includes/subnav.php'); // Dashboard navigation
 require ('../mysqli_connect.php'); // conect to database
 require ('./include_utils/procedures.php'); // complete_procedure function
+
+if (session_status() == PHP_SESSION_NONE) {
+    // start a session if one doesn't exist
+    session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	

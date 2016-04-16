@@ -4,8 +4,18 @@
 <?php
 $page_title = 'Set Submission Dates';
 
+// Written by: Jonathan Sankey on 4/15/2016
+// This page allows the editor to set important due dates and store them in the database.
+// This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
+
+
 require ('./includes/header.php'); // Header
 require ('./includes/subnav.php'); // Dashboard navigation
+
+if (session_status() == PHP_SESSION_NONE) {
+    // Only start the session if one doesn't exist
+    session_start();
+}
 
 function isdate($indate) {
 	if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$indate)) {

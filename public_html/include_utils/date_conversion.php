@@ -1,5 +1,5 @@
 <?php
-// These functions were writen by Jonathan Sankey and uses ideas found at the following sites:
+// These functions were writen by Jonathan Sankey, on 4/15/2016, and uses ideas found at the following sites:
 // http://stackoverflow.com/questions/6193289/check-the-format-of-a-date-in-php
 // http://stackoverflow.com/questions/6238992/converting-string-to-date-and-datetime
 

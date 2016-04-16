@@ -1,6 +1,6 @@
 <?php $page_title = 'Update Email Address - SFCI - Journal for Critical Indicents';
 
-/* Created By: Jeff Ballard
+/* Created By: Jeff Ballard & Jonathan Sankey
  * On: 9-Apr-2016
  *  The purpose of this file is to update the user's email address
  */
