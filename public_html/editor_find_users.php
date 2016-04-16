@@ -2,10 +2,13 @@
 <?php  
 	$page_title = 'Editor Find Users';
 	require ('./includes/header.php');
+	require ('./includes/subnav.php'); // Include subnav
+	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	require ('../mysqli_connect.php');
 	require('./include_utils/procedures.php');
+	
 	$errors = array(); // Initialize an error array.
 	
 	$status = 0;
@@ -53,7 +56,6 @@
                 if ($result->num_rows > 0) { ?>
                     <table class="span2">
                         <tr>
-                            <th class="span3">User ID</th>
                             <th class="span3">Full Name (Last, First)</th>
 							<th class="span3">Email</th>
 							<th class="span2">Member Code</th>
@@ -64,13 +66,13 @@
                     <?php
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
-                        echo '<tr><td class="span3">' . $row["UserID"]. '</td>
+                        echo '<tr>
 						<td class="span3">' . $row["FullName"]. '</td> 
 						<td class="span3">' . $row["EmailAddress"]. '</td> 
 						<td class="span2">' . $row["MemberCode"]. '</td> 
 						<td class="span2">' . $row["InstitutionAffiliation"]. '</td> 
-						<td class="span2">'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>
-						<td class="span2">'. '<td class="span1"><a href="deactivate_user.php?UserID=' . $row["UserID"] .'">Deactivate</a></td>
+						'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>
+						'. '<td class="span1"><a href="deactivate_user.php?UserID=' . $row["UserID"] .'">Deactivate</a></td>
 						</tr>';
 					}
                     echo "</table>";
@@ -89,7 +91,6 @@
             if ($result->num_rows > 0) { ?>
                 <table class="span12">
                     <tr>
-                        <th class="span1">User ID</th>
                         <th class="span1">Full Name (Last, First)</th>
 						<th class="span1">Email</th>
 						<th class="span1">Member Code</th>
@@ -100,13 +101,13 @@
                     <?php
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
-                        echo '<tr><td class="span1">' . $row["UserID"]. '</td>
+                        echo '<tr>
 						<td class="span2">' . $row["FullName"]. '</td> 
 						<td class="span2">' . $row["EmailAddress"]. '</td> 
 						<td class="span2">' . $row["MemberCode"]. '</td> 
 						<td class="span2">' . $row["InstitutionAffiliation"]. '</td> 
-						<td class="span2">'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>
-						<td class="span2">'. '<td class="span1"><a href="deactivate_user.php?UserID=' . $row["UserID"] .'">Deactivate</a></td>
+						'. '<td class="span1"><a href="editor_update_user.php?UserID=' . $row["UserID"] .'">Update</a></td>
+						'. '<td class="span1"><a href="deactivate_user.php?UserID=' . $row["UserID"] .'">Deactivate</a></td>
 						</tr>';
 					}
                     echo "</table>";
@@ -133,19 +134,23 @@
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
-<h1>Find Users</h1>
-<form action="editor_find_users.php" method="post">
-	<p>First name: <input type="text" name="firstname" size="20" maxlength="30" value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']; ?>" /></p>
-	<p>Last name: <input type="text" name="lastname" size="20" maxlength="30" value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']; ?>" /></p>
-	<p>Email: <input type="text" name="email" size="20" maxlength="20" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" /></p>
-	<p>
-	<!--<input class="inputFileLabel" type="submit" name="submit" value="Search" />-->
-	<p><button class="editor" type="submit"  name="submit" onClick="#" >Search</button></p>
-	</p>
-</form>
+			<h1>Find Users</h1>
+				<form action="editor_find_users.php" method="post" name="name">
+					<h2>Search by first and/or last name</h2>
+					<p>First name: <input type="text" name="firstname" size="20" maxlength="30" value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']; ?>" /></p>
+					<p>Last name: <input type="text" name="lastname" size="20" maxlength="30" value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']; ?>" /></p>
+					<p><button class="editor" type="submit"  name="submit" onClick="#" >Search by name</button></p>
+				</form>
+				<form action="editor_find_users.php" method="post" name="email">
+					<h2>Search by email</h2>
+					<p>Email: <input type="text" name="email" size="20" maxlength="20" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" /></p>
+					<p><button class="editor" type="submit"  name="submit" onClick="#" >Search by email</button></p>
+				</form>
+
+		</div>
+	<?php require 'includes/sidebar.php'; // Include sidebar ?>
+	</div>
 </div>
-<?php require 'includes/sidebar.php'; // Include sidebar ?>
-</div>
-</div>
+
 
 
