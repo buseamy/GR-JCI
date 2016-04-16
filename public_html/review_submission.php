@@ -220,7 +220,7 @@ if (!$error && !$success) {
     $status_list = array();
     $q_statuses = 'CALL spGetReviewStatusList();';
     $r_statuses = mysqli_query($dbc, $q_statuses);
-    while ($row_statuses = mysqli_fetch_array($r_filetypes, MYSQLI_ASSOC)) {
+    while ($row_statuses = mysqli_fetch_array($r_statuses, MYSQLI_ASSOC)) {
         if ($row_statuses['ReviewStatus'] != 'Reviewing')
         {
             array_push($status_list, $row_statuses);
@@ -245,7 +245,7 @@ if (!$error && !$success) {
             $status_id = $stat_row['ReviewStatusID'];
             $status_name = $stat_row['ReviewStatus'];
             $input_id = 'status-' . $status_id;
-            echo "\t\t\t<label for=\"$input_id\"$status_name</label>\r\n";
+            echo "\t\t\t<label for=\"$input_id\">$status_name</label>\r\n";
             echo "\t\t\t<input class=\"\" type=\"radio\" name=\"status\" id=\"$input_id\" value=\"$status_id\" /><br />\r\n";
         }
         echo "\t\t\t<br /><input class=\"reviewer\" type=\"submit\" name=\"submit\" value=\"Submit Review\" />\r\n";
