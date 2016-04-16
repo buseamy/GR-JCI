@@ -6,9 +6,9 @@
  */
 
  require ('../mysqli_connect.php'); // Connect to the database
- require ('./includes/header.php'); // Include the site header
- require ('./includes/subnav.php'); // Include subnav
- require ('./include_utils/procedures.php'); // complete_procedure()
+ include ('./includes/header.php'); // Include the site header
+ include ('./includes/subnav.php'); // Include subnav
+ include ('./include_utils/procedures.php'); // complete_procedure()
 ?>
 <script type="text/javascript"> $( "#reviewer" ).addClass( "active" ); </script>
 <div class="contentwidth">
@@ -34,21 +34,31 @@
                             <th class="span1">Action</th>
                         </tr>
                     <?php
-                    // output data of each row
-                    while($row = $result->fetch_assoc()) {
-                        //Checks for null EditorName
-                        if ($row["EditorName"] == "") { $row["EditorName"] = "Unassigned"; }
-                        echo '<tr><td class="span3">' . $row["IncidentTitle"]. '</td> <td class="span3">' . $row["EditorName"]. '</td> <td class="span3">' . $row["SubmissionStatus"]. '</td> <td class="span2">' . $row["SubmissionDate"]. '<td class="span1"><a href="view_incident.php?SubmissionID=' . $row["SubmissionID"] .'">View</a></td></tr>';
-                    } echo "</table>";
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+                //Checks for null EditorName
+                if ($row["EditorName"] == "") { $row["EditorName"] = "Unassigned"; }
+                
+                // 
+                $link_text = 'View';
+                if ($row['ReviewStatus'] == 'Reviewing') { $link_text = 'New Review'; }
+                else { $link_text = 'Update Review'; }
+                
+                echo '<tr><td class="span3">' . $row["IncidentTitle"]. '</td>';
+                echo '<td class="span3">' . $row["EditorName"]. '</td>';
+                echo '<td class="span2">' . $row["SubmissionStatus"]. '</td>';
+                echo '<td class="span2">' . $row["SubmissionDate"]. '</td>';
+                echo '<td class="span2"><a href="review_submission.php?sid=' . $row["SubmissionID"] .'">' . $link_text . '</a></td></tr>';
+            } echo "</table>";
                 } else {
                     //if no results found
                     echo "<tr><td>No results</td></tr>";
                 }
                 complete_procedure($dbc);?>
             </div>
-            <?php require 'includes/sidebar.php'; // Include sidebar
+            <?php include 'includes/sidebar.php'; // Include sidebar
     } else { echo "<p>You do not have permission</p>"; } ?>
 </div>
 </div>
 </div>
-<?php require 'includes/footer.php'; // Include footer ?>
+<?php include 'includes/footer.php'; // Include footer ?>
