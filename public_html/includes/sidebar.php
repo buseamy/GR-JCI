@@ -37,7 +37,6 @@ if (isset($_SESSION['UserID'])) {
 	if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
         echo '<div class="author corner"><h3 class="title">Author</h3></div>';
 		echo '<ul><li><a href="submit_critical_incident.php">Submit Critical Incident</a></li>';
-        echo '<li><a href="author_view_feedback.php">Review Feedback</a></li></ul><br>';
 	}
 
     if (isset($_SESSION['UserID']) && $_SESSION['isReviewer'] == 1) {
