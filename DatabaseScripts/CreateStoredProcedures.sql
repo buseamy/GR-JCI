@@ -2661,7 +2661,7 @@ END$$
 /* Updates an existing Submissions' status:
    SubmissionStatusID 2 : Editor Assigned, DON'T USE, spSubmissionAssignEditor will do this automatically
    SubmissionStatusID 3 : Editor Updated
-   SubmissionStatusID 4 : Reviwers Assigned
+   SubmissionStatusID 4 : Reviewers Assigned
    SubmissionStatusID 5 : Reviews Completed, DON'T USE, use spReviewerUpdateReviewStatus procedure instead
    SubmissionStatusID 6 : Editor Reviewed
    SubmissionStatusID 7 : Ready for Publish
