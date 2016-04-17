@@ -17,14 +17,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-function isdate($indate) {
-	if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$indate)) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// database connection is required for queries to be inserted in database and conversion page is needed to convert dates.
@@ -43,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty ($_POST['fsstart'])) {
-		if (isdate($_POST['fsstart'])) {
+		$tempdate = $_POST['fsstart'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorFirstSubmissionStartDate = convert_to($_POST['fsstart']);
 		} else {
 			$errors[] = 'The first submission start date provided was in the wrong format.';
@@ -53,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['fsdue'])) {
-		if (isdate($_POST['fsdue'])) {
+		$tempdate = $_POST['fsdue'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorFirstSubmissionDueDate = convert_to($_POST['fsdue']);
 		} else {
 			$errors[] = 'The first submission due date provided was in the wrong format.';
@@ -63,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['frstart'])) {
-		if (isdate($_POST['frstart'])) {
+		$tempdate = $_POST['frstart'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$FirstReviewStartDate = convert_to($_POST['frstart']);
 		} else {
 			$errors[] = 'The first review start date provided was in the wrong format.';
@@ -73,7 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['frdue'])) {
-		if (isdate($_POST['frdue'])) {
+		$tempdate = $_POST['frdue'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$FirstReviewDueDate = convert_to($_POST['frdue']);
 		} else {
 			$errors[] = 'The first review due date provided was in the wrong format.';
@@ -83,7 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['sstart'])) {
-		if (isdate($_POST['sstart'])) {
+		$tempdate = $_POST['sstart'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorSecondSubmissionStartDate = convert_to($_POST['sstart']);
 		} else {
 			$errors[] = 'The second submission start date provided was in the wrong format.';
@@ -93,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['ssdue'])) {
-		if (isdate($_POST['ssdue'])) {
+		$tempdate = $_POST['ssdue'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorSecondSubmissionDueDate = convert_to($_POST['ssdue']);
 		} else {
 			$errors[] = 'The second submission due date provided was in the wrong format.';
@@ -103,7 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['srstart'])) {
-		if (isdate($_POST['srstart'])) {
+		$tempdate = $_POST['srstart'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$SecondReviewStartDate = convert_to($_POST['srstart']);
 		} else {
 			$errors[] = 'The second review start date provided was in the wrong format.';
@@ -113,7 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['srdue'])) {
-		if (isdate($_POST['srdue'])) {
+		$tempdate = $_POST['srdue'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$SecondReviewDueDate = convert_to($_POST['srdue']);
 		} else {
 			$errors[] = 'The second review due date provided was in the wrong format.';
@@ -123,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['psstart'])) {
-		if (isdate($_POST['psstart'])) {
+		$tempdate = $_POST['psstart'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorPublicationSubmissionStartDate = convert_to($_POST['psstart']);
 		} else {
 			$errors[] = 'The publication submission start date provided was in the wrong format.';
@@ -133,7 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['psdue'])) {
-		if (isdate($_POST['psdue'])) {
+		$tempdate = $_POST['psdue'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$AuthorPublicationSubmissionDueDate = convert_to($_POST['psdue']);
 		} else {
 			$errors[] = 'The publication submission due date provided was in the wrong format.';
@@ -143,7 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	if (!empty($_POST['pdate'])) {
-		if (isdate($_POST['pdate'])) {
+		$tempdate = $_POST['pdate'];
+		if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$tempdate)) {
 			$PublicationDate = convert_to($_POST['pdate']);
 		} else {
 			$errors[] = 'The publication date provided was in the wrong format.';
@@ -244,3 +247,4 @@ require ('./includes/footer.php'); ?>
 
 </body>
 </html>
+

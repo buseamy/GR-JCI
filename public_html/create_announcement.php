@@ -9,6 +9,8 @@
 
 
  require ('./includes/header.php'); // Include the site header
+ require ('../mysqli_connect.php'); // Connect to the database
+ require ('./include_utils/procedures.php'); // complete_procedure()
  
  if (session_status() == PHP_SESSION_NONE) {
     // start a session if one doesn't exist
@@ -19,7 +21,6 @@
  $title = '';
  $announcement = '';
  $expiration = '';
- $role = $_POST['role'];
  $success = 'no';
  
  function isdate($indate) {
@@ -32,8 +33,9 @@
  
  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       require('./include_utils/login_functions.php'); //redirect
-      require ('../mysqli_connect.php'); // Connect to the database
-      require ('./include_utils/procedures.php'); // complete_procedure()
+	  require ('./include_utils/date_conversion.php');
+	  
+	  $role = $_POST['role'];
       
       if (!empty($_POST['title'])) {
           $Name = $_POST['title'];
@@ -58,15 +60,15 @@
       }
 	  
 	  if ((empty ($errors)) && ($success = 'no')) { //if everything ran ok
-		  $q_announce = "CALL spCreateAnnouncement('$title', '$announcement', '$expiration')"
+		  $q_announce = "CALL spCreateAnnouncement('$title', '$announcement', '$expiration')";
 		  $announcementID = mysqli_query ($dbc, $q_announce);
 		  complete_procedure($dbc);
 		  $success = 'yes'; // make sure the announcement is not created again if the user forgets to select a role
 	  }
       
-	  if (!empty($_POST['role']) {
+	  if (!empty($_POST['role'])) {
 		  foreach ($role as $option) {
-			  $q_role = "CALL spAnnouncementAddRole('$announcementID', '$option')"
+			  $q_role = "CALL spAnnouncementAddRole('$announcementID', '$option')";
 			  mysqli_query ($dbc, $q_role);
 			  complete_procedure($dbc);
 		  }
@@ -75,11 +77,10 @@
 	  }
      
         
-        mysqli_close($dbc); // Close the database connection.
+      mysqli_close($dbc); // Close the database connection.
         
-        // Redirect:
-        redirect_user('index.php'); //-------------------------------------------------------------------------------------------------------------------------------
-      }
+      // Redirect:
+      redirect_user('index.php'); //-------------------------------------------------------------------------------------------------------------------------------
  }
 ?>
 <?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
@@ -109,20 +110,24 @@
                     <form method="post">
                         <input type="text" class="regular inputForm" placeholder="Title" name="title" width="100%" value="<?php echo $title; ?>">
 						<textarea placeholder="Announcement Limit: 500 Characters" rows="10" maxlength="500" name="announcement"><?php echo $announcement; ?></textarea>
-                        <input type="text" class="regular inputForm" placeholder="Expiration date mm/dd/yyyy" name="expiration" width="100%" value="<?php echo $expiration; ?>">
+						<br>
+                        <input type="text" class="regular inputForm" placeholder="Expiration date: mm/dd/yyyy" name="expiration" width="100%" value="<?php echo $expiration; ?>">
 						<div class="form-checkbox">
 							<?php
 							$Roles = mysqli_query($dbc, "Call spGetRoles();"); // get a list of roles from DB
 							complete_procedure($dbc);
 							
+							echo '<span style="margin-left: 3em;"><b> Visible to role(s): </b></span><br>';
 							while($row = $Roles->fetch_assoc()) { // while there is still a role to display
-								echo '. $row["RoleTitle"] . <input type="checkbox" name="role[]" id="role" value=". $row["RoleID"]." >';
+								echo '<span style="margin-left: 4em;">' . $row["RoleTitle"] . '<input type="checkbox" name="role[]" id="role" value=". $row["RoleID"]." ></span>';
 								}
 							?>
 						</div>
+						<br>
+						<br>
+						<button class="alert buttonform" onclick="location.href=' '">Cancel</button>
                         <button class="editor buttonform" type="submit">Create</button>
-						<input class="alert" type="button" onclick="location.href=' '" value="Cancel" />
-
+						<br>
                     </form>
                 </div>
             </div>
