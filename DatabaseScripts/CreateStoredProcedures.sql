@@ -10,11 +10,15 @@ DROP PROCEDURE IF EXISTS `spUpdateSubmissionAssignEditor`$$
 DROP PROCEDURE IF EXISTS `spYearlyAddMembershipHistory`$$
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncements`$$
 
-/* Connects an AnnouncementID with a RoleID */
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`$$
-CREATE PROCEDURE `spAnnouncementAddRole`(IN _AnnouncementID int, IN _RoleID int)
+CREATE PROCEDURE `spAnnouncementAddRole`(IN _AnnouncementID int,
+                                         IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects an AnnouncementID with a RoleID
+   */
   /* Make sure AnnouncementID exists */
   If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
     /* Make sure RoleID exists */
@@ -35,23 +39,30 @@ BEGIN
   End If;
 END$$
 
-/* Removes an AnnouncementID with a RoleID */
 DROP PROCEDURE IF EXISTS `spAnnouncementRemoveRole`$$
-CREATE PROCEDURE `spAnnouncementRemoveRole`(IN _AnnouncementID int, IN _RoleID int)
+CREATE PROCEDURE `spAnnouncementRemoveRole`(IN _AnnouncementID int,
+                                            IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Removes an AnnouncementID with a RoleID
+   */
   Delete From AccouncementRoles
   Where AnnouncementID = _AnnouncementID
     And RoleID = _RoleID;
 END$$
 
-/* Adds an Author UserID to an existing Submission */
 DROP PROCEDURE IF EXISTS `spAuthorAddToSubmission`$$
 CREATE PROCEDURE `spAuthorAddToSubmission`(IN _UserID int,
                                            IN _SubmissionID int,
                                            IN _PrimaryContact tinyint)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Adds an Author UserID to an existing Submission
+   */
   Declare _InstitutionAffiliation varchar(150);
   Declare _AuthorSeniority int;
     
@@ -96,16 +107,19 @@ BEGIN
   End If;
 END$$
 
-/* Creates a new submission record and links the author to it */
 DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`$$
 CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
-                                           IN _IncidentTitle varchar(150),
-                                           IN _Abstract varchar(5000),
-                                           IN _KeyWords varchar(5000),
-                                           IN _PreviousSubmissionID int,
-                                           IN _SubmissionNumber TINYINT)
+                                            IN _IncidentTitle varchar(150),
+                                            IN _Abstract varchar(5000),
+                                            IN _KeyWords varchar(5000),
+                                            IN _PreviousSubmissionID int,
+                                            IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new submission record and links the author to it
+   */
   Declare _SubmissionID int;
   Declare _InstitutionAffiliation varchar(100);
     
@@ -153,11 +167,14 @@ BEGIN
   End If;
 END$$
 
-/* Lists the feedback files for a submission */
 DROP PROCEDURE IF EXISTS `spAuthorGetSubmissionReviewerFilesList`$$
 CREATE PROCEDURE `spAuthorGetSubmissionReviewerFilesList`(IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the feedback files for a submission
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
          fmd.FileSize,
@@ -174,7 +191,6 @@ BEGIN
     And r.ReviewCompletionDate Is Not Null;
 END$$
 
-/* Updates an existing submission record */
 DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`$$
 CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
                                             IN _IncidentTitle varchar(150),
@@ -183,6 +199,10 @@ CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
                                             IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing submission record
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
   
@@ -198,11 +218,15 @@ BEGIN
   End If;
 END$$
 
-/* Lists the submissions for an author for a given year */
 DROP PROCEDURE IF EXISTS `spAuthorViewSubmissions`$$
-CREATE PROCEDURE `spAuthorViewSubmissions`(IN _UserID int, IN _Year int)
+CREATE PROCEDURE `spAuthorViewSubmissions`(IN _UserID int,
+                                           IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the submissions for an author for a given year
+   */
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
@@ -221,7 +245,6 @@ BEGIN
            s.IncidentTitle;
 END$$
 
-/* Inserts a new address for a user */
 DROP PROCEDURE IF EXISTS `spCreateAddress`$$
 CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
                                    IN _AddressTypeID int,
@@ -230,9 +253,13 @@ CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
                                    IN _City varchar(30),
                                    IN _StateID int,
                                    IN _PostCode char(5),
-                                   IN _PrimaryAddress tinyint
-) DETERMINISTIC
+                                   IN _PrimaryAddress tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new address for a user
+   */
   Declare _AddressCount int;
   
   /* Make sure the UserID exists */
@@ -278,11 +305,14 @@ BEGIN
   End If;
 END$$
 
-/* Inserts a new address type */
 DROP PROCEDURE IF EXISTS `spCreateAddressType`$$
 CREATE PROCEDURE `spCreateAddressType`(IN _AddressType varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new address type
+   */
   /* Make sure the address type doesn't exist */
   If(Select Exists(Select 1 From AddressTypes Where AddressType = _AddressType)) Then
     Select 'Address type already exists' As 'Error';
@@ -294,13 +324,16 @@ BEGIN
   End If; 
 END$$
 
-/* Creates a new announcement */
 DROP PROCEDURE IF EXISTS `spCreateAnnouncement`$$
 CREATE PROCEDURE `spCreateAnnouncement`(IN _Title varchar(100),
                                         IN _Message varchar(10000),
-                                        IN _ExpireDate date
-) DETERMINISTIC
+                                        IN _ExpireDate date)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new announcement
+   */
   /* Make sure the Title doesn't exist */
   If(Select Exists(Select 1 From Announcements Where Title = _Title)) Then
     Select 'Title already exists' As 'Error';
@@ -320,11 +353,14 @@ BEGIN
   End If;
 END$$
 
-/* Inserts a new Category */
 DROP PROCEDURE IF EXISTS `spCreateCategory`$$
 CREATE PROCEDURE `spCreateCategory`(IN _Category varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new Category
+   */
   /* Make sure the Category doesn't exist */
   If(Select Exists(Select 1 From Categories Where Category = _Category)) Then
     Select 'Category already exists' As 'Error';
@@ -336,7 +372,6 @@ BEGIN
   End If; 
 END$$
 
-/* Creates a Published Critical Incident record */
 DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _IncidentTitle varchar(150),
@@ -345,6 +380,10 @@ CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a Published Critical Incident record
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the PublicationID exists */
@@ -361,7 +400,6 @@ BEGIN
   End If;
 END$$
 
-/* Creates a new Email nagging profile */
 DROP PROCEDURE IF EXISTS `spCreateEmailSettings`$$
 CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
                                          IN _AuthorNagDays int,
@@ -372,6 +410,10 @@ CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
                                          IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new Email nagging profile
+   */
   Declare _SettingID int;
   
   /* Make sure the SettingName doesn't already exist */
@@ -394,11 +436,11 @@ BEGIN
     Values (_SettingName,
             _AuthorNagDays,
             _AuthorSubjectTemplate,
-              _AuthorBodyTemplate,
-              _ReviewerNagDays,
-              _ReviewerSubjectTemplate,
-              _ReviewerBodyTemplate,
-              1);
+            _AuthorBodyTemplate,
+            _ReviewerNagDays,
+            _ReviewerSubjectTemplate,
+            _ReviewerBodyTemplate,
+            1);
     
     /* Grab the new SettingID */
     Set _SettingID = last_insert_id();
@@ -408,13 +450,16 @@ BEGIN
   End If;
 END$$
 
-/* Inserts a file content record for a FileMetaDataID  */
 DROP PROCEDURE IF EXISTS `spCreateFileContent`$$
 CREATE PROCEDURE `spCreateFileContent`(IN _FileMetaDataID int,
                                        IN _FileContent blob,
                                        IN _SequenceNumber int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a file content record for a FileMetaDataID
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the FileMetaDataID & SequenceNumber doesn't exist */
@@ -429,7 +474,6 @@ BEGIN
   End If;
 END$$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateFileMetaData`$$
 CREATE PROCEDURE `spCreateFileMetaData`(IN _FileTypeID int,
                                         IN _FileMime varchar(200),
@@ -437,6 +481,10 @@ CREATE PROCEDURE `spCreateFileMetaData`(IN _FileTypeID int,
                                         IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID
+   */
   Declare _FileMetaDataID int;
   
   /* Make sure the FileTypeID exists */
@@ -451,14 +499,17 @@ BEGIN
   End If;
 END$$
 
-/* Inserts a new phone number for a user */
 DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
 CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-                                       IN _PrimaryPhone tinyint
-) DETERMINISTIC
+                                       IN _PrimaryPhone tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new phone number for a user
+   */
   Declare _PhoneCount int;
   
   /* Make sure the UserID exists */
@@ -499,11 +550,14 @@ BEGIN
   End If; 
 END$$
 
-/* Inserts a new phone number type */
 DROP PROCEDURE IF EXISTS `spCreatePhoneType`$$
 CREATE PROCEDURE `spCreatePhoneType`(IN _PhoneType varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new phone number type
+   */
   /* Make sure the Phone Type doesn't exist */
   If(Select Exists(Select 1 From PhoneTypes Where PhoneType = _PhoneType)) Then
     Select 'Phone type already exists' As 'Error';
@@ -515,11 +569,14 @@ BEGIN
   End If; 
 END$$
 
-/* Creates a Publication record for a year */
 DROP PROCEDURE IF EXISTS `spCreatePublication`$$
 CREATE PROCEDURE `spCreatePublication`(IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a Publication record for a year
+   */
   Declare _Year int;
   Set _Year = Year(CURRENT_DATE);
   
@@ -537,11 +594,14 @@ BEGIN
   End If;
 END$$
 
-/* Creates a new category for published incidents */
 DROP PROCEDURE IF EXISTS `spCreatePublicationCategory`$$
 CREATE PROCEDURE `spCreatePublicationCategory`(IN _Category varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new category for published incidents
+   */
   If(Select Exists(Select 1 From PublicationCategories Where Category = _Category)) Then
     Select Concat('Category "', _Category, '" already exists') As 'Error';
   Else
@@ -552,11 +612,14 @@ BEGIN
   End If;
 END$$
 
-/* Creates a Published Author record from the Users table */
 DROP PROCEDURE IF EXISTS `spCreatePublishedAuthor`$$
 CREATE PROCEDURE `spCreatePublishedAuthor`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a Published Author record from the Users table
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
       Insert Into PublishedAuthors (FirstName, LastName, EmailAddress, InstitutionAffiliation)
@@ -570,7 +633,6 @@ BEGIN
   End If;
 END$$
 
-/* Creates a Published Critical Incident record */
 DROP PROCEDURE IF EXISTS `spCreatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _IncidentTitle varchar(150),
@@ -579,6 +641,10 @@ CREATE PROCEDURE `spCreatePublishedCriticalIncident`(IN _PublicationID int,
                                                      IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a Published Critical Incident record
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the PublicationID exists */
@@ -595,12 +661,15 @@ BEGIN
   End If;
 END$$
 
-/* Links a published author to a published critical incident */
 DROP PROCEDURE IF EXISTS `spCreatePublishedIncidentAuthor`$$
 CREATE PROCEDURE `spCreatePublishedIncidentAuthor`(IN _AuthorID int,
                                                    IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Links a published author to a published critical incident
+   */
   /* Make sure the AuthorID exists */
   If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
     /* Make sure the CriticalIncidentID exists */
@@ -615,7 +684,6 @@ BEGIN
   End If;
 END$$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateReviewerFileMetaData`$$
 CREATE PROCEDURE `spCreateReviewerFileMetaData`(IN _SubmissionID int,
                                                 IN _ReviewerUserID int,
@@ -625,6 +693,10 @@ CREATE PROCEDURE `spCreateReviewerFileMetaData`(IN _SubmissionID int,
                                                 IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID
+   */
   Declare _FileMetaDataID int;
   
   /* Make sure the SubmissionID exists */
@@ -651,7 +723,6 @@ BEGIN
   End If;
 END$$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`$$
 CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _FileTypeID int,
@@ -660,6 +731,10 @@ CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID
+   */
   Declare _FileMetaDataID int;
   
   /* Make sure the SubmissionID exists */
@@ -681,7 +756,6 @@ BEGIN
   End If;
 END$$
 
-/* Inserts a new user then returns the UserID */
 DROP PROCEDURE IF EXISTS `spCreateUser`$$
 CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
                                 IN _Password varchar(50),
@@ -689,6 +763,10 @@ CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
                                 IN _LastName varchar(30))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new user then returns the UserID
+   */
   Declare _UserID int;
 
   /* Make sure the email address doesn't already exist */
@@ -731,29 +809,39 @@ BEGIN
   End If;  
 END$$
 
-/* Deletes a user's address */
 DROP PROCEDURE IF EXISTS `spDeleteAddress`$$
 CREATE PROCEDURE `spDeleteAddress`(IN _AddressID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Deletes a user's address
+   */
   Delete From Addresses
   Where AddressID = _AddressID;
 END$$
 
-/* Deletes a user's phone number */
 DROP PROCEDURE IF EXISTS `spDeletePhoneNumber`$$
 CREATE PROCEDURE `spDeletePhoneNumber`(IN _PhoneNumberID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Deletes a user's phone number
+   */
   Delete From PhoneNumbers
   Where PhoneNumberID = _PhoneNumberID;
 END$$
 
-/* Updates the user's account to mark them as disabled */
 DROP PROCEDURE IF EXISTS `spDisableUser`$$
-CREATE PROCEDURE `spDisableUser`(IN _UserID int, IN _NonActiveNote varchar(5000))
+CREATE PROCEDURE `spDisableUser`(IN _UserID int,
+                                 IN _NonActiveNote varchar(5000))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the user's account to mark them as disabled
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -764,16 +852,19 @@ BEGIN
   End If; 
 END$$
 
-/* Inserts a new user then returns the UserID */
 DROP PROCEDURE IF EXISTS `spEditorCreateUser`$$
 CREATE PROCEDURE `spEditorCreateUser`(IN _EmailAddress varchar(200),
-                                IN _Password varchar(50),
-                                IN _FirstName varchar(15),
-                                IN _LastName varchar(30),
-                                IN _InstitutionAffiliation varchar(100),
-                                IN _MemberCode varchar(20))
+                                      IN _Password varchar(50),
+                                      IN _FirstName varchar(15),
+                                      IN _LastName varchar(30),
+                                      IN _InstitutionAffiliation varchar(100),
+                                      IN _MemberCode varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new user then returns the UserID
+   */
   Declare _UserID int;
 
   /* Make sure the email address doesn't already exist */
@@ -820,11 +911,14 @@ BEGIN
   End If;  
 END$$
 
-/* Lists the submissions for an editor for a given year */
 DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`$$
 CREATE PROCEDURE `spEditorViewSubmissions`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the submissions for an editor for a given year
+   */
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
@@ -855,11 +949,14 @@ BEGIN
            s.IncidentTitle;
 END$$
 
-/* Updates the user's account to re-enable them */
 DROP PROCEDURE IF EXISTS `spEnableUser`$$
 CREATE PROCEDURE `spEnableUser`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the user's account to re-enable them
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -870,11 +967,14 @@ BEGIN
   End If; 
 END$$
 
-/* Gets the list of Editors who are active */
 DROP PROCEDURE IF EXISTS `spGetActiveEditors`$$
 CREATE PROCEDURE `spGetActiveEditors`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of Editors who are active
+   */
   Select u.EmailAddress
   From Users u
     Inner Join UserRoles ur
@@ -883,21 +983,27 @@ BEGIN
     And ur.RoleID = 3;
 END$$
 
-/* Gets the list of types of addresses */
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`$$
 CREATE PROCEDURE `spGetAddressTypes`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of types of addresses
+   */
   Select AddressTypeID, AddressType
   From AddressTypes
   Order By AddressType;
 END$$
 
-/* Gets the list of all Announcements */
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`$$
 CREATE PROCEDURE `spGetAllAnnouncementsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of all Announcements
+   */
   Select a.Title,
          GROUP_CONCAT(r.RoleTitle) As 'Roles',
          a.CreateDate,
@@ -914,11 +1020,14 @@ BEGIN
            a.Title;
 END$$
 
-/* Gets the list of Announcements for a UserID */
 DROP PROCEDURE IF EXISTS `spGetAnnouncements`$$
 CREATE PROCEDURE `spGetAnnouncements`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of Announcements for a UserID
+   */
   Select rtn.Title,
          rtn.Message,
          rtn.CreateDate,
@@ -956,11 +1065,14 @@ BEGIN
            rtn.Title;
 END$$
 
-/* Gets the List of available Article Dates for a year */
 DROP PROCEDURE IF EXISTS `spGetArticleDates`$$
 CREATE PROCEDURE `spGetArticleDates`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available Article Dates for a year
+   */
   /* If the year is null, set it to current year */
   Set _Year = IfNull(_Year, Year(CURRENT_DATE));
   
@@ -979,11 +1091,14 @@ BEGIN
   Where Year = _Year;
 END$$
 
-/* Gets the List of available Email Settings */
 DROP PROCEDURE IF EXISTS `spGetEmailSettings`$$
 CREATE PROCEDURE `spGetEmailSettings`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available Email Settings
+   */
   Select SettingID,
          SettingName,
          AuthorNagEmailDays,
@@ -997,43 +1112,55 @@ BEGIN
   Order By SettingName;
 END$$
 
-/* Gets the file content records for a FileMetaDataID  */
 DROP PROCEDURE IF EXISTS `spGetFileContents`$$
 CREATE PROCEDURE `spGetFileContents`(IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file content records for a FileMetaDataID
+   */
   Select FileContents
   From FileData
   Where FileMetaDataID = _FileMetaDataID
   Order By SequenceNumber;
 END$$
 
-/* Gets the file info record for a FileMetaDataID  */
 DROP PROCEDURE IF EXISTS `spGetFileInfo`$$
 CREATE PROCEDURE `spGetFileInfo`(IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file info record for a FileMetaDataID
+   */
   Select FileName, FileMime, FileSize
   From FileMetaData
   Where FileMetaDataID = _FileMetaDataID;
 END$$
 
-/* Gets the list of types of files for a role */
 DROP PROCEDURE IF EXISTS `spGetFileTypes`$$
 CREATE PROCEDURE `spGetFileTypes`(IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of types of files for a role
+   */
   Select FileTypeID, FileType
   From FileTypes
   Where RoleID = _RoleID
   Order By FileType;
 END$$
 
-/* Gets next important dates */
 DROP PROCEDURE IF EXISTS `spGetNextDates`$$
 CREATE PROCEDURE `spGetNextDates`(IN _Number int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets next important dates
+   */
   /* Store the current date */
   Declare _CurrDate date;
   Declare _AuthorFirstSubmissionStartDate date;
@@ -1210,31 +1337,40 @@ BEGIN
   Drop Table If Exists TempEditorDates;
 END$$
 
-/* Gets the list of types of phone numbers */
 DROP PROCEDURE IF EXISTS `spGetPhoneTypes`$$
 CREATE PROCEDURE `spGetPhoneTypes`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of types of phone numbers
+   */
   Select PhoneTypeID, PhoneType
   From PhoneTypes
   Order By PhoneType;
 END$$
 
-/* Gets the list of types of categories for published incidents */
 DROP PROCEDURE IF EXISTS `spGetPublicationCategories`$$
 CREATE PROCEDURE `spGetPublicationCategories`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of types of categories for published incidents
+   */
   Select CategoryID, Category
   From PublicationCategories
   Order By Category;
 END$$
 
-/* Gets the List of available Publications in decending order */
 DROP PROCEDURE IF EXISTS `spGetPublicationsList`$$
 CREATE PROCEDURE `spGetPublicationsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available Publications in decending order
+   */
   Select PublicationID,
          Year,
          FileMetaDataID
@@ -1242,22 +1378,28 @@ BEGIN
   Order By Year;
 END$$
 
-/* Gets the List of available years from Publications */
 DROP PROCEDURE IF EXISTS `spGetPublicationsYearsList`$$
 CREATE PROCEDURE `spGetPublicationsYearsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available years from Publications
+   */
   Select Year,
          FileMetaDataID
   From Publications
   Order By Year Desc;
 END$$
 
-/* Gets the Published Incident info */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncident`(IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the Published Incident info
+   */
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract,
@@ -1270,11 +1412,14 @@ BEGIN
   Order By pci.IncidentTitle;
 END$$
 
-/* Gets the Authors for a Published Incident */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidentAuthors`(IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the Authors for a Published Incident
+   */
   Select Concat(pa.LastName, ', ', pa.FirstName) As 'FullName',
          pa.EmailAddress,
          pa.InstitutionAffiliation
@@ -1285,11 +1430,14 @@ BEGIN
   Order By pa.LastName, pa.FirstName;
 END$$
 
-/* Gets the Categories for a Published Incident */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentCategories`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidentCategories`(IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the Categories for a Published Incident
+   */
   Select pc.CategoryID, pc.Category
   From PublicationCategories pc
     Inner Join PublishedCriticalIncidentCategories pcic
@@ -1298,11 +1446,14 @@ BEGIN
   Order By pc.Category;
 END$$
 
-/* Gets the list Published Incidents for a year for editor adding  */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidents`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidents`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list Published Incidents for a year for editor adding
+   */
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract
@@ -1313,11 +1464,14 @@ BEGIN
   Order By pci.IncidentTitle;
 END$$
 
-/* Gets the list Published Incidents for a year for search page */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentsList`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidentsList`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list Published Incidents for a year for search page
+   */
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract,
@@ -1340,32 +1494,41 @@ BEGIN
   Order By pci.IncidentTitle;
 END$$
 
-/* Gets the list of reviewer statuses */
 DROP PROCEDURE IF EXISTS `spGetReviewStatusList`$$
 CREATE PROCEDURE `spGetReviewStatusList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of reviewer statuses
+   */
   Select ReviewStatusID, ReviewStatus
   From ReviewStatus
   Order By ReviewStatusID;
 END$$
 
-/* Gets the List of available roles */
 DROP PROCEDURE IF EXISTS `spGetRoles`$$
 CREATE PROCEDURE `spGetRoles`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available roles
+   */
   Select RoleID,
          RoleTitle
   From Roles
   Order By RoleTitle;
 END$$
 
-/* Gets the spot in the editing process by current date */
 DROP PROCEDURE IF EXISTS `spGetSpotInProcess`$$
 CREATE PROCEDURE `spGetSpotInProcess`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the spot in the editing process by current date
+   */
   /* Store the current date */
   Declare _CurrDate date;
   Declare _SpotID int;
@@ -1392,21 +1555,28 @@ BEGIN
   Where ID = _SpotID;
 END$$
 
-/* Gets the list of states */
+/*  */
 DROP PROCEDURE IF EXISTS `spGetStates`$$
 CREATE PROCEDURE `spGetStates`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of states
+   */
   Select StateID, CONCAT(Abbr,' - ',Name) As FullStateName
   From States
   Order By Abbr;
 END$$
 
-/* Gets the address info for an id */
 DROP PROCEDURE IF EXISTS `spGetUserAddressInfo`$$
 CREATE PROCEDURE `spGetUserAddressInfo`(IN _AddressID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the address info for an id
+   */
   Select AddressID,
          UserID,
          AddressTypeID,
@@ -1421,11 +1591,14 @@ BEGIN
   Order By CreateDate;
 END$$
 
-/* Gets the user's address list */
 DROP PROCEDURE IF EXISTS `spGetUserAddressList`$$
 CREATE PROCEDURE `spGetUserAddressList`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's address list
+   */
   Select a.AddressID,
          t.AddressType,
          a.AddressLn1,
@@ -1443,11 +1616,15 @@ BEGIN
   Order By a.CreateDate;
 END$$
 
-/* Get the UserID (or -1) for the EmailAddress/Password combination */
 DROP PROCEDURE IF EXISTS `spGetUserID`$$
-CREATE PROCEDURE `spGetUserID`(IN _EmailAddress VarChar(200), IN _Password VarChar(50))
+CREATE PROCEDURE `spGetUserID`(IN _EmailAddress VarChar(200),
+                               IN _Password VarChar(50))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Get the UserID (or -1) for the EmailAddress/Password combination
+   */
   Declare _UserID Int;
 
   Select u.UserID Into _UserID
@@ -1458,11 +1635,14 @@ BEGIN
   Select IfNull(_UserID, -1) As 'UserID';
 END$$
 
-/* Gets the user's info */
 DROP PROCEDURE IF EXISTS `spGetUserInfo`$$
 CREATE PROCEDURE `spGetUserInfo`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's info
+   */
   Select FirstName,
          LastName,
          EmailAddress,
@@ -1474,11 +1654,14 @@ BEGIN
   Where UserID = _UserID;
 END$$
 
-/* Gets the phone info for an id */
 DROP PROCEDURE IF EXISTS `spGetUserPhoneInfo`$$
 CREATE PROCEDURE `spGetUserPhoneInfo`(IN _PhoneNumberID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the phone info for an id
+   */
   Select PhoneNumberID,
          UserID,
          PhoneTypeID,
@@ -1488,11 +1671,14 @@ BEGIN
   Where PhoneNumberID = _PhoneNumberID;
 END$$
 
-/* Gets the user's phone list */
 DROP PROCEDURE IF EXISTS `spGetUserPhoneList`$$
 CREATE PROCEDURE `spGetUserPhoneList`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's phone list
+   */
   Select p.PhoneNumberID,
          t.PhoneType,
          p.PhoneNumber,
@@ -1504,11 +1690,14 @@ BEGIN
   Order By p.CreateDate;
 END$$
 
-/* Gets the roles associated with a UserID */
 DROP PROCEDURE IF EXISTS `spGetUserRoles`$$
 CREATE PROCEDURE `spGetUserRoles`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the roles associated with a UserID
+   */
   Select r.RoleTitle
   From UserRoles ur
     Inner Join Roles r
@@ -1516,11 +1705,14 @@ BEGIN
   Where ur.UserID = _UserID;
 END$$
 
-/* Gets the list of active UserID and FullNames who are Authors */
 DROP PROCEDURE IF EXISTS `spGetUsersAuthorsList`$$
 CREATE PROCEDURE `spGetUsersAuthorsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of active UserID and FullNames who are Authors
+   */
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
@@ -1531,11 +1723,14 @@ BEGIN
   Order By u.LastName, u.FirstName;
 END$$
 
-/* Gets the list of active UserID and FullNames who are Editors */
 DROP PROCEDURE IF EXISTS `spGetUsersEditorsList`$$
 CREATE PROCEDURE `spGetUsersEditorsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of active UserID and FullNames who are Editors
+   */
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
@@ -1546,11 +1741,14 @@ BEGIN
   Order By u.LastName, u.FirstName;
 END$$
 
-/* Get the list of users, both active and inactive in alphbetical order */
 DROP PROCEDURE IF EXISTS `spGetUsersList`$$
 CREATE PROCEDURE `spGetUsersList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Get the list of users, both active and inactive in alphbetical order
+   */
   Select u.UserID,
          u.EmailAddress,
          CONCAT(u.LastName,', ',u.FirstName) As 'FullName',
@@ -1571,11 +1769,14 @@ BEGIN
            u.UserID;
 END$$
 
-/* Gets the list of active UserID and FullNames who are Reviewers */
 DROP PROCEDURE IF EXISTS `spGetUsersReviewersList`$$
 CREATE PROCEDURE `spGetUsersReviewersList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of active UserID and FullNames who are Reviewers
+   */
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur
@@ -1586,11 +1787,14 @@ BEGIN
   Order By u.LastName, u.FirstName;
 END$$
 
-/* Gets the user's info for sending verification email */
 DROP PROCEDURE IF EXISTS `spGetVerificationUserInfo`$$
 CREATE PROCEDURE `spGetVerificationUserInfo`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's info for sending verification email
+   */
   Select FirstName,
          LastName,
          NewEmailAddress,
@@ -1599,11 +1803,14 @@ BEGIN
   Where UserID = _UserID;
 END$$
 
-/* Creates the available Article Dates for a new year  */
 DROP PROCEDURE IF EXISTS `spJobCreateArticleDates`$$
 CREATE PROCEDURE `spJobCreateArticleDates`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the available Article Dates for a new year
+   */
   Declare _CurrYear int;
   Set _CurrYear = Year(CURRENT_DATE);
   
@@ -1635,20 +1842,28 @@ BEGIN
   Where Year = _CurrYear - 1;
 END$$
 
-/* Gets the List of available Article Dates for a year */
+/*  */
 DROP PROCEDURE IF EXISTS `spJobPublishEndRollOver`$$
 CREATE PROCEDURE `spJobPublishEndRollOver`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available Article Dates for a year
+   */
   Select IF(CURRENT_DATE >= (PublicationDate + INTERVAL 5 DAY), 1, 0) As 'RollOver'
   From SystemSettings_ArticleDates
   Where Year = Year(CURRENT_DATE);
 END$$
 
-/* Deletes all expired announcements */
 DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`$$
-CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`() DETERMINISTIC
+CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`()
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Deletes all expired announcements
+   */
 
   /* Remove the associated roles with the expired announcements */
   Delete From AccouncementRoles
@@ -1663,11 +1878,14 @@ BEGIN
   Where IfNull(ExpireDate, CURRENT_DATE) < CURRENT_DATE;
 END$$
 
-/* Expire user's EmailAddress change attempts */
 DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`$$
 CREATE PROCEDURE `spJobUpdateExpireUsersEmailAddressChange`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Expire user's EmailAddress change attempts
+   */
   /* Registered user never confirmed their email address, expire it outright */
   Update Users
   Set EmailStatusID = 2,
@@ -1689,11 +1907,14 @@ BEGIN
     And NewEmailAddressCreateDate < CURRENT_DATE - INTERVAL 5 DAY;
 END$$
 
-/* For every user create membership history record */
 DROP PROCEDURE IF EXISTS `spJobYearlyAddMembershipHistory`$$
 CREATE PROCEDURE `spJobYearlyAddMembershipHistory`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : For every user create membership history record
+   */
   /* Delete the current year's entries */
   Delete From UserMembershipHistory
   Where Year = YEAR(CURRENT_DATE);
@@ -1704,11 +1925,15 @@ BEGIN
   From Users;
 END$$
 
-/* Get the UserID (or -1 if invalid) for the EmailAddress/Password combination */
 DROP PROCEDURE IF EXISTS `spLoginGetUserID`$$
-CREATE PROCEDURE `spLoginGetUserID`(IN _EmailAddress VarChar(200), IN _Password VarChar(50))
+CREATE PROCEDURE `spLoginGetUserID`(IN _EmailAddress VarChar(200),
+                                    IN _Password VarChar(50))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Get the UserID (or -1 if invalid) for the EmailAddress/Password combination
+   */
   Declare _UserID Int;
   Declare _EmailStatusID Int;
   Declare _Active TinyInt;
@@ -1744,10 +1969,13 @@ BEGIN
          _Active As 'Active';
 END$$
 
-/* Deletes an existing announcement */
 DROP PROCEDURE IF EXISTS `spRemoveAnnouncement`$$
 CREATE PROCEDURE `spRemoveAnnouncement`(IN _AnnouncementID int) DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Deletes an existing announcement
+   */
   /* Remove the Accouncement from the roles */
   Delete From AccouncementRoles
   Where AnnouncementID = _AnnouncementID;
@@ -1757,22 +1985,29 @@ BEGIN
   Where AnnouncementID = _AnnouncementID;
 END$$
 
-/* Removes a published incident from a publication category */
 DROP PROCEDURE IF EXISTS `spRemoveCriticalIncidentCategories`$$
-CREATE PROCEDURE `spRemoveCriticalIncidentCategories`(IN _CriticalIncidentID int, IN _CategoryID int)
+CREATE PROCEDURE `spRemoveCriticalIncidentCategories`(IN _CriticalIncidentID int,
+                                                      IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Removes a published incident from a publication category
+   */
   Delete From PublishedCriticalIncidentCategories
   Where CriticalIncidentID = _CriticalIncidentID
     And CategoryID = _CategoryID;
 END$$
 
-/* Removes a published author to a published critical incident */
 DROP PROCEDURE IF EXISTS `spRemovePublishedIncidentAuthor`$$
 CREATE PROCEDURE `spRemovePublishedIncidentAuthor`(IN _AuthorID int,
                                                    IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Removes a published author to a published critical incident
+   */
   /* Make sure the AuthorID exists */
   If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
     /* Make sure the CriticalIncidentID exists */
@@ -1788,12 +2023,15 @@ BEGIN
   End If;
 END$$
 
-/* Adds a Reviewer UserID to an existing Submission */
 DROP PROCEDURE IF EXISTS `spReviewerAddToSubmission`$$
 CREATE PROCEDURE `spReviewerAddToSubmission`(IN _UserID int,
                                              IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Adds a Reviewer UserID to an existing Submission
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the SubmissionID exists */
@@ -1827,11 +2065,15 @@ BEGIN
   End If;
 END$$
 
-/* Gets the file list for a ReviewerUserID & SubmissionID  */
 DROP PROCEDURE IF EXISTS `spReviewerGetFilesList`$$
-CREATE PROCEDURE `spReviewerGetFilesList`(IN _ReviewerUserID int, IN _SubmissionID int)
+CREATE PROCEDURE `spReviewerGetFilesList`(IN _ReviewerUserID int,
+                                          IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file list for a ReviewerUserID & SubmissionID
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
          fmd.FileSize,
@@ -1845,13 +2087,16 @@ BEGIN
     And rf.ReviewerUserID = _ReviewerUserID;
 END$$
 
-/* Update a reviewer's record to change the status */
 DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`$$
 CREATE PROCEDURE `spReviewerUpdateReviewStatus`(IN _ReviewerUserID int,
                                                 IN _SubmissionID int,
                                                 IN _ReviewStatusID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update a reviewer's record to change the status
+   */
   Declare _TotalReviewers int;
   Declare _ReviewCompleted int;
   
@@ -1892,11 +2137,15 @@ BEGIN
   End If;
 END$$
 
-/* Lists the submissions for a reviewer for a given year */
 DROP PROCEDURE IF EXISTS `spReviewerViewSubmissions`$$
-CREATE PROCEDURE `spReviewerViewSubmissions`(IN _UserID int, IN _Year int)
+CREATE PROCEDURE `spReviewerViewSubmissions`(IN _UserID int,
+                                             IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the submissions for a reviewer for a given year
+   */
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',
@@ -1918,11 +2167,14 @@ BEGIN
            s.IncidentTitle;
 END$$
 
-/* Gets the List of users by email address */
 DROP PROCEDURE IF EXISTS `spSearchGetUsersEmail`$$
 CREATE PROCEDURE `spSearchGetUsersEmail`(IN _EmailAddress varchar(30))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of users by email address
+   */
   Set _EmailAddress = IfNull(_EmailAddress,'%');
   
   Select UserID,
@@ -1939,12 +2191,15 @@ BEGIN
   Order By LastName, FirstName;
 END$$
 
-/* Gets the List of users by first and/or last name */
 DROP PROCEDURE IF EXISTS `spSearchGetUsersNames`$$
 CREATE PROCEDURE `spSearchGetUsersNames`(IN _LastName varchar(30),
                                          IN _FirstName varchar(15))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of users by first and/or last name
+   */
   Set _LastName = IfNull(_LastName,'%');
   Set _FirstName = IfNull(_FirstName,'%');
   
@@ -1963,7 +2218,6 @@ BEGIN
   Order By LastName, FirstName;
 END$$
 
-/* Searches Published Incidents from multiple input parameters */
 DROP PROCEDURE IF EXISTS `spSearchIncidents`$$
 CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Keyword varchar(20),
@@ -1971,6 +2225,10 @@ CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Category varchar(25))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Searches Published Incidents from multiple input parameters
+   */
   /* Sanitize the inputs */
   Set _Title = Replace(Replace(Concat('%', IfNull(_Title, '%'), '%'), '%%%', '%'), '%%', '%');
   Set _Keyword = Replace(Replace(Concat('%', IfNull(_Keyword, '%'), '%'), '%%%', '%'), '%%', '%');
@@ -2026,11 +2284,14 @@ BEGIN
            results.Year Desc;
 END$$
 
-/* Searches Published Incidents from a single input parameter */
 DROP PROCEDURE IF EXISTS `spSearchIncidentsSingleInput`$$
 CREATE PROCEDURE `spSearchIncidentsSingleInput`(IN _SearchTerm varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Searches Published Incidents from a single input parameter
+   */
   /* Make sure there's something to search for */
   If ((_SearchTerm Is Not Null) And (Char_Length(_SearchTerm) > 0)) Then
     /* Make sure the SearchTerm has wildcard chars around it */
@@ -2088,11 +2349,15 @@ BEGIN
   End If;
 END$$
 
-/* Connects a SubmissionID with a CategoryID */
 DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`$$
-CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int, IN _CategoryID int)
+CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int,
+                                             IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects a SubmissionID with a CategoryID
+   */
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure CategoryID exists */
@@ -2113,11 +2378,15 @@ BEGIN
   End If;
 END$$
 
-/* Connects a Submission to a Category */
 DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`$$
-CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int, IN _CategoryID int)
+CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int,
+                                             IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects a Submission to a Category
+   */
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure CategoryID exists */
@@ -2138,11 +2407,15 @@ BEGIN
   End If;
 END$$
 
-/* Assigns an editor UserID to a Submission */
 DROP PROCEDURE IF EXISTS `spSubmissionAssignEditor`$$
-CREATE PROCEDURE `spSubmissionAssignEditor`(IN _SubmissionID int, IN _UserID int)
+CREATE PROCEDURE `spSubmissionAssignEditor`(IN _SubmissionID int,
+                                            IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Assigns an editor UserID to a Submission
+   */
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure UserID exists */
@@ -2165,11 +2438,14 @@ BEGIN
   End If;
 END$$
 
-/* Gets the file list for a SubmissionID  */
 DROP PROCEDURE IF EXISTS `spSubmissionGetFilesList`$$
 CREATE PROCEDURE `spSubmissionGetFilesList`(IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file list for a SubmissionID
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
          fmd.FileSize,
@@ -2182,11 +2458,14 @@ BEGIN
   Where sf.SubmissionID = _SubmissionID;
 END$$
 
-/* Gets the info for a SubmissionID  */
 DROP PROCEDURE IF EXISTS `spSubmissionGetInfo`$$
 CREATE PROCEDURE `spSubmissionGetInfo`(IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the info for a SubmissionID
+   */
   Select s.IncidentTitle,
          s.Abstract,
          s.Keywords,
@@ -2199,17 +2478,20 @@ BEGIN
   Where s.SubmissionID = _SubmissionID;
 END$$
 
-/* Removes a SubmissionID from a CategoryID */
 DROP PROCEDURE IF EXISTS `spSubmissionRemoveCategory`$$
-CREATE PROCEDURE `spSubmissionRemoveCategory`(IN _SubmissionID int, IN _CategoryID int)
+CREATE PROCEDURE `spSubmissionRemoveCategory`(IN _SubmissionID int,
+                                              IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Removes a SubmissionID from a CategoryID
+   */
   Delete From SubmissionCategories
   Where SubmissionID = _SubmissionID
     And CategoryID = _CategoryID;
 END$$
 
-/* Updates an existing address */
 DROP PROCEDURE IF EXISTS `spUpdateAddress`$$
 CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
                                    IN _AddressTypeID int,
@@ -2218,9 +2500,13 @@ CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
                                    IN _City varchar(30),
                                    IN _StateID int,
                                    IN _PostCode char(5),
-                                   IN _PrimaryAddress tinyint
-) DETERMINISTIC
+                                   IN _PrimaryAddress tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address
+   */
 
   Declare _UserID int;
   
@@ -2266,11 +2552,14 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing address, sets it to be the primary */
 DROP PROCEDURE IF EXISTS `spUpdateAddressMakePrimary`$$
 CREATE PROCEDURE `spUpdateAddressMakePrimary`(IN _AddressID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address, sets it to be the primary
+   */
   Declare _UserID int;
   
   /* Make sure the AddressID exists */
@@ -2294,12 +2583,15 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing address type */
 DROP PROCEDURE IF EXISTS `spUpdateAddressType`$$
 CREATE PROCEDURE `spUpdateAddressType`(IN _AddressTypeID int,
-                                       IN _AddressType varchar(20)
-) DETERMINISTIC
+                                       IN _AddressType varchar(20))
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address type
+   */
   /* Make sure the AddressTypeID exists */
   If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
     /* Make sure the new PhoneType doesn't already exist */
@@ -2316,14 +2608,17 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing announcement */
 DROP PROCEDURE IF EXISTS `spUpdateAnnouncement`$$
 CREATE PROCEDURE `spUpdateAnnouncement`(IN _AnnouncementID int,
                                         IN _Title varchar(100),
                                         IN _Message varchar(10000),
-                                        IN _ExpireDate date
-) DETERMINISTIC
+                                        IN _ExpireDate date)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing announcement
+   */
   /* Make sure the AnnouncementID exists */
   If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
     /* Make sure the Title doesn't exists, omitting the current ID */
@@ -2342,7 +2637,6 @@ BEGIN
   End If;
 END$$
 
-/* Updates the available Article Dates for a year  */
 DROP PROCEDURE IF EXISTS `spUpdateArticleDates`$$
 CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
                                         IN _AuthorFirstSubmissionStartDate date,
@@ -2358,6 +2652,10 @@ CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
                                         IN _PublicationDate date)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the available Article Dates for a year
+   */
   Update SystemSettings_ArticleDates
   Set AuthorFirstSubmissionStartDate = _AuthorFirstSubmissionStartDate,
       AuthorFirstSubmissionDueDate = _AuthorFirstSubmissionDueDate,
@@ -2373,12 +2671,15 @@ BEGIN
   Where Year = _Year;
 END$$
 
-/* Updates an existing Category */
 DROP PROCEDURE IF EXISTS `spUpdateCategory`$$
 CREATE PROCEDURE `spUpdateCategory`(IN _CategoryID int,
                                     IN _Category varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing Category
+   */
   /* Make sure the Category doesn't exist */
   If(Select Exists(Select 1 From Categories Where Category = _Category And CategoryID != _CategoryID)) Then
     Select 'Category already exists' As 'Error';
@@ -2389,11 +2690,14 @@ BEGIN
   End If;
 END$$
 
-/* Marks an Email SettingID as active */
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettingActive`$$
 CREATE PROCEDURE `spUpdateEmailSettingActive`(IN _SettingID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Marks an Email SettingID as active
+   */
   /* Make sure the SettingID exists */
   If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
     /* Mark all settings as inactive */
@@ -2409,7 +2713,6 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing Email nagging profile */
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettings`$$
 CREATE PROCEDURE `spUpdateEmailSettings`(IN _SettingID int,
                                          IN _SettingName varchar(200),
@@ -2421,6 +2724,10 @@ CREATE PROCEDURE `spUpdateEmailSettings`(IN _SettingID int,
                                          IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing Email nagging profile
+   */
   /* Make sure the SettingID exists */
   If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
     /* Make sure the SettingName doesn't already exist */
@@ -2447,7 +2754,6 @@ BEGIN
   End If;
 END$$
 
-/* Update the FileMetaData record for a FileMetaDataID, also deletes the associated FileData records */
 DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`$$
 CREATE PROCEDURE `spUpdateFileMetaData`(IN _FileMetaDataID int,
                                         IN _FileTypeID int,
@@ -2456,6 +2762,10 @@ CREATE PROCEDURE `spUpdateFileMetaData`(IN _FileMetaDataID int,
                                         IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the FileMetaData record for a FileMetaDataID, also deletes the associated FileData records
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Deletes the Contents records */
@@ -2474,11 +2784,14 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing phone number, sets it to be the primary */
 DROP PROCEDURE IF EXISTS `spUpdatePhoneMakePrimary`$$
 CREATE PROCEDURE `spUpdatePhoneMakePrimary`(IN _PhoneNumberID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing phone number, sets it to be the primary
+   */
   Declare _UserID int;
   
   /* Make sure the PhoneNumberID exists */
@@ -2502,14 +2815,17 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing phone number for a user */
 DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`$$
 CREATE PROCEDURE `spUpdatePhoneNumber`(IN _PhoneNumberID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-                                       IN _PrimaryPhone tinyint
-) DETERMINISTIC
+                                       IN _PrimaryPhone tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing phone number for a user
+   */
 
   Declare _UserID int;
   
@@ -2546,12 +2862,15 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing phone type */
 DROP PROCEDURE IF EXISTS `spUpdatePhoneType`$$
 CREATE PROCEDURE `spUpdatePhoneType`(IN _PhoneTypeID int,
-                                     IN _PhoneType varchar(20)
-) DETERMINISTIC
+                                     IN _PhoneType varchar(20))
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing phone type
+   */
   /* Make sure the PhoneTypeID exists */
   If(Select Exists(Select 1 From PhoneTypes Where PhoneTypeID = _PhoneTypeID)) Then
     /* Make sure the new PhoneType doesn't already exist */
@@ -2568,11 +2887,15 @@ BEGIN
   End If;
 END$$
 
-/* Updates a Publication record for a year */
 DROP PROCEDURE IF EXISTS `spUpdatePublication`$$
-CREATE PROCEDURE `spUpdatePublication`(IN _Year int, IN _FileMetaDataID int)
+CREATE PROCEDURE `spUpdatePublication`(IN _Year int,
+                                       IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Publication record for a year
+   */
   /* Make sure the year exists */
   If(Select Exists(Select 1 From Publications Where Year = _Year)) Then
     /* Make sure the FileMetaDataID exists */
@@ -2588,11 +2911,15 @@ BEGIN
   End If;
 END$$
 
-/* Updates a category for published incidents */
 DROP PROCEDURE IF EXISTS `spUpdatePublicationCategory`$$
-CREATE PROCEDURE `spUpdatePublicationCategory`(IN _CategoryID int, IN _Category varchar(20))
+CREATE PROCEDURE `spUpdatePublicationCategory`(IN _CategoryID int,
+                                               IN _Category varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a category for published incidents
+   */
   If(Select Exists(Select 1 From PublicationCategories Where Category = _Category And CategoryID != _CategoryID)) Then
     Select Concat('Category "', _Category, '" already exists') As 'Error';
   Else
@@ -2602,7 +2929,6 @@ BEGIN
   End If;
 END$$
 
-/* Updates a Published Author record */
 DROP PROCEDURE IF EXISTS `spUpdatePublishedAuthor`$$
 CREATE PROCEDURE `spUpdatePublishedAuthor`(IN _AuthorID int,
                                            IN _FirstName varchar(15),
@@ -2611,6 +2937,10 @@ CREATE PROCEDURE `spUpdatePublishedAuthor`(IN _AuthorID int,
                                            IN _InstitutionAffiliation varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Published Author record
+   */
   /* Make sure the AuthorID exists */
   If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
     Update PublishedAuthors
@@ -2624,7 +2954,6 @@ BEGIN
   End If;
 END$$
 
-/* Updates a Published Critical Incident record */
 DROP PROCEDURE IF EXISTS `spUpdatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
                                                      IN _PublicationID int,
@@ -2634,6 +2963,10 @@ CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
                                                      IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Published Critical Incident record
+   */
   /* Make sure the CriticalIncidentID exists */
   If(Select Exists(Select 1 From CriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
     /* Make sure the FileMetaDataID exists */
@@ -2658,7 +2991,14 @@ BEGIN
   End If;
 END$$
 
-/* Updates an existing Submissions' status:
+DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`$$
+CREATE PROCEDURE `spUpdateSubmissionStatus`(IN _SubmissionID int,
+                                            IN _SubmissionStatusID int)
+DETERMINISTIC
+BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing Submissions' status:
    SubmissionStatusID 2 : Editor Assigned, DON'T USE, spSubmissionAssignEditor will do this automatically
    SubmissionStatusID 3 : Editor Updated
    SubmissionStatusID 4 : Reviewers Assigned
@@ -2666,12 +3006,7 @@ END$$
    SubmissionStatusID 6 : Editor Reviewed
    SubmissionStatusID 7 : Ready for Publish
    SubmissionStatusID 8 : Revision Needed
-*/
-DROP PROCEDURE IF EXISTS `spUpdateSubmissionStatus`$$
-CREATE PROCEDURE `spUpdateSubmissionStatus`(IN _SubmissionID int,
-                                            IN _SubmissionStatusID int
-) DETERMINISTIC
-BEGIN
+   */
   /* Make sure the SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure the SubmissionStatusID exists */
@@ -2688,11 +3023,15 @@ BEGIN
   End If;
 END$$
 
-/* Update the EmailAddress for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`$$
-CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(200))
+CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int,
+                                            IN _EmailAddress varchar(200))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the EmailAddress for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -2706,7 +3045,6 @@ BEGIN
   End If;
 END$$
 
-/* Updates the info for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserInfo`$$
 CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
                                     IN _FirstName varchar(15),
@@ -2715,6 +3053,10 @@ CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
                                     IN _InstitutionAffiliation varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the info for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -2728,11 +3070,15 @@ BEGIN
   End If;
 END$$
 
-/* Update the password for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserPassword`$$
-CREATE PROCEDURE `spUpdateUserPassword`(IN _UserID int, IN _Password varchar(50))
+CREATE PROCEDURE `spUpdateUserPassword`(IN _UserID int,
+                                        IN _Password varchar(50))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the password for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -2743,11 +3089,14 @@ BEGIN
   End If;
 END$$
 
-/* Update the RequestBecomeEditor for a UserID */
 DROP PROCEDURE IF EXISTS `spUserAddRequestEditor`$$
 CREATE PROCEDURE `spUserAddRequestEditor`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the RequestBecomeEditor for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 3)) Then
@@ -2762,11 +3111,14 @@ BEGIN
   End If;
 END$$
 
-/* Update the RequestBecomeReviewer for a UserID */
 DROP PROCEDURE IF EXISTS `spUserAddRequestReviewer`$$
 CREATE PROCEDURE `spUserAddRequestReviewer`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the RequestBecomeReviewer for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     If(Select Exists(Select 1 From UserRoles Where UserID = _UserID And RoleID = 2)) Then
@@ -2781,11 +3133,15 @@ BEGIN
   End If;
 END$$
 
-/* Connects a UserID with a RoleID */
 DROP PROCEDURE IF EXISTS `spUserAddRole`$$
-CREATE PROCEDURE `spUserAddRole`(IN _UserID int, IN _RoleID int)
+CREATE PROCEDURE `spUserAddRole`(IN _UserID int,
+                                 IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects a UserID with a RoleID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure RoleID exists */
@@ -2806,11 +3162,14 @@ BEGIN
   End If;
 END$$
 
-/* Update the RequestBecomeEditor for a UserID */
 DROP PROCEDURE IF EXISTS `spUserRemoveRequestEditor`$$
 CREATE PROCEDURE `spUserRemoveRequestEditor`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the RequestBecomeEditor for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -2821,11 +3180,14 @@ BEGIN
   End If;
 END$$
 
-/* Update the RequestBecomeReviewer for a UserID */
 DROP PROCEDURE IF EXISTS `spUserRemoveRequestReviewer`$$
 CREATE PROCEDURE `spUserRemoveRequestReviewer`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the RequestBecomeReviewer for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users
@@ -2836,21 +3198,28 @@ BEGIN
   End If;
 END$$
 
-/* Removes a UserID with a RoleID */
 DROP PROCEDURE IF EXISTS `spUserRemoveRole`$$
-CREATE PROCEDURE `spUserRemoveRole`(IN _UserID int, IN _RoleID int)
+CREATE PROCEDURE `spUserRemoveRole`(IN _UserID int,
+                                    IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Removes a UserID with a RoleID
+   */
   Delete From UserRoles
   Where UserID = _UserID
     And RoleID = _RoleID;
 END$$
 
-/* Marks a user's email address as valid */
 DROP PROCEDURE IF EXISTS `spVerifyEmailAddress`$$
 CREATE PROCEDURE `spVerifyEmailAddress`(IN _GUID varchar(32))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Marks a user's email address as valid
+   */
   Declare _UserID int;
   
   /* Get the UserID from the GUID */
