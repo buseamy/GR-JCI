@@ -42,7 +42,7 @@ if (!isset($_SESSION['UserID']) || ($_SESSION['UserID'] < 1)) {
             $errors[] = 'Please provide a first name';
         }
         
-        if (empty($_POST['LastName'])) {
+        if (empty($LastName)) {
             $errors[] = 'Please provide a last name';
         }
         
