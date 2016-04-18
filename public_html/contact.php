@@ -43,6 +43,8 @@
              $PhoneTmp = str_replace('(', '', str_replace(')', '', str_replace(' ', '', str_replace('-', '', $Phone))));
              if ((strlen($PhoneTmp) != 10) || (!is_numeric($PhoneTmp))) {
                  $errors[] = 'Please provide a valid phone number';
+             } else {
+                 $Phone = $PhoneTmp;
              }
          }
      }

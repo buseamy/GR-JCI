@@ -31,9 +31,11 @@ if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
         //Get the ID of the phone number record
         $PhoneID = mysqli_real_escape_string($dbc, $_GET["p"]);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $PhoneNumber = trim($_POST['PhoneNumber']);
+            
              //Verify inputs
 
-            if (!empty($_POST['PhoneNumber'])) {
+            if (!empty($PhoneNumber)) {
                 $PhoneNumber = $_POST['PhoneNumber'];
                 if (!Is_numeric($PhoneNumber) || (strlen($PhoneNumber) < 10)) {
                     $errors[] = 'Please provide a 10 digit phone number'; 

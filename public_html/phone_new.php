@@ -27,26 +27,28 @@ if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
     $UserID = $_SESSION['UserID'];
     
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $PhoneNumber = trim($_POST['PhoneNumber']);
+        
         //Verify inputs
 
-            if (!empty($_POST['PhoneNumber'])) {
-                $PhoneNumber = $_POST['PhoneNumber'];
-                if (!Is_numeric($PhoneNumber) || (strlen($PhoneNumber) < 10)) {
-                    $errors[] = 'Please provide a 10 digit phone number'; 
-                }
-            } else {
-                $errors[] = 'Please provide a 10 digit phone number';
+        if (!empty($PhoneNumber)) {
+            $PhoneNumber = $_POST['PhoneNumber'];
+            if (!Is_numeric($PhoneNumber) || (strlen($PhoneNumber) < 10)) {
+                $errors[] = 'Please provide a 10 digit phone number'; 
             }
-            
-            if (!empty($_POST['PhoneType'])) {
-                $PhoneType = $_POST['PhoneType'];
-            } else if ($_POST['PhoneType'] == 0) {
-                $errors[] = 'Please select a phone type';
-            }
-            
-            if (isset($_POST['Primary'])) {
-                $Primary = 1;
-            }
+        } else {
+            $errors[] = 'Please provide a 10 digit phone number';
+        }
+        
+        if (!empty($_POST['PhoneType'])) {
+            $PhoneType = $_POST['PhoneType'];
+        } else if ($_POST['PhoneType'] == 0) {
+            $errors[] = 'Please select a phone type';
+        }
+        
+        if (isset($_POST['Primary'])) {
+            $Primary = 1;
+        }
         
         if (empty($errors)) {
             //Update the address in the database
