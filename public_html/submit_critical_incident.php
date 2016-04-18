@@ -27,7 +27,25 @@
             $lastname = $row["LastName"];
             $membercode = $row["MemberCode"];
             $institution = $row["InstitutionAffiliation"];
-    }?>
+    }
+
+    $getFileTypes = $dbc->query("Call spGetFileTypes('1');");
+    complete_procedure($dbc);
+
+    //if nothing is returned
+    if (!$getFileTypes){
+        $Error = true;
+    } else { //if something is returned
+        // output data of each row
+        while($row = $getFileTypes->fetch_assoc()) {
+            $FileTypeID = $row["FileTypeID"];
+            $FileType = $row["FileType"];
+            echo $FileTypeID;
+            echo $FileType . "<br>";
+        }
+    }
+
+    ?>
     <div class="contentwidth">
         <div class="row flush">
             <div class="col s7">

@@ -8,6 +8,7 @@
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
  require ('./include_utils/procedures.php'); // complete_procedure()
+ require('./include_utils/files.php'); // download links, upload inputs, mime-check
 
 $Error = false;
 $PreviousSubmissionID = "NULL";
