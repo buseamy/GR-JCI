@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new address for a user */
 DROP PROCEDURE IF EXISTS `spCreateAddress`$$
 CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
                                    IN _AddressTypeID int,
@@ -11,9 +10,13 @@ CREATE PROCEDURE `spCreateAddress`(IN _UserID int,
 								   IN _City varchar(30),
 								   IN _StateID int,
 								   IN _PostCode char(5),
-								   IN _PrimaryAddress tinyint
-) DETERMINISTIC
+								   IN _PrimaryAddress tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new address for a user
+   */
   Declare _AddressCount int;
   
   /* Make sure the UserID exists */

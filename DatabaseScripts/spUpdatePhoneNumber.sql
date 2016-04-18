@@ -2,15 +2,17 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing phone number for a user */
 DROP PROCEDURE IF EXISTS `spUpdatePhoneNumber`$$
 CREATE PROCEDURE `spUpdatePhoneNumber`(IN _PhoneNumberID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-								       IN _PrimaryPhone tinyint
-) DETERMINISTIC
+								       IN _PrimaryPhone tinyint)
+DETERMINISTIC
 BEGIN
-
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing phone number for a user
+   */
   Declare _UserID int;
   
   /* Make sure the PhoneNumberID exists */

@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Lists the feedback files for a submission */
 DROP PROCEDURE IF EXISTS `spAuthorGetSubmissionReviewerFilesList`$$
 CREATE PROCEDURE `spAuthorGetSubmissionReviewerFilesList`(IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the feedback files for a submission
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
 		 fmd.FileSize,

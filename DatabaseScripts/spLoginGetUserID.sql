@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Get the UserID (or -1 if invalid) for the EmailAddress/Password combination */
 DROP PROCEDURE IF EXISTS `spLoginGetUserID`$$
 CREATE PROCEDURE `spLoginGetUserID`(IN _EmailAddress VarChar(200), IN _Password VarChar(50))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Get the UserID (or -1 if invalid) for the EmailAddress/Password combination
+   */
   Declare _UserID Int;
   Declare _EmailStatusID Int;
   Declare _Active TinyInt;

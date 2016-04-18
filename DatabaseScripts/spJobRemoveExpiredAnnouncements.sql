@@ -2,10 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Deletes all expired announcements */
 DROP PROCEDURE IF EXISTS `spJobRemoveExpiredAnnouncements`$$
-CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`() DETERMINISTIC
+CREATE PROCEDURE `spJobRemoveExpiredAnnouncements`()
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Deletes all expired announcements
+   */
 
   /* Remove the associated roles with the expired announcements */
   Delete From AccouncementRoles

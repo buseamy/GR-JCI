@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Update the FileMetaData record for a FileMetaDataID, also deletes the associated FileData records */
 DROP PROCEDURE IF EXISTS `spUpdateFileMetaData`$$
 CREATE PROCEDURE `spUpdateFileMetaData`(IN _FileMetaDataID int,
                                         IN _FileTypeID int,
@@ -11,6 +10,10 @@ CREATE PROCEDURE `spUpdateFileMetaData`(IN _FileMetaDataID int,
 										IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the FileMetaData record for a FileMetaDataID, also deletes the associated FileData records
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Deletes the Contents records */

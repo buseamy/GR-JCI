@@ -2,11 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Connects an AnnouncementID with a RoleID */
 DROP PROCEDURE IF EXISTS `spAnnouncementAddRole`$$
-CREATE PROCEDURE `spAnnouncementAddRole`(IN _AnnouncementID int, IN _RoleID int)
+CREATE PROCEDURE `spAnnouncementAddRole`(IN _AnnouncementID int,
+                                         IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects an AnnouncementID with a RoleID
+   */
   /* Make sure AnnouncementID exists */
   If(Select Exists(Select 1 From Announcements Where AnnouncementID = _AnnouncementID)) Then
     /* Make sure RoleID exists */

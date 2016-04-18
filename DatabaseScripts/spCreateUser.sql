@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new user then returns the UserID */
 DROP PROCEDURE IF EXISTS `spCreateUser`$$
 CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
                                 IN _Password varchar(50),
@@ -10,6 +9,10 @@ CREATE PROCEDURE `spCreateUser`(IN _EmailAddress varchar(200),
 								IN _LastName varchar(30))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new user then returns the UserID
+   */
   Declare _UserID int;
 
   /* Make sure the email address doesn't already exist */

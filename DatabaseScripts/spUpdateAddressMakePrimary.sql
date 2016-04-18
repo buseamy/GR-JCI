@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing address, sets it to be the primary */
 DROP PROCEDURE IF EXISTS `spUpdateAddressMakePrimary`$$
 CREATE PROCEDURE `spUpdateAddressMakePrimary`(IN _AddressID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address, sets it to be the primary
+   */
   Declare _UserID int;
   
   /* Make sure the AddressID exists */

@@ -2,13 +2,16 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Update a reviewer's record to change the status */
 DROP PROCEDURE IF EXISTS `spReviewerUpdateReviewStatus`$$
 CREATE PROCEDURE `spReviewerUpdateReviewStatus`(IN _ReviewerUserID int,
                                                 IN _SubmissionID int,
 												IN _ReviewStatusID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update a reviewer's record to change the status
+   */
   Declare _TotalReviewers int;
   Declare _ReviewCompleted int;
   

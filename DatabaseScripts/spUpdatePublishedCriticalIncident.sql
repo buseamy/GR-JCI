@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates a Published Critical Incident record */
 DROP PROCEDURE IF EXISTS `spUpdatePublishedCriticalIncident`$$
 CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
                                                      IN _PublicationID int,
@@ -12,6 +11,10 @@ CREATE PROCEDURE `spUpdatePublishedCriticalIncident`(IN _CriticalIncidentID int,
 													 IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Published Critical Incident record
+   */
   /* Make sure the CriticalIncidentID exists */
   If(Select Exists(Select 1 From CriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
     /* Make sure the FileMetaDataID exists */

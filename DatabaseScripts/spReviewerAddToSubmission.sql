@@ -2,12 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Adds a Reviewer UserID to an existing Submission */
 DROP PROCEDURE IF EXISTS `spReviewerAddToSubmission`$$
 CREATE PROCEDURE `spReviewerAddToSubmission`(IN _UserID int,
                                              IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Adds a Reviewer UserID to an existing Submission
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure the SubmissionID exists */

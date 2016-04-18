@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Searches Published Incidents from multiple input parameters */
 DROP PROCEDURE IF EXISTS `spSearchIncidents`$$
 CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Keyword varchar(20),
@@ -10,6 +9,10 @@ CREATE PROCEDURE `spSearchIncidents`(IN _Title varchar(100),
                                      IN _Category varchar(25))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Searches Published Incidents from multiple input parameters
+   */
   /* Sanitize the inputs */
   Set _Title = Replace(Replace(Concat('%', IfNull(_Title, '%'), '%'), '%%%', '%'), '%%', '%');
   Set _Keyword = Replace(Replace(Concat('%', IfNull(_Keyword, '%'), '%'), '%%%', '%'), '%%', '%');

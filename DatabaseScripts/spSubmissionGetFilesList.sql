@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the file list for a SubmissionID  */
 DROP PROCEDURE IF EXISTS `spSubmissionGetFilesList`$$
 CREATE PROCEDURE `spSubmissionGetFilesList`(IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file list for a SubmissionID
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
 		 fmd.FileSize,

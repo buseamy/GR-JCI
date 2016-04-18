@@ -2,13 +2,16 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates a new announcement */
 DROP PROCEDURE IF EXISTS `spCreateAnnouncement`$$
 CREATE PROCEDURE `spCreateAnnouncement`(IN _Title varchar(100),
                                         IN _Message varchar(10000),
-										IN _ExpireDate date
-) DETERMINISTIC
+										IN _ExpireDate date)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new announcement
+   */
   /* Make sure the Title doesn't exist */
   If(Select Exists(Select 1 From Announcements Where Title = _Title)) Then
     Select 'Title already exists' As 'Error';

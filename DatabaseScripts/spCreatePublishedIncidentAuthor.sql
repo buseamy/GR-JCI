@@ -2,12 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Links a published author to a published critical incident */
 DROP PROCEDURE IF EXISTS `spCreatePublishedIncidentAuthor`$$
 CREATE PROCEDURE `spCreatePublishedIncidentAuthor`(IN _AuthorID int,
                                                    IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Links a published author to a published critical incident
+   */
   /* Make sure the AuthorID exists */
   If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
     /* Make sure the CriticalIncidentID exists */

@@ -2,11 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Connects a UserID with a RoleID */
 DROP PROCEDURE IF EXISTS `spUserAddRole`$$
-CREATE PROCEDURE `spUserAddRole`(IN _UserID int, IN _RoleID int)
+CREATE PROCEDURE `spUserAddRole`(IN _UserID int,
+                                 IN _RoleID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects a UserID with a RoleID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     /* Make sure RoleID exists */

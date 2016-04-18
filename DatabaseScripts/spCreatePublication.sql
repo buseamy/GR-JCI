@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates a Publication record for a year */
 DROP PROCEDURE IF EXISTS `spCreatePublication`$$
 CREATE PROCEDURE `spCreatePublication`(IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a Publication record for a year
+   */
   Declare _Year int;
   Set _Year = Year(CURRENT_DATE);
   

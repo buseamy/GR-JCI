@@ -2,16 +2,19 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new user then returns the UserID */
 DROP PROCEDURE IF EXISTS `spEditorCreateUser`$$
 CREATE PROCEDURE `spEditorCreateUser`(IN _EmailAddress varchar(200),
-                                IN _Password varchar(50),
-								IN _FirstName varchar(15),
-								IN _LastName varchar(30),
-								IN _InstitutionAffiliation varchar(100),
-								IN _MemberCode varchar(20))
+                                      IN _Password varchar(50),
+                                      IN _FirstName varchar(15),
+                                      IN _LastName varchar(30),
+                                      IN _InstitutionAffiliation varchar(100),
+                                      IN _MemberCode varchar(20))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new user then returns the UserID
+   */
   Declare _UserID int;
 
   /* Make sure the email address doesn't already exist */
@@ -20,29 +23,29 @@ BEGIN
   Else
     /* Insert the new User record */
     Insert Into Users (EmailAddress,
-					   NewEmailAddress,
-	                   PasswordHash,
-					   FirstName,
-					   LastName,
-					   InstitutionAffiliation,
-					   MemberCode,
-					   EmailStatusID,
-					   EmailVerificationGUID,
-					   NewEmailAddressCreateDate,
-					   Active,
-					   CreateDate)
+                       NewEmailAddress,
+                       PasswordHash,
+                       FirstName,
+                       LastName,
+                       InstitutionAffiliation,
+                       MemberCode,
+                       EmailStatusID,
+                       EmailVerificationGUID,
+                       NewEmailAddressCreateDate,
+                       Active,
+                       CreateDate)
     Values (LOWER(_EmailAddress),
-			LOWER(_EmailAddress),
-	        SHA1(_Password),
-			_FirstName,
-			_LastName,
-			_InstitutionAffiliation,
-			_MemberCode,
-			3,
-			NULL,
-			NULL,
-			1,
-			CURRENT_DATE);
+            LOWER(_EmailAddress),
+            SHA1(_Password),
+            _FirstName,
+            _LastName,
+            _InstitutionAffiliation,
+            _MemberCode,
+            3,
+            NULL,
+            NULL,
+            1,
+            CURRENT_DATE);
     
     /* Get the new UserID */
     Set _UserID = last_insert_id();

@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Lists the submissions for an editor for a given year */
 DROP PROCEDURE IF EXISTS `spEditorViewSubmissions`$$
 CREATE PROCEDURE `spEditorViewSubmissions`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Lists the submissions for an editor for a given year
+   */
   Select s.SubmissionID,
          s.IncidentTitle,
          If(Not s.EditorUserID Is Null, CONCAT(eu.LastName,', ',eu.FirstName),'') As 'EditorName',

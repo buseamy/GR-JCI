@@ -2,14 +2,17 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a new phone number for a user */
 DROP PROCEDURE IF EXISTS `spCreatePhoneNumber`$$
 CREATE PROCEDURE `spCreatePhoneNumber`(IN _UserID int,
                                        IN _PhoneTypeID int,
                                        IN _PhoneNumber char(10),
-								       IN _PrimaryPhone tinyint
-) DETERMINISTIC
+								       IN _PrimaryPhone tinyint)
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a new phone number for a user
+   */
   Declare _PhoneCount int;
   
   /* Make sure the UserID exists */

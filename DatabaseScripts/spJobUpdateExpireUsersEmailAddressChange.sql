@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Expire user's EmailAddress change attempts */
 DROP PROCEDURE IF EXISTS `spJobUpdateExpireUsersEmailAddressChange`$$
 CREATE PROCEDURE `spJobUpdateExpireUsersEmailAddressChange`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Expire user's EmailAddress change attempts
+   */
   /* Registered user never confirmed their email address, expire it outright */
   Update Users
   Set EmailStatusID = 2,

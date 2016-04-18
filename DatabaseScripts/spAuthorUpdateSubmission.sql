@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing submission record */
 DROP PROCEDURE IF EXISTS `spAuthorUpdateSubmission`$$
 CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
                                             IN _IncidentTitle varchar(150),
@@ -11,6 +10,10 @@ CREATE PROCEDURE `spAuthorUpdateSubmission`(IN _SubmissionID int,
 										    IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing submission record
+   */
   /* Make sure the UserID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
   

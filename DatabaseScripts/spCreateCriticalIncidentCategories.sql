@@ -2,11 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Links a published incident to a publication category */
 DROP PROCEDURE IF EXISTS `spCreateCriticalIncidentCategories`$$
-CREATE PROCEDURE `spCreateCriticalIncidentCategories`(IN _CriticalIncidentID int, IN _CategoryID int)
+CREATE PROCEDURE `spCreateCriticalIncidentCategories`(IN _CriticalIncidentID int, 
+                                                      IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Links a published incident to a publication category
+   */
   If(Select Exists(Select 1 From PublishedCriticalIncidents Where CriticalIncidentID = _CriticalIncidentID)) Then
     If(Select Exists(Select 1 From PublicationCategories Where CategoryID = _CategoryID)) Then
       Insert Into PublishedCriticalIncidentCategories (CriticalIncidentID, CategoryID)

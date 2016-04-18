@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the list Published Incidents for a year for search page */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentsList`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidentsList`(IN _Year int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list Published Incidents for a year for search page
+   */
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract,

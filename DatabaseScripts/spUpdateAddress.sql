@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing address */
 DROP PROCEDURE IF EXISTS `spUpdateAddress`$$
 CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
                                    IN _AddressTypeID int,
@@ -14,6 +13,10 @@ CREATE PROCEDURE `spUpdateAddress`(IN _AddressID int,
 								   IN _PrimaryAddress tinyint)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address
+   */
 
   Declare _UserID int;
   

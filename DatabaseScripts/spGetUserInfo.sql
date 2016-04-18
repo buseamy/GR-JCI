@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the user's info */
 DROP PROCEDURE IF EXISTS `spGetUserInfo`$$
 CREATE PROCEDURE `spGetUserInfo`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's info
+   */
   Select FirstName,
          LastName,
 		 EmailAddress,

@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates the available Article Dates for a year  */
 DROP PROCEDURE IF EXISTS `spUpdateArticleDates`$$
 CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
                                         IN _AuthorFirstSubmissionStartDate date,
@@ -18,6 +17,10 @@ CREATE PROCEDURE `spUpdateArticleDates`(IN _Year int,
 										IN _PublicationDate date)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the available Article Dates for a year
+   */
   Update SystemSettings_ArticleDates
   Set AuthorFirstSubmissionStartDate = _AuthorFirstSubmissionStartDate,
       AuthorFirstSubmissionDueDate = _AuthorFirstSubmissionDueDate,

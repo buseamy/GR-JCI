@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID */
 DROP PROCEDURE IF EXISTS `spCreateSubmissionFileMetaData`$$
 CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
                                                   IN _FileTypeID int,
@@ -11,6 +10,10 @@ CREATE PROCEDURE `spCreateSubmissionFileMetaData`(IN _SubmissionID int,
 												  IN _sFileSize int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the Meta Data record for a file to be uploaded returns the new FileMetaDataID
+   */
   Declare _FileMetaDataID int;
   
   /* Make sure the SubmissionID exists */

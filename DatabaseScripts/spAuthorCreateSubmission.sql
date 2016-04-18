@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates a new submission record and links the author to it */
 DROP PROCEDURE IF EXISTS `spAuthorCreateSubmission`$$
 CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
                                            IN _IncidentTitle varchar(150),
@@ -12,6 +11,10 @@ CREATE PROCEDURE `spAuthorCreateSubmission`(IN _UserID int,
 										   IN _SubmissionNumber TINYINT)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new submission record and links the author to it
+   */
   Declare _SubmissionID int;
   Declare _InstitutionAffiliation varchar(100);
 	

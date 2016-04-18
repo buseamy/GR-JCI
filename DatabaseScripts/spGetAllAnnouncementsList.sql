@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the list of all Announcements */
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`$$
 CREATE PROCEDURE `spGetAllAnnouncementsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of all Announcements
+   */
   Select a.Title,
          GROUP_CONCAT(r.RoleTitle) As 'Roles',
          a.CreateDate,

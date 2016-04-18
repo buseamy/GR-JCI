@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates a new Email nagging profile */
 DROP PROCEDURE IF EXISTS `spCreateEmailSettings`$$
 CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
                                          IN _AuthorNagDays int,
@@ -13,6 +12,10 @@ CREATE PROCEDURE `spCreateEmailSettings`(IN _SettingName varchar(200),
 										 IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates a new Email nagging profile
+   */
   Declare _SettingID int;
   
   /* Make sure the SettingName doesn't already exist */

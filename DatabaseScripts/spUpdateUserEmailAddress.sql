@@ -2,11 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Update the EmailAddress for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserEmailAddress`$$
-CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int, IN _EmailAddress varchar(200))
+CREATE PROCEDURE `spUpdateUserEmailAddress`(IN _UserID int,
+                                            IN _EmailAddress varchar(200))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Update the EmailAddress for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users

@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the file list for a ReviewerUserID & SubmissionID  */
 DROP PROCEDURE IF EXISTS `spReviewerGetFilesList`$$
 CREATE PROCEDURE `spReviewerGetFilesList`(IN _ReviewerUserID int, IN _SubmissionID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the file list for a ReviewerUserID & SubmissionID
+   */
   Select fmd.FileMetaDataID,
          fmd.FileName,
 		 fmd.FileSize,

@@ -2,13 +2,16 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Adds an Author UserID to an existing Submission */
 DROP PROCEDURE IF EXISTS `spAuthorAddToSubmission`$$
 CREATE PROCEDURE `spAuthorAddToSubmission`(IN _UserID int,
                                            IN _SubmissionID int,
 										   IN _PrimaryContact tinyint)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Adds an Author UserID to an existing Submission
+   */
   Declare _InstitutionAffiliation varchar(150);
   Declare _AuthorSeniority int;
 	

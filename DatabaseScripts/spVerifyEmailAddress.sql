@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Marks a user's email address as valid */
 DROP PROCEDURE IF EXISTS `spVerifyEmailAddress`$$
 CREATE PROCEDURE `spVerifyEmailAddress`(IN _GUID varchar(32))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Marks a user's email address as valid
+   */
   Declare _UserID int;
   
   /* Get the UserID from the GUID */

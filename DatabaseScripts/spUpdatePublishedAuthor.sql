@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates a Published Author record */
 DROP PROCEDURE IF EXISTS `spUpdatePublishedAuthor`$$
 CREATE PROCEDURE `spUpdatePublishedAuthor`(IN _AuthorID int,
                                            IN _FirstName varchar(15),
@@ -11,6 +10,10 @@ CREATE PROCEDURE `spUpdatePublishedAuthor`(IN _AuthorID int,
                                            IN _InstitutionAffiliation varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Published Author record
+   */
   /* Make sure the AuthorID exists */
   If(Select Exists(Select 1 From PublishedAuthors Where AuthorID = _AuthorID)) Then
     Update PublishedAuthors

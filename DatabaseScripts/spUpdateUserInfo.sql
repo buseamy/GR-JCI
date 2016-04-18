@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates the info for a UserID */
 DROP PROCEDURE IF EXISTS `spUpdateUserInfo`$$
 CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
                                     IN _FirstName varchar(15),
@@ -11,6 +10,10 @@ CREATE PROCEDURE `spUpdateUserInfo`(IN _UserID int,
 									IN _InstitutionAffiliation varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates the info for a UserID
+   */
   /* Make sure UserID exists */
   If(Select Exists(Select 1 From Users Where UserID = _UserID)) Then
     Update Users

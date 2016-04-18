@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the List of available Email Settings */
 DROP PROCEDURE IF EXISTS `spGetEmailSettings`$$
 CREATE PROCEDURE `spGetEmailSettings`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of available Email Settings
+   */
   Select SettingID,
          SettingName,
          AuthorNagEmailDays,

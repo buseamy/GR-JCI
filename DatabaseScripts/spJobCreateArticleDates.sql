@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Creates the available Article Dates for a new year  */
 DROP PROCEDURE IF EXISTS `spJobCreateArticleDates`$$
 CREATE PROCEDURE `spJobCreateArticleDates`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Creates the available Article Dates for a new year
+   */
   Declare _CurrYear int;
   Set _CurrYear = Year(CURRENT_DATE);
   

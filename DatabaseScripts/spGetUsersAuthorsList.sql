@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the list of active UserID and FullNames who are Authors */
 DROP PROCEDURE IF EXISTS `spGetUsersAuthorsList`$$
 CREATE PROCEDURE `spGetUsersAuthorsList`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of active UserID and FullNames who are Authors
+   */
   Select u.UserID, CONCAT(u.LastName,', ',u.FirstName) As 'FullName'
   From Users u
     Inner Join UserRoles ur

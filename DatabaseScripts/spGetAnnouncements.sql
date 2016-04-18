@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the list of Announcements for a UserID */
 DROP PROCEDURE IF EXISTS `spGetAnnouncements`$$
 CREATE PROCEDURE `spGetAnnouncements`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the list of Announcements for a UserID
+   */
   Select rtn.Title,
          rtn.Message,
          rtn.CreateDate,

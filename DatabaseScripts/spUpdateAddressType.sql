@@ -2,12 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing address type */
 DROP PROCEDURE IF EXISTS `spUpdateAddressType`$$
 CREATE PROCEDURE `spUpdateAddressType`(IN _AddressTypeID int,
-                                       IN _AddressType varchar(20)
-) DETERMINISTIC
+                                       IN _AddressType varchar(20))
+DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing address type
+   */
   /* Make sure the AddressTypeID exists */
   If(Select Exists(Select 1 From AddressTypes Where AddressTypeID = _AddressTypeID)) Then
     /* Make sure the new PhoneType doesn't already exist */

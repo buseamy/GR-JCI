@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Searches Published Incidents from a single input parameter */
 DROP PROCEDURE IF EXISTS `spSearchIncidentsSingleInput`$$
 CREATE PROCEDURE `spSearchIncidentsSingleInput`(IN _SearchTerm varchar(100))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Searches Published Incidents from a single input parameter
+   */
   /* Make sure there's something to search for */
   If ((_SearchTerm Is Not Null) And (Char_Length(_SearchTerm) > 0)) Then
     /* Make sure the SearchTerm has wildcard chars around it */

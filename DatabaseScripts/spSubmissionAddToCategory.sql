@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Connects a Submission to a Category */
 DROP PROCEDURE IF EXISTS `spSubmissionAddToCategory`$$
 CREATE PROCEDURE `spSubmissionAddToCategory`(IN _SubmissionID int, IN _CategoryID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Connects a Submission to a Category
+   */
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure CategoryID exists */

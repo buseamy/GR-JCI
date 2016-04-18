@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the spot in the editing process by current date */
 DROP PROCEDURE IF EXISTS `spGetSpotInProcess`$$
 CREATE PROCEDURE `spGetSpotInProcess`()
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the spot in the editing process by current date
+   */
   /* Store the current date */
   Declare _CurrDate date;
   Declare _SpotID int;

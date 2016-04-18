@@ -2,7 +2,6 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates an existing Email nagging profile */
 DROP PROCEDURE IF EXISTS `spUpdateEmailSettings`$$
 CREATE PROCEDURE `spUpdateEmailSettings`(IN _SettingID int,
                                          IN _SettingName varchar(200),
@@ -14,6 +13,10 @@ CREATE PROCEDURE `spUpdateEmailSettings`(IN _SettingID int,
                                          IN _ReviewerBodyTemplate varchar(10000))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates an existing Email nagging profile
+   */
   /* Make sure the SettingID exists */
   If(Select Exists(Select 1 From SystemSettings_Email Where SettingID = _SettingID)) Then
     /* Make sure the SettingName doesn't already exist */

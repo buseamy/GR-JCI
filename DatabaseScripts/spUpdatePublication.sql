@@ -2,11 +2,15 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Updates a Publication record for a year */
 DROP PROCEDURE IF EXISTS `spUpdatePublication`$$
-CREATE PROCEDURE `spUpdatePublication`(IN _Year int, IN _FileMetaDataID int)
+CREATE PROCEDURE `spUpdatePublication`(IN _Year int,
+                                       IN _FileMetaDataID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Updates a Publication record for a year
+   */
   /* Make sure the year exists */
   If(Select Exists(Select 1 From Publications Where Year = _Year)) Then
     /* Make sure the FileMetaDataID exists */

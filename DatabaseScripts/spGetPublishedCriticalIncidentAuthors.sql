@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the Authors for a Published Incident */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncidentAuthors`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncidentAuthors`(IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the Authors for a Published Incident
+   */
   Select Concat(pa.LastName, ', ', pa.FirstName) As 'FullName',
          pa.EmailAddress,
 		 pa.InstitutionAffiliation

@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the address info for an id */
 DROP PROCEDURE IF EXISTS `spGetUserAddressInfo`$$
 CREATE PROCEDURE `spGetUserAddressInfo`(IN _AddressID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the address info for an id
+   */
   Select AddressID,
          UserID,
          AddressTypeID,

@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the Published Incident info */
 DROP PROCEDURE IF EXISTS `spGetPublishedCriticalIncident`$$
 CREATE PROCEDURE `spGetPublishedCriticalIncident`(IN _CriticalIncidentID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the Published Incident info
+   */
   Select pci.CriticalIncidentID,
          pci.IncidentTitle,
          pci.Abstract,

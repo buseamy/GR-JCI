@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the List of users by email address */
 DROP PROCEDURE IF EXISTS `spSearchGetUsersEmail`$$
 CREATE PROCEDURE `spSearchGetUsersEmail`(IN _EmailAddress varchar(30))
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the List of users by email address
+   */
   Set _EmailAddress = IfNull(_EmailAddress,'%');
   
   Select UserID,

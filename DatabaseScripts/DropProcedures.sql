@@ -1,5 +1,10 @@
 USE gr_jci;
 
+/* Created By : Jeff Ballard
+ * Create Date: 18-Apr-2016
+ * Purpose    : Drops all the procedures if they exist
+ */
+
 DROP PROCEDURE IF EXISTS `spRemoveExpiredAnnouncements`;
 DROP PROCEDURE IF EXISTS `spUpdateAcceptEmailAddress`;
 DROP PROCEDURE IF EXISTS `spUpdateExpireUsersEmailAddressChange`;

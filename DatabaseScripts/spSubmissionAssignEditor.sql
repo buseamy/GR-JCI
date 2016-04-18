@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Assigns an editor UserID to a Submission */
 DROP PROCEDURE IF EXISTS `spSubmissionAssignEditor`$$
 CREATE PROCEDURE `spSubmissionAssignEditor`(IN _SubmissionID int, IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Assigns an editor UserID to a Submission
+   */
   /* Make sure SubmissionID exists */
   If(Select Exists(Select 1 From Submissions Where SubmissionID = _SubmissionID)) Then
     /* Make sure UserID exists */

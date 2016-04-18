@@ -2,13 +2,16 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Inserts a file content record for a FileMetaDataID  */
 DROP PROCEDURE IF EXISTS `spCreateFileContent`$$
 CREATE PROCEDURE `spCreateFileContent`(IN _FileMetaDataID int,
                                        IN _FileContent blob,
 									   IN _SequenceNumber int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Inserts a file content record for a FileMetaDataID
+   */
   /* Make sure the FileMetaDataID exists */
   If(Select Exists(Select 1 From FileMetaData Where FileMetaDataID = _FileMetaDataID)) Then
     /* Make sure the FileMetaDataID & SequenceNumber doesn't exist */

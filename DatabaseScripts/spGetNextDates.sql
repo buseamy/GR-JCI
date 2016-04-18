@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets next important dates */
 DROP PROCEDURE IF EXISTS `spGetNextDates`$$
 CREATE PROCEDURE `spGetNextDates`(IN _Number int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets next important dates
+   */
   /* Store the current date */
   Declare _CurrDate date;
   Declare _AuthorFirstSubmissionStartDate date;

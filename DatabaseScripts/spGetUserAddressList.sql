@@ -2,11 +2,14 @@ USE gr_jci;
 
 DELIMITER $$
 
-/* Gets the user's address list */
 DROP PROCEDURE IF EXISTS `spGetUserAddressList`$$
 CREATE PROCEDURE `spGetUserAddressList`(IN _UserID int)
 DETERMINISTIC
 BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the user's address list
+   */
   Select a.AddressID,
          t.AddressType,
          a.AddressLn1,
