@@ -35,16 +35,12 @@ if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
         //Get the ID of the address record
         $AddressID = mysqli_real_escape_string($dbc, $_GET["a"]);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-             //Verify inputs
+            $Address1 = trim($_POST['Address1']);
+            $Address2 = trim($_POST['Address2']);
+            $City = trim($_POST['City']);
+            $PostCode = trim($_POST['PostCode']);
         
-            if (!empty($_POST['Address1'])) {
-                $Address1 = $_POST['Address1'];
-            }
-            
-            if (!empty($_POST['Address2'])) {
-                $Address2 = $_POST['Address2'];
-            }
-            
+            //Verify inputs
             if ((strlen($Address1) == 0) && (strlen($Address2) == 0) ) {
                 $errors[] = 'Please provide an address';
             } else if ((strlen($Address1) == 0) && (strlen($Address2) > 0)) {
@@ -53,9 +49,7 @@ if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
                 $Address2 = '';
             }
         
-            if (!empty($_POST['City'])) {
-                $City = $_POST['City'];
-            } else {
+            if (empty($City)) {
                 $errors[] = 'Please provide a city name';
             }
             
@@ -65,8 +59,7 @@ if (isset($_SESSION['UserID']) && ($_SESSION['UserID'] > -1)) {
                 $errors[] = 'Please select a state';
             }
             
-            if (!empty($_POST['PostCode'])) {
-                $PostCode = $_POST['PostCode'];
+            if (!empty($PostCode)) {
                 if (!Is_numeric($PostCode) || (strlen($PostCode) < 5)) {
                 $errors[] = 'Please provide a 5 digit postal (zip) code'; 
                 }
