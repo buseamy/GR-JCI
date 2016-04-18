@@ -30,23 +30,24 @@
 	  $role = $_POST['role'];
       
       if (!empty($_POST['title'])) {
-          $Name = $_POST['title'];
+          $title = $_POST['title'];
       } else {
           $errors[] = 'Please provide a title for the announcement';
       }
 	  
 	  if (!empty($_POST['announcement'])) {
-          $Comment = $_POST['announcement'];
+          $announcement = $_POST['announcement'];
       } else {
           $errors[] = 'Please provide an announcement';
       }
       
       if (!empty($_POST['expiration'])) {
-		if (vardate($tempdate)) {
-			$expiration = convert_to($_POST['expiration']);
-		} else {
-			$errors[] = 'The expiration date provided was in the wrong format.';
-		}
+		 $tempdate = $_POST['expiration'];
+			if (vardate($tempdate)) {
+				$expiration = convert_to($tempdate);
+			} else {
+				$errors[] = 'The expiration date provided was in the wrong format.';
+			}
 	  } else {
           $errors[] = 'Please provide an expiration date';
       }
@@ -56,9 +57,12 @@
 		  $announcementID = mysqli_query ($dbc, $q_announce);
 		  complete_procedure($dbc);
 		  $success = 'yes'; // make sure the announcement is not created again if the user forgets to select a role
+		  
+		  $announcementID = mysqli_fetch_array($announcementID, MYSQLI_ASSOC);
+		  $announcementID = $announcementID["AnnouncementID"];
 	  }
       
-	  if (!empty($_POST['role'])) {
+	  if (!empty($role)) {
 		  foreach ($role as $option) {
 			  $q_role = "CALL spAnnouncementAddRole($announcementID, $option)";
 			  mysqli_query ($dbc, $q_role);
@@ -68,11 +72,12 @@
 		  $errors[] = 'Please select at least one role.';
 	  }
      
-        
       mysqli_close($dbc); // Close the database connection.
         
+	  if (empty($errors)) {
       // Redirect:
       redirect_user('index.php'); //-------------------------------------------------------------------------------------------------------------------------------
+	  }
  }
 ?>
 <?php if (isset($_SESSION['isEditor'])) { // Only display if logged in role is editor ?>
@@ -111,7 +116,7 @@
 							
 							echo '<span style="margin-left: 3em;"><b> Visible to role(s): </b></span><br>';
 							while($row = $Roles->fetch_assoc()) { // while there is still a role to display
-								echo '<span style="margin-left: 4em;">' . $row["RoleTitle"] . '<input type="checkbox" name="role[]" id="role" value=". $row["RoleID"]." ></span>';
+								echo '<span style="margin-left: 4em;">' . $row["RoleTitle"] . '<input type="checkbox" name="role[]" value="'. $row["RoleID"].'" ></span>';
 								}
 							?>
 						</div>

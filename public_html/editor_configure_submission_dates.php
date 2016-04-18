@@ -195,7 +195,7 @@ exit();
 				<div class="editor roundcorner">
 					<h3>Set Important Submission Dates for the Year</h3>
 				</div>
-				<div>
+				<div class="box editor_alt">
 					<form action="editor_configure_submission_dates.php" method="post">
 						<br>
 						<label for="pubyear">Publication Year:  <span class="required"></span></label>
@@ -234,8 +234,10 @@ exit();
 						<label for="pdate">Publication Date:  <span class="required"></span></label>
 						<input type="text" name="pdate" class="regular" placeholder="mm/dd/yyyy"/>
 						<br>
+						<br>
 						<input type="submit" class="editor" name="submit" value="Submit Changes" />
 						<input class="alert" type="button" onclick="location.href='editor_system_settings.php'" value="Cancel" />
+						<br>
 					</form>
 				</div>
 			</div>
