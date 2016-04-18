@@ -31,25 +31,19 @@ if (!isset($_SESSION['UserID']) || ($_SESSION['UserID'] < 1)) {
     $UserID = $_SESSION['UserID'];
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $EmailAddress = $_POST['EmailAddress'];
+        $FirstName = trim($_POST['FirstName']);
+        $LastName = trim($_POST['LastName']);
+        $MemberCode = trim($_POST['MemberCode']);
+        $Affiliation = trim($_POST['Affiliation']);
+        
         //Verify inputs
-        if (!empty($_POST['FirstName'])) {
-            $FirstName = $_POST['FirstName'];
-        } else {
+        if (empty($FirstName)) {
             $errors[] = 'Please provide a first name';
         }
         
-        if (!empty($_POST['LastName'])) {
-            $LastName = $_POST['LastName'];
-        } else {
+        if (empty($_POST['LastName'])) {
             $errors[] = 'Please provide a last name';
-        }
-        
-        if (!empty($_POST['MemberCode'])) {
-            $MemberCode = $_POST['MemberCode'];
-        }
-        
-        if (!empty($_POST['Affiliation'])) {
-            $Affiliation = $_POST['Affiliation'];
         }
         
         if (empty($errors)) {
