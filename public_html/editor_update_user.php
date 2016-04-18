@@ -120,19 +120,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row flush">
         <div class="col s7">
 		<!-- create the form-->
-		<h1>Update User</h1>
-			<form action="editor_update_user.php" method="post">
-				<p>UserID: <input readonly type="text" name="userid" size="10" maxlength="5" value="<?php echo $userid; ?>" /></p>
-				<p>Email: <input readonly type="text" name="email" size="30" maxlength="30" value="<?php echo $email; ?>" /></p>
-				<p>First Name: <input type="text" name="firstname" size="30" maxlength="30" value="<?php  echo $firstname; ?>" /></p>
-				<p>Last Name: <input type="text" name="lastname" size="30" maxlength="30" value="<?php echo $lastname; ?>" /></p>
-				<p>Member Code: <input type="text" name="membercode" size="30" maxlength="20"value="<?php echo $membercode; ?>" /></p>
-				<p>Institution Affiliation: <input type="text" name="institution" size="30" maxlength="100" value="<?php echo $institution; ?>"/></p>
-				<p><button class="editor" type="submit"  name="submit" onClick="#" >Update User</button></p>
-				<p><button class="editor" type="button"  name="back" value="back" onClick="history.go(-1);return true;">Back</p>
-
-		
-			</form>
+			<div class="editor roundcorner">
+                <h3 class="title">Update User</h3>
+            </div>
+			<div class="box editor_alt">
+				<form action="editor_update_user.php" method="post">
+					<p>UserID: <input readonly type="text" name="userid" size="10" maxlength="5" value="<?php echo $userid; ?>" /></p>
+					<p>Email: <input readonly type="text" name="email" size="30" maxlength="30" value="<?php echo $email; ?>" /></p>
+					<p>First Name: <input type="text" name="firstname" size="30" maxlength="30" value="<?php  echo $firstname; ?>" /></p>
+					<p>Last Name: <input type="text" name="lastname" size="30" maxlength="30" value="<?php echo $lastname; ?>" /></p>
+					<p>Member Code: <input type="text" name="membercode" size="30" maxlength="20"value="<?php echo $membercode; ?>" /></p>
+					<p>Institution Affiliation: <input type="text" name="institution" size="30" maxlength="100" value="<?php echo $institution; ?>"/></p>
+					<p><button class="editor" type="submit"  name="submit" onClick="#" >Update User</button></p>
+					<p><button class="editor" type="button"  name="back" value="back" onClick="history.go(-1);return true;">Back</button></p>
+				</form>
+			</div>
 		</div>
 		<?php require 'includes/sidebar.php'; // Include sidebar ?>
 	</div>

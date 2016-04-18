@@ -134,18 +134,22 @@
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
-			<h1>Find Users</h1>
+				<div class="editor roundcorner">
+                    <h3 class="title">Find Users</h3>
+                </div>
+				<div class="box editor_alt">
 				<form action="editor_find_users.php" method="post" name="name">
 					<h2>Search by first and/or last name</h2>
-					<p>First name: <input type="text" name="firstname" size="20" maxlength="30" value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']; ?>" /></p>
-					<p>Last name: <input type="text" name="lastname" size="20" maxlength="30" value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']; ?>" /></p>
+					<input type="text" class="regular inputForm" placeholder="First Name" name="firstname" width="75%"  value="<?php if (isset($_POST['firstname'])) echo $_POST['firstname']; ?>">
+					<input type="text" class="regular inputForm" placeholder="Last Name" name="lastname" width="75%"  value="<?php if (isset($_POST['lastname'])) echo $_POST['lastname']; ?>">
 					<p><button class="editor" type="submit"  name="submit" onClick="#" >Search by name</button></p>
 				</form>
 				<form action="editor_find_users.php" method="post" name="email">
 					<h2>Search by email</h2>
-					<p>Email: <input type="text" name="email" size="20" maxlength="20" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" /></p>
+					<input type="text" class="regular inputForm" placeholder="Email" name="email" width="75%"  value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>">
 					<p><button class="editor" type="submit"  name="submit" onClick="#" >Search by email</button></p>
 				</form>
+				</div>
 
 		</div>
 	<?php require 'includes/sidebar.php'; // Include sidebar ?>

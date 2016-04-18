@@ -14,11 +14,11 @@ include ('./includes/header.php');
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">
-			<h1>About the Journal</h1>
+			<h1>Editorial Policy</h1>
             <!--Page main body-->
             <div id="home_about">
 				<div id="editorial_policy">
-					<h3>Editorial Policy</h3>
+					<h3></h3>
 					<p>The <i>Journal of Critical Incidents (JCI)s</i> publishes outstanding teaching critical incidents
 					drawn from research in real organizations, dealing with important issues in all administration-related disciplines. 
 					The <i>JCI</i> specializes in decision-focused critical incidents based on original primary research 
