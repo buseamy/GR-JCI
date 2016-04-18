@@ -17,6 +17,7 @@ $errors = array();
 $submission_list = array();
 $case_list = array();
 $editor_list = array();
+$assign_list = array();
 
 // this code was taken from Mitch
 $is_editor = false;
@@ -64,7 +65,20 @@ if (!$error) {
 				$editor_id = $_POST['selected-'.$caseID];
 				
 				$q_assign_case = " CALL spSubmissionAssignEditor($caseID ,$editor_id) ;" ;
-				if ($r_assign_case = mysqli_query ($dbc, $q_assign_case)) {
+				$r_assign_case = mysqli_query ($dbc, $q_assign_case);
+				while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
+					array_push($assign_list, $row_assign_case);
+					
+					foreach($assign_list as $case_assign_row) {
+						$title = $case_assign_row['IncidentTitle'];
+						$case_editor_name = $case_assign_row['EditorFullName'];
+						// echo "The Critical Incident $title has been assigned to the editor $case_editor_name" ;
+					}
+					
+				}
+				echo "The Critical Incident $title has been assigned to the editor $case_editor_name <br>" ;
+				
+					/*
 					if ($r_assign_case !== true) {
 						$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
 						$ret_err = $row_err['Error'];
@@ -72,22 +86,19 @@ if (!$error) {
 						array_push($errors, "Review could not be committed because: $ret_err.");
 						ignore_remaining_output($r_assign_case);
 					}
-					else {
-						echo "The selected cases have been assigned to the chosen editor(s)" ;
-						
-					}
+					*/
+					
 				/*
 					while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
 						echo 'The following cases have been assigned to the chosen editor' ;
 						print_r($row_assign_case);
 					}
 					*/
+					complete_procedure($dbc);
 				}
-				else {
-					// TODO add partial submission processing
-				}
+				
 				// echo $dbc->error;
-				complete_procedure($dbc);
+				// complete_procedure($dbc);
 				
 			}
 			
@@ -225,7 +236,7 @@ if (!$error) {
 		
 	}
 		
-}
+
 	
 	
 	
