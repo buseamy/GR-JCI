@@ -14,6 +14,21 @@ function convert_to($date) {
 }
 }
 
+
+// this function will verify the inputed date from html is in the corect format before it is converted
+function vardate($date) {
+	if (strlen($date)==10) {
+		list($m, $d, $y) = explode('/', $date);
+		if (checkdate($m, $d, $y)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
 // this function converts Eropean standard time format to American standart time format for display.
 function convert_from ($date) {
 	$newdate = DateTime::createFromFormat('Y-m-d', $date )->format('m/d/Y');

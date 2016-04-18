@@ -3,7 +3,6 @@
 
 // Writen by: Jonathan Sankey on 4/15/2016
 // This page allows the editor to create an announcment and store it in the database.
-// This page uses preg_match to verify feilds. Documentation can be found at http://php.net/manual/en/function.preg-match.php
 // The idea of using an array to store all role options chosen was taken from http://stackoverflow.com/questions/18421988/getting-checkbox-values-on-submit
 
 
@@ -22,14 +21,7 @@
  $announcement = '';
  $expiration = '';
  $success = 'no';
- 
- function isdate($indate) {
-	if (preg_match('/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19|20)\d\d/',$indate)) {
-		return true;
-	} else {
-		return false;
-	}
-}
+
  
  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       require('./include_utils/login_functions.php'); //redirect
@@ -50,10 +42,10 @@
       }
       
       if (!empty($_POST['expiration'])) {
-		if (isdate($_POST['expiration'])) {
+		if (vardate($tempdate)) {
 			$expiration = convert_to($_POST['expiration']);
 		} else {
-			$errors[] = 'The first submission start date provided was in the wrong format.';
+			$errors[] = 'The expiration date provided was in the wrong format.';
 		}
 	  } else {
           $errors[] = 'Please provide an expiration date';
@@ -68,7 +60,7 @@
       
 	  if (!empty($_POST['role'])) {
 		  foreach ($role as $option) {
-			  $q_role = "CALL spAnnouncementAddRole('$announcementID', '$option')";
+			  $q_role = "CALL spAnnouncementAddRole($announcementID, $option)";
 			  mysqli_query ($dbc, $q_role);
 			  complete_procedure($dbc);
 		  }
