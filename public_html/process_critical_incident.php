@@ -14,6 +14,7 @@ $Error = false;
 $PreviousSubmissionID = "NULL";
 $SubmissionNumber = 1;
 $UserID = $_SESSION['UserID'];
+$Errors = array();
 
 //Collect and validate data from submission
 if(!isset($_POST['title']) || strlen(trim($_POST['title'])) == 0){
@@ -42,31 +43,22 @@ if(!isset($_POST['email']) || strlen(trim($_POST['email'])) == 0){
         $count--;
     }
 }
-if(!isset($_POST['coverPage']) || strlen(trim($_POST['coverPage'])) == 0){
+if (!isset($_FILES["coverPage"]) || !isset($_FILES["coverPage"]["type"])) {
     echo 'No Cover Page provided<br/>';
     $Error = true;
-} else {
-    $CoverPage = $_POST['coverPage'];
 }
-if(!isset($_POST['criticalIncident']) || strlen(trim($_POST['criticalIncident'])) == 0){
+if (!isset($_FILES["criticalIncident"]) || !isset($_FILES["criticalIncident"]["type"])) {
     echo 'No Critical Incident provided<br/>';
     $Error = true;
-} else {
-    $CriticalIncident = $_POST['criticalIncident'];
 }
-if(!isset($_POST['teachingNotes']) || strlen(trim($_POST['teachingNotes'])) == 0){
+if (!isset($_FILES["teachingNotes"]) || !isset($_FILES["teachingNotes"]["type"])) {
     echo 'No Teaching Notes provided<br/>';
     $Error = true;
-} else {
-    $TeachingNotes = $_POST['teachingNotes'];
 }
-if(!isset($_POST['memo']) || strlen(trim($_POST['memo'])) == 0){
+if (!isset($_FILES["memo"]) || !isset($_FILES["memo"]["type"])) {
     echo 'No Memo provided<br/>';
     $Error = true;
-} else {
-    $Memo = $_POST['memo'];
 }
-$Summary = $_POST['summary'];
 $KeyWords = $_POST['keywords'];
 $Abstract = $_POST['abstract'];
 
@@ -154,8 +146,77 @@ if (isset($_POST['submit']) && $Error == false) {
             echo "success updating submission";
         }
     }
+    $files = array('coverPage', 'criticalIncident', 'teachingNotes', 'memo', 'summary');
     if (isset($SubmissionID) && $Error == false) {
-        $CreateSubmissionFileMetaData = $dbc->query("Call spCreateSubmissionFileMetaData('$SubmissionID', '$FileTypeID', '$FileMime', '$sFileName', '$sFileSize');");
+        foreach ($files as $inName) {
+            if ($inName === 'coverPage') {
+                $FileTypeID = 1;
+            }elseif ($inName === 'CriticalIncident') {
+                $FileTypeID = 2;
+            }elseif ($inName === 'Summary') {
+                $FileTypeID = 3;
+            }elseif ($inName === 'TeachingNotes') {
+                $FileTypeID = 4;
+            }elseif ($inName === 'Memo') {
+                $FileTypeID = 5;
+            }
+            //$inName = 'fileup-' . $typeId;
+            if (isset($_FILES["$inName"]) && isset($_FILES["$inName"]["type"])) {
+                // adapted from prototyped file_upload_view_download
+                $DstFileName = $_FILES["$inName"]["name"];
+                $SrcFileType = $_FILES["$inName"]["type"];
+                $SrcFilePath = $_FILES["$inName"]["tmp_name"];
+                $FileErrorVal = $_FILES["$inName"]["error"];
+                $FileSize = $_FILES["$inName"]["size"];
+                if (is_mime_valid($SrcFileType) && $FileSize < 2097152) {
+                    $q_create_rfmd = "CALL spCreateSubmissionFileMetaData('$SubmissionID', '$FileTypeID', '$SrcFileType', '$DstFileName', '$FileSize');";
+                    if ($r_create_rfmd = mysqli_query($dbc, $q_create_rfmd)) {
+                        $row_create_rfmd = mysqli_fetch_array($r_create_rfmd, MYSQLI_ASSOC);
+                        $fmdId = $row_create_rfmd['FileMetaDataID'];
+                        // TODO: verify this check works as intended
+                        if (isset($row_create_rfmd['Error']) || $fmdId == 0) {
+                            $Error = true;
+                            $ret_err = $row_create_rfmd['Error'];
+                            array_push($Errors, "File for $typeName could not be uploaded because $ret_err.");
+                            echo "<p>File for $typeName could not be uploaded because $ret_err.</p>";
+                        }
+                        ignore_remaining_output($r_create_rfmd);
+                        complete_procedure($dbc);
+
+                        // File Processing
+                        if (!$Error && file_exists($SrcFilePath)) {
+                            $fp = fopen($SrcFilePath, "rb");
+                            $segment = 1;
+                            while (!feof($fp)) {
+                                // Make the data mysql insert safe
+                                $binarydata = addslashes(fread($fp, 65535));
+                                $SQL = "CALL spCreateFileContent ('$fmdId', '$binarydata', $segment);";
+                                if (!$result = mysqli_query($dbc, $SQL)) {
+                                    $Error = true;
+                                    $ret_err = $dbc->error;
+                                    array_push($Errors, "Segment $segment of file for $typeName could not be uploaded because $ret_err.");
+                                    echo "<p>Segment $segment of file for $typeName could not be uploaded because $ret_err.</p>";
+                                }
+                                complete_procedure($dbc);
+                                $segment ++;
+                            }
+                            fclose($fp);
+                        }
+                    }
+                    else {
+                        array_push($Errors, 'File could not be uploaded for ' . $typeName . '.');
+                        echo '<p>File could not be uploaded for ' . $typeName . '.</p>';
+                    }
+                }
+                else {
+                    $Error = true;
+                    array_push($Errors, 'Uploaded documents must be less than 2MB and in Word-document or PDF format.');
+                    echo '<p>Uploaded documents must be less than 2MB and in Word-document or PDF format.</p>';
+                }
+            }
+
+            //$CreateSubmissionFileMetaData = $dbc->query("Call spCreateSubmissionFileMetaData('$SubmissionID', '$FileTypeID', '$FileMime', '$sFileName', '$sFileSize');");
+        }
     }
 }else { echo "Error with submission.";}
 require "./includes/footer.php";

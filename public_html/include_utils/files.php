@@ -31,7 +31,8 @@ function is_mime_valid ($mime) {
     // rtf shares mime with doc
     $docx = 'application/vnd.openxmlformats-officedocument.wordprocessing';
     $pdf = 'application/pdf';
-    return ($mime == $doc || $mime == $docx || $mime == $pdf);
+    $docx2 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    return ($mime == $doc || $mime == $docx || $mime == $docx2 || $mime == $pdf);
 }
 
 // create_upload_input - expects string for input-id name,

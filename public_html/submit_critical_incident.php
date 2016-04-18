@@ -28,23 +28,6 @@
             $membercode = $row["MemberCode"];
             $institution = $row["InstitutionAffiliation"];
     }
-
-    $getFileTypes = $dbc->query("Call spGetFileTypes('1');");
-    complete_procedure($dbc);
-
-    //if nothing is returned
-    if (!$getFileTypes){
-        $Error = true;
-    } else { //if something is returned
-        // output data of each row
-        while($row = $getFileTypes->fetch_assoc()) {
-            $FileTypeID = $row["FileTypeID"];
-            $FileType = $row["FileType"];
-            echo $FileTypeID;
-            echo $FileType . "<br>";
-        }
-    }
-
     ?>
     <div class="contentwidth">
         <div class="row flush">
@@ -55,14 +38,14 @@
                 <!--Page main body-->
                 <div style="padding-left:50px;" class="box_guest author_alt" id="registration-form">
                     <h1>Critical Incident</h1>
-                    <form class="submitform" id="submit_criticalIncident" action="process_critical_incident.php" method="post">
+                    <form class="submitform" id="submit_criticalIncident" action="process_critical_incident.php" method="post" enctype="multipart/form-data">
                         <input class="regular required" placeholder="Title" type="text" name="title" id="title" size="30" maxlength="100">
                         <div id="dynamicAuthor">
                             <div>
                                 <h3>Author 1 (Primary Contact)</h3>
-                                <p>Email Address: <?php echo $email; ?></p>
-                                <p>First Name: <?php echo $firstname; ?></p>
-                                <p>Last Name: <?php echo $lastname; ?></p>
+                                <p>Email Address: <input class="regular" value="<?php echo $email; ?>" type="text" name="email" id="email"></p>
+                                <p>First Name: <input class="regular" value="<?php echo $firstname; ?>" type="text" name="fname" id="fname"></p>
+                                <p>Last Name: <input class="regular" value="<?php echo $lastname; ?>" type="text" name="lname" id="lname"></p>
                                 <input class="regular" value="<?php echo $membercode; ?>" placeholder="SCR Member Code (Optional)" type="text" name="memberCode" id="memberCode" size="30" maxlength="60">
                             </div>
                         </div>
@@ -120,7 +103,7 @@
                         <span id="remaining_characters">There is a 300 Character limit</span><p>
                         <p><input type="submit" class="author" value="Submit Critical Incident" name="submit"></p>
                     </form>
-                    <script type="text/javascript"> var formValidator  = new Validator("submit_criticalIncident");
+                    <!--<script type="text/javascript"> var formValidator  = new Validator("submit_criticalIncident");
                         formValidator.EnableMsgsTogether();
 
                         formValidator.addValidation("title", "req", "Please enter a title");//Title required
@@ -139,7 +122,7 @@
                         formValidator.addValidation("memo","req_file","Memo is required");//memo required
                         //summary validation
                         formValidator.addValidation("summary","file_extn=doc;docx;rtf","Allowed files types for summary are: .doc, .docx, and .rtf");//Check file type
-                    </script>
+                    </script>-->
                 </div>
             <?php } else { echo '<div class="contentwidth"><div class="row flush"><div class="col s7"><p>You do not have permission</p>'; }?>
         </div>
