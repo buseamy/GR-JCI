@@ -1112,6 +1112,27 @@ BEGIN
   Order By SettingName;
 END$$
 
+DROP PROCEDURE IF EXISTS `spGetEmailSettingsActive`$$
+CREATE PROCEDURE `spGetEmailSettingsActive`()
+DETERMINISTIC
+BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets the active Email Settings record
+   */
+  Select SettingID,
+         SettingName,
+         AuthorNagEmailDays,
+         AuthorSubjectTemplate,
+         AuthorBodyTemplate,
+         ReviewerNagEmailDays,
+         ReviewerSubjectTemplate,
+         ReviewerBodyTemplate
+  From SystemSettings_Email
+  Where Active = 1
+  Limit 0,1;
+END$$
+
 DROP PROCEDURE IF EXISTS `spGetFileContents`$$
 CREATE PROCEDURE `spGetFileContents`(IN _FileMetaDataID int)
 DETERMINISTIC
@@ -1967,6 +1988,76 @@ BEGIN
   Select _UserID As 'UserID',
          _EmailStatusID As 'EmailStatusID',
          _Active As 'Active';
+END$$
+
+DROP PROCEDURE IF EXISTS `spNagAuthorsSubTwoGetList`$$
+CREATE PROCEDURE `spNagAuthorsSubTwoGetList`()
+DETERMINISTIC
+BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets list of authors who need to submit publication submission
+   */
+  Select Concat(u.FirstName, ' ', u.LastName) As 'FullName',
+         u.EmailAddress
+  From Users u
+    Inner Join AuthorsSubmission aas
+      On aas.UserID = u.UserID
+    Inner Join Submissions s
+      On s.SubmissionID = aas.SubmissionID
+  Where s.SubmissionStatusID = 7
+    And s.SubmissionID Not In (
+           Select PreviousSubmissionID
+           From Submissions
+           Where Year(SubmissionDate) = Year(CURRENT_DATE)
+      )
+    And Year(s.SubmissionDate) = Year(CURRENT_DATE)
+  Group By u.FirstName, u.LastName, u.EmailAddress;
+END$$
+
+DROP PROCEDURE IF EXISTS `spNagAuthorsSubTwoGetList`$$
+CREATE PROCEDURE `spNagAuthorsSubTwoGetList`()
+DETERMINISTIC
+BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets list of authors who need to submit 2nd submission
+   */
+  Select Concat(u.FirstName, ' ', u.LastName) As 'FullName',
+         u.EmailAddress
+  From Users u
+    Inner Join AuthorsSubmission aas
+      On aas.UserID = u.UserID
+    Inner Join Submissions s
+      On s.SubmissionID = aas.SubmissionID
+  Where s.SubmissionStatusID = 8
+    And s.SubmissionID Not In (
+           Select PreviousSubmissionID
+           From Submissions
+           Where Year(SubmissionDate) = Year(CURRENT_DATE)
+      )
+    And Year(s.SubmissionDate) = Year(CURRENT_DATE)
+  Group By u.FirstName, u.LastName, u.EmailAddress;
+END$$
+
+DROP PROCEDURE IF EXISTS `spNagReviewersGetList`$$
+CREATE PROCEDURE `spNagReviewersGetList`()
+DETERMINISTIC
+BEGIN
+  /* Created By : Jeff Ballard
+   * Create Date: 18-Apr-2016
+   * Purpose    : Gets list of reviewers who still have reviews to complete
+   */
+  Select Concat(u.FirstName, ' ', u.LastName) As 'FullName',
+         u.EmailAddress
+  From Users u
+    Inner Join Reviewers r
+      On r.ReviewerUserID = u.UserID
+    Inner Join Submissions s
+      On r.SubmissionID = s.SubmissionID
+  Where r.ReviewStatusID = 1
+    And Year(s.SubmissionDate) = Year(CURRENT_DATE)
+  Group By u.FirstName, u.LastName, u.EmailAddress;
 END$$
 
 DROP PROCEDURE IF EXISTS `spRemoveAnnouncement`$$

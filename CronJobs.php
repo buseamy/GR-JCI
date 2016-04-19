@@ -30,4 +30,65 @@ if ($r["RollOver"] == 1) {
   complete_procedure($dbc);
 }
 
+//Get the due dates for nagging emails
+$Dates = mysqli_fetch_array(mysqli_query($dbc, 'Call spGetArticleDates(Null);'), MYSQLI_ASSOC);
+complete_procedure($dbc);
+
+//Get the active settings records
+$Settings = mysqli_fetch_array(mysqli_query($dbc, 'Call spGetEmailSettingsActive();'), MYSQLI_ASSOC);
+complete_procedure($dbc);
+
+//Save the dates
+$FirstReviewDueDate = date_create($Dates["FirstReviewDueDate"]);
+$AuthorSecondSubmissionDueDate = date_create($Dates["AuthorSecondSubmissionDueDate"]);
+$SecondReviewDueDate = date_create($Dates["SecondReviewDueDate"]);
+$AuthorPublicationSubmissionDueDate = date_create($Dates["AuthorPublicationSubmissionDueDate"]);
+
+// Get the days settings
+$AuthorNagDays = $Settings["AuthorNagEmailDays"];
+$ReviewerNagDays = $Settings["ReviewerNagEmailDays"];
+
+$AuthorSubjectTemplate = $Settings["AuthorSubjectTemplate"];
+$AuthorBodyTemplate = $Settings["AuthorBodyTemplate"];
+$ReviewerSubjectTemplate = $Settings["ReviewerSubjectTemplate"];
+$ReviewerBodyTemplate = $Settings["ReviewerBodyTemplate"];
+
+//For date subtraction
+$AuthorsDaysConverstion = $AuthorNagDays.' day'.($AuthorNagDays > 1 ? 's' : '');
+$ReviewersDaysConverstion = $ReviewerNagDays.' day'.($ReviewerNagDays > 1 ? 's' : '');
+
+//Do the subtractions
+$AuthorSecondSubmissionDueDate = date_sub($AuthorSecondSubmissionDueDate, date_interval_create_from_date_string($AuthorsDaysConverstion));
+$AuthorPublicationSubmissionDueDate = date_sub($AuthorPublicationSubmissionDueDate, date_interval_create_from_date_string($AuthorsDaysConverstion));
+
+$FirstReviewDueDate = date_sub($FirstReviewDueDate, date_interval_create_from_date_string($ReviewersDaysConverstion));
+$SecondReviewDueDate = date_sub($SecondReviewDueDate, date_interval_create_from_date_string($ReviewersDaysConverstion));
+
+//Get current date
+$today=date_create(date('Y-m-d'));
+
+//echo 'today = '.$today->format('Y-m-d').'<br />';
+//echo 'AuthorSecondSubmissionDueDate = '.$AuthorSecondSubmissionDueDate->format('Y-m-d').'<br />';
+
+//Check dates
+if (compareDates($today, $AuthorSecondSubmissionDueDate)) {
+    
+}
+else if (compareDates($today, $AuthorPublicationSubmissionDueDate)) {
+    
+}
+else if (compareDates($today, $FirstReviewDueDate)) {
+    
+}
+else if (compareDates($today, $SecondReviewDueDate)) {
+    
+}
+
+mysqli_close($dbc);
+
+function compareDates($date1, $date2) {
+    //date formatting gotten from http://stackoverflow.com/questions/10569053/convert-datetime-to-string-php on 18-Apr-2016
+    //echo 'date1: '.$date1->format('Y-m-d').'<br />date2: '.$date2->format('Y-m-d');
+    return ($date1->format('Y-m-d') == $date2->format('Y-m-d'));
+}
 ?>

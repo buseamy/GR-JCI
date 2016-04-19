@@ -55,10 +55,9 @@ function sendCommentEmail($dbc, $Message) {
     mail($To,$Subject,$Message,$Header);
 }
 
-function sendAuthorNagEmail($dbc, $UID) {
-}
-
-function sendReviewerNagEmail($dbc, $UID) {
+function sendNagEmail($dbc, $To, $Subject, $Message) {
+    $Header = "From: NoReply@sfcrjci.org\r\nContent-Type: text/html;charset=iso-8859-1\r\nMIME-Version: 1.0\r\n";
+    mail($To,$Subject,$Message,$Header);
 }
 
 ?>
