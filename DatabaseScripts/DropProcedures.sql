@@ -51,6 +51,7 @@ DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`;
 DROP PROCEDURE IF EXISTS `spGetAnnouncements`;
 DROP PROCEDURE IF EXISTS `spGetArticleDates`;
 DROP PROCEDURE IF EXISTS `spGetEmailSettings`;
+DROP PROCEDURE IF EXISTS `spGetEmailSettingsActive`;
 DROP PROCEDURE IF EXISTS `spGetFileContents`;
 DROP PROCEDURE IF EXISTS `spGetFileInfo`;
 DROP PROCEDURE IF EXISTS `spGetFileTypes`;
