@@ -8,22 +8,32 @@
 	require('./include_utils/files.php');
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-
+$case_title = trim($_POST['case_title']);
+$keyword = trim($_POST['keyword']);
+$author = trim($_POST['author']);
+$category = trim($_POST['category']);
 
 	// if nothing is entered give an error message
-	if ((empty($_POST['case_ID'])) && (empty($_POST['case_title'])) && (empty($_POST['keyword']))
-		&& (empty($_POST['author'])) && (empty($_POST['category']))) {
+	if ((empty($case_title)) && (empty($keyword))
+		&& (empty($author)) && (empty($category))) {
 			$errors[] = 'You forgot to enter a search criteria please enter one.';
 		}
-
-
+/*
+foreach($_POST as $key => $value){
+	echo"key:$key   value:$value  ";
+}
+*/
 	// if nothing is entered in to the field put in a wildcard operator which allows any value to be selected
-	if (empty($_POST['case_ID'])) {
-		$case_ID = '%';
-	} else {
+	/*
+	if (isset($_POST['case_ID'])) {
 		$case_ID = mysqli_real_escape_string($dbc, trim($_POST['case_ID']));
+		if (empty($case_ID )) {
+			$case_ID = '%';
+		}
+	} else {
+		$case_ID = '%';
 	}
+	*/
 
 	if (empty($_POST['case_title'])) {
 		$case_title = '%';
@@ -48,6 +58,8 @@
 	} else {
 		$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
 	}
+	
+	
 	
 
 	// run only if one or more fields has been entered
@@ -110,7 +122,7 @@
 
 <div class="contentwidth">
     <div class="row flush">
-        <div class="col s7">
+        <div class="col s8">
 <?php
 // Error message modified From Isys288 register page
 if (!empty($errors)) {
@@ -148,8 +160,9 @@ if (!empty($errors)) {
 						<input type="submit" name="submit" value="search" /></p>
 					</form>
 				</div>
-				<div class="guest"> <!-- The class may need to be changed -->
+				<div class ="col s7";> <!-- The class may need to be changed -->
 				<?php
+				
 				if(sizeof($case_list) > 0) {
 					echo '<table>';
 				echo '<tr>';
