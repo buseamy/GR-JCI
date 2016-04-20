@@ -1,10 +1,5 @@
 <?php // assign_editor created by Jamal Ahmed
-
-
-
-
-$page_title = 'assign_editor' ;
-
+$page_title = 'assign_reviewer' ;
 if (session_status() == PHP_SESSION_NONE) {
     // Only start the session if one doesn't exist
     session_start();
@@ -14,10 +9,12 @@ require('./include_utils/procedures.php');
 require('./include_utils/files.php'); // for create_download_link
 $error = false;
 $errors = array();
-
+$assign_list = array();
+$submission_list = array();
+$case_list = array();
+$reviewer_list = array();
 // this code was taken from Mitch
 $is_editor = false;
-
 if (isset($_SESSION['is_editor'])) {
 	$is_editor = $_SESSION['is_editor'];
 }
@@ -25,7 +22,6 @@ else {
     $error = true;
     array_push($errors, "This page can only be accessed by the Editor.");
 }              
-
 /*
 used to check what sessions are active
 foreach ($_SESSION as $key => $value) 
@@ -33,55 +29,100 @@ foreach ($_SESSION as $key => $value)
 echo "<p>Key-$key, Val-$value</p>";
 }
 In PHP, there are three kind of arrays:
-
 Numeric array - An array with a numeric index
 Associative array - An array where each ID key is associated with a value
 Multidimensional array - An array containing one or more arrays
 */                   
-
 include('./includes/header.php');
 include('./includes/subnav.php');
 echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
-
 if (!$error) {
 	if ($is_editor) {
 		if(isset($_POST['submit'])) {
+			
 			/*
 			foreach ($_POST as $field => $value) {   
-				// echo "<p>$field, $value</p>";   
-			if ($field != 'submit' && $value != 'Record Results' && $value != 'empty') 
-				{    $source = substr($field, 8);    $item = $value;        $q_r = "CALL AddRecord('$item', '$source', '$time');";    $r_r = mysqli_query($dbc, $q_r);   
-			if ($r_r) 
-			{     echo "<p>Source: $source and Item: $item successfully recorded.</p>";   
-			}   	
-			else {     echo '<p class="error">';   
-			echo "Could not process Source $source: and Item: $item.</p>";    }  
-			while (mysqli_more_results($dbc)) {     mysqli_next_result($dbc);    }
-			
-			}  
+				foreach ($value as $field2 => $value2) {
+				echo "<p>field2: $field2 , value2: $value2</p>"; 
 			}
+				echo "<p>field: $field , value: $value</p>"; 
+			}
+			
                 $val = $_POST['selected-'.$caseID];
+			
 			*/
-            $q_assign_case = " CALL spUpdateSubmissionAssignEditor('$caseID' ,'$editor_id') ;" ;
-            $r_assign_case = @mysqli_query ($dbc, $q_assign_case);
-            while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
-                echo 'The following cases have been assigned to the chosen editor' ;
-                print_r($row_assign_case);
-            }
-            complete_procedure($dbc);
-        }
+			foreach($_POST['selected'] as $caseID) {
+				foreach($_POST['selected-'.$caseID] as $reviewer_ID) {	
+				
+				
+				
+			// if((!isset($caseID)) && (isset($editor_ID)))
+				/*
+			if ((!empty($caseID)) && (empty($editor_ID)))	{
+			$errors[] = 'You have selected an editor without checking the case';`
+			}
+			*/
+			
+				
+				$q_assign_reviewer = " CALL spReviewerAddToSubmission($reviewer_ID, $caseID) ;" ;
+				if ($r_assign_reviewer = mysqli_query ($dbc, $q_assign_reviewer)) {
+					
+				
+				while($row_assign_reviewer = mysqli_fetch_array($r_assign_reviewer, MYSQLI_ASSOC)) {
+					array_push($assign_list, $row_assign_reviewer);
+					
+					foreach($assign_list as $case_assign_row) {
+						if (isset($case_assign_row['Error'])) {
+							echo $case_assign_row['Error'] ;
+						}
+						$title = $case_assign_row['IncidentTitle']; 
+						$case_reviewer_name = $case_assign_row['ReviewerFullName'];
+						echo "The Critical Incident $title has been assigned to the Reviewer $case_reviewer_name <br>" ;
+					}
+					
+				}
+				}
+				else {
+					echo $dbc->error;
+					// echo 'ERReR!';
+				}
+				
+					/*
+					if ($r_assign_case !== true) {
+						$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
+						$ret_err = $row_err['Error'];
+						$error = true;
+						array_push($errors, "Review could not be committed because: $ret_err.");
+						ignore_remaining_output($r_assign_case);
+					}
+					*/
+					
+				/*
+					while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
+						echo 'The following cases have been assigned to the chosen editor' ;
+						print_r($row_assign_case);
+					}
+					*/
+					complete_procedure($dbc);
+				}
+			}
+				// echo $dbc->error;
+				// complete_procedure($dbc);
+				
+			}
+			
+	}
+			
+			
 		// Everything above this is processing the page
 		
 		// Everything below is preparing to display the form
-		$submission_list = array();
-		$case_list = array();
-		$reviewer_list = array();
+
 		
 		$q_cases = "CALL spEditorViewSubmissions('" . date("Y") ."');" ;
 		$r_cases = @mysqli_query ($dbc, $q_cases);
 		if(mysqli_num_rows($r_cases) > 0) {
-
 		while($row_cases = mysqli_fetch_array($r_cases, MYSQLI_ASSOC)) {
             // Mitch helped me learn how to use array_push
             //array_push(first parameter is the array, second parameter is the value of what is being put in the first parameter)
@@ -130,7 +171,6 @@ if (!$error) {
 		  
 		$q_reviewers = " CALL spGetUsersReviewersList" ;
 		$r_reviewers = @mysqli_query ($dbc, $q_reviewers);		
-
 	
 		while($row_reviewers = mysqli_fetch_array($r_reviewers , MYSQLI_ASSOC)) 
 				// source http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
@@ -166,18 +206,18 @@ if (!$error) {
 				$reviewer_ID = $reviewer_row['UserID'];
 			echo '<td>';
 			echo '<label for = "chk-reviewer-'.$reviewer_ID.'">'.$reviewer_name.'</label>';
-			echo '<input type="checkbox" id = "chk-case-'.$reviewer_ID.'" name="selected1[]" value="'.$reviewer_ID.'"/>';
+			echo '<input type="checkbox" id = "chk-case-'.$caseID.'-'.$reviewer_ID.'" name="selected-'.$caseID.'[]" value="'.$reviewer_ID.'"/>';
 			echo '</td>';
 				}
                 // echo '<input type="radio" name="editor" value="'.$row_editors['UserID'].'"/>';
                 // case name editors file download
-            }
             foreach($submission_file_list[$caseID] as $submission_file_row) {
                 $file_id = $submission_file_row['FileMetaDataID'] ;
                 $filename = $submission_file_row['FileName'] ;
                 $filesize = $submission_file_row['FileSize'] ;
                 echo '<td>';
-                create_download_link ($file_id, $filename, $filesize);
+				echo "<td><a target=\"_blank\" href=\"download.php?fid=$meta_ID\">Download</a></td>";
+                //create_download_link ($file_id, $filename, $filesize);
                 echo '</td>';
                 // download link goes here create_download_link($file_id, $filename, $filesize)
             }
@@ -187,7 +227,7 @@ if (!$error) {
 		?>
 		
 		</table>
-		<input type="submit"/>
+		<input type="submit" name = "submit" value = "submit" class="editor" />
 		</form>
 		
 		<?php
@@ -195,8 +235,7 @@ if (!$error) {
 		
 		
 		
-
-		}
+	}
 	else {
 	echo 'No cases submitted at this time' ;
 	}
@@ -204,7 +243,6 @@ if (!$error) {
 		
 	}
 		
-
 	
 	
 	
@@ -218,17 +256,13 @@ if ($error || $incomplete) {
     if ($error) {
         echo "\t\t<p class=\"error\">The following issues occurred while $errorloc:\r\n";
     }
-
     foreach ($errors as $msg) {
         echo "\t\t\t<br /> - $msg\r\n";
     }
     echo "\t\t</p>\r\n";
-
 }
-
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
 echo "</div>\r\n";
 include('./includes/footer.php');
-
 ?>

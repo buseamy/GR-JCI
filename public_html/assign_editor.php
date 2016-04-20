@@ -51,7 +51,11 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
 	if ($is_editor) {
 		
-		if(isset($_POST['submit'])) {
+		if(isset($_POST['submit']) && !isset($_POST['selected'])) {
+			$errors[] = 'Incomplete form.';
+		}
+		
+		if(isset($_POST['submit']) && isset($_POST['selected'])) {
 			
 			/*
 			foreach ($_POST as $field => $value) {   
@@ -61,40 +65,52 @@ if (!$error) {
                 $val = $_POST['selected-'.$caseID];
 			*/ 
 			foreach($_POST['selected'] as $caseID) {
-				
-				$editor_id = $_POST['selected-'.$caseID];
-				
-				$q_assign_case = " CALL spSubmissionAssignEditor($caseID ,$editor_id) ;" ;
-				$r_assign_case = mysqli_query ($dbc, $q_assign_case);
-				while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
-					array_push($assign_list, $row_assign_case);
+				if(isset($_POST['selected-'.$caseID])) {
 					
-					foreach($assign_list as $case_assign_row) {
-						$title = $case_assign_row['IncidentTitle'];
-						$case_editor_name = $case_assign_row['EditorFullName'];
-						// echo "The Critical Incident $title has been assigned to the editor $case_editor_name" ;
-					}
-					
-				}
-				echo "The Critical Incident $title has been assigned to the editor $case_editor_name <br>" ;
 				
+					
+					$editor_id = $_POST['selected-'.$caseID];
+					
+				// if((!isset($caseID)) && (isset($editor_ID)))
 					/*
-					if ($r_assign_case !== true) {
-						$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
-						$ret_err = $row_err['Error'];
-						$error = true;
-						array_push($errors, "Review could not be committed because: $ret_err.");
-						ignore_remaining_output($r_assign_case);
-					}
-					*/
+				if ((!empty($caseID)) && (empty($editor_ID)))	{
+				$errors[] = 'You have selected an editor without checking the case';`
+				}
+				*/
+				
 					
-				/*
+					$q_assign_case = " CALL spSubmissionAssignEditor($caseID ,$editor_id) ;" ;
+					$r_assign_case = mysqli_query ($dbc, $q_assign_case);
 					while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
-						echo 'The following cases have been assigned to the chosen editor' ;
-						print_r($row_assign_case);
+						array_push($assign_list, $row_assign_case);
+						
+						foreach($assign_list as $case_assign_row) {
+							$title = $case_assign_row['IncidentTitle'];
+							$case_editor_name = $case_assign_row['EditorFullName'];
+							echo "The Critical Incident $title has been assigned to the editor $case_editor_name <br>" ;
+						}
+						
 					}
-					*/
-					complete_procedure($dbc);
+					
+					
+						/*
+						if ($r_assign_case !== true) {
+							$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
+							$ret_err = $row_err['Error'];
+							$error = true;
+							array_push($errors, "Review could not be committed because: $ret_err.");
+							ignore_remaining_output($r_assign_case);
+						}
+						*/
+						
+					/*
+						while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
+							echo 'The following cases have been assigned to the chosen editor' ;
+							print_r($row_assign_case);
+						}
+						*/
+						complete_procedure($dbc);
+					}
 				}
 				
 				// echo $dbc->error;
@@ -209,11 +225,20 @@ if (!$error) {
                 $filename = $submission_file_row['FileName'] ;
                 $filesize = $submission_file_row['FileSize'] ;
                 echo '<td>';
-                create_download_link ($file_id, $filename, $filesize);
+				echo "<td><a target=\"_blank\" href=\"download.php?fid=$file_id\">Download</a></td>";
+                //create_download_link ($file_id, $filename, $filesize);
                 echo '</td>';
                 // download link goes here create_download_link($file_id, $filename, $filesize)
             }
 			echo '</tr>';
+			// http://stackoverflow.com/questions/21368625/how-do-i-check-if-checkbox-is-checked-in-php
+			
+			/*
+			if((isset($_POST['selected'])) && (!isset($_POST['selected-'.$caseID]))) {
+			$errors[] = 'You have selected a case without assigning it an editor';`
+			}
+			*/
+			
 		}
 		
 		?>

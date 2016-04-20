@@ -8,12 +8,19 @@
 	require('./include_utils/files.php');
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+		
 $case_title = trim($_POST['case_title']);
 $keyword = trim($_POST['keyword']);
 $author = trim($_POST['author']);
 $category = trim($_POST['category']);
 
-	// if nothing is entered give an error message
+	// This checks if anything was entered in the textbox
+	if ((empty($_POST['case_ID'])) && (empty($_POST['case_title'])) && (empty($_POST['keyword']))
+	&& (empty($_POST['author'])) && (empty($_POST['category']))) {
+		$errors[] = 'You forgot to enter a search criteria please enter one.';
+	}
+
+	// if nothing is entered give an error message. This will handle if only spaces are entered
 	if ((empty($case_title)) && (empty($keyword))
 		&& (empty($author)) && (empty($category))) {
 			$errors[] = 'You forgot to enter a search criteria please enter one.';
