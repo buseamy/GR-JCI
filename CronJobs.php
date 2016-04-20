@@ -72,16 +72,64 @@ $today=date_create(date('Y-m-d'));
 
 //Check dates
 if (compareDates($today, $AuthorSecondSubmissionDueDate)) {
+    //Get the authors list for nagging emails
+    $Authors = mysqli_query($dbc, 'Call spNagAuthorsSubTwoGetList();');
+    complete_procedure($dbc);
     
+    if (mysqli_num_rows($Authors) > 0) {
+        while($row = $Authors->fetch_assoc()) {
+            $To = $row["EmailAddress"];
+            $Message = str_replace('{0}', $row["FirstName"].' '.$row["LastName"], $AuthorBodyTemplate);
+
+            //Send the email
+            sendNagEmail($To, $AuthorSubjectTemplate, $Message);
+        }
+    }
 }
 else if (compareDates($today, $AuthorPublicationSubmissionDueDate)) {
+    //Get the authors list for nagging emails
+    $Authors = mysqli_query($dbc, 'Call spNagAuthorsSubThreeGetList();');
+    complete_procedure($dbc);
     
+    if (mysqli_num_rows($Authors) > 0) {
+        while($row = $Authors->fetch_assoc()) {
+            $To = $row["EmailAddress"];
+            $Message = str_replace('{0}', $row["FirstName"].' '.$row["LastName"], $AuthorBodyTemplate);
+
+            //Send the email
+            sendNagEmail($To, $AuthorSubjectTemplate, $Message);
+        }
+    }
 }
 else if (compareDates($today, $FirstReviewDueDate)) {
+    //Get the reviewers list for nagging emails
+    $Reviewers = mysqli_query($dbc, 'Call spNagReviewersGetList();');
+    complete_procedure($dbc);
     
+    if (mysqli_num_rows($Reviewers) > 0) {
+        while($row = $Reviewers->fetch_assoc()) {
+            $To = $row["EmailAddress"];
+            $Message = str_replace('{0}', $row["FirstName"].' '.$row["LastName"], $ReviewerBodyTemplate);
+
+            //Send the email
+            sendNagEmail($To, $ReviewerSubjectTemplate, $Message);
+        }
+    }
 }
 else if (compareDates($today, $SecondReviewDueDate)) {
+    //Get the reviewers list for nagging emails
+    $Reviewers = mysqli_query($dbc, 'Call spNagReviewersGetList();');
+    complete_procedure($dbc);
     
+    if (mysqli_num_rows($Reviewers) > 0) {
+        while($row = $Reviewers->fetch_assoc()) {
+            $To = $row["EmailAddress"];
+            $Message = str_replace('{0}', $row["FirstName"].' '.$row["LastName"], $ReviewerBodyTemplate);
+
+            //Send the email
+            sendNagEmail($To, $ReviewerSubjectTemplate, $Message);
+        }
+    }
 }
 
 mysqli_close($dbc);
