@@ -48,6 +48,8 @@ DROP PROCEDURE IF EXISTS `spEnableUser`;
 DROP PROCEDURE IF EXISTS `spGetActiveEditors`;
 DROP PROCEDURE IF EXISTS `spGetAddressTypes`;
 DROP PROCEDURE IF EXISTS `spGetAllAnnouncementsList`;
+DROP PROCEDURE IF EXISTS `spGetAnnouncement`;
+DROP PROCEDURE IF EXISTS `spGetAnnouncementRoles`;
 DROP PROCEDURE IF EXISTS `spGetAnnouncements`;
 DROP PROCEDURE IF EXISTS `spGetArticleDates`;
 DROP PROCEDURE IF EXISTS `spGetEmailSettings`;
