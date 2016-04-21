@@ -10,7 +10,8 @@ BEGIN
    * Create Date: 18-Apr-2016
    * Purpose    : Gets the list of all Announcements
    */
-  Select a.Title,
+  Select a.AnnouncementID,
+         a.Title,
          GROUP_CONCAT(r.RoleTitle) As 'Roles',
          a.CreateDate,
          IfNull(a.ExpireDate,'') As 'ExpireDate'
