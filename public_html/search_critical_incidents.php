@@ -21,7 +21,7 @@ $category = trim($_POST['category']);
 	}
 
 	// if nothing is entered give an error message. This will handle if only spaces are entered
-	if ((empty($case_title)) && (empty($keyword))
+	else if ((empty($case_title)) && (empty($keyword))
 		&& (empty($author)) && (empty($category))) {
 			$errors[] = 'You forgot to enter a search criteria please enter one.';
 		}
@@ -129,7 +129,7 @@ foreach($_POST as $key => $value){
 
 <div class="contentwidth">
     <div class="row flush">
-        <div class="col s8">
+        <div class="col s7">
 <?php
 // Error message modified From Isys288 register page
 if (!empty($errors)) {
@@ -167,7 +167,7 @@ if (!empty($errors)) {
 						<input type="submit" name="submit" value="search" /></p>
 					</form>
 				</div>
-				<div class ="col s7";> <!-- The class may need to be changed -->
+				<div class ="col s8"> <!-- The class may need to be changed -->
 				<?php
 				
 				if(sizeof($case_list) > 0) {

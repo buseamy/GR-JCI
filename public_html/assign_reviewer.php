@@ -9,7 +9,7 @@ require('./include_utils/procedures.php');
 require('./include_utils/files.php'); // for create_download_link
 $error = false;
 $errors = array();
-$assign_list = array();
+
 $submission_list = array();
 $case_list = array();
 $reviewer_list = array();
@@ -39,7 +39,9 @@ echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
 	if ($is_editor) {
-		if(isset($_POST['submit'])) {
+		
+		
+		if(isset($_POST['submit']) && isset($_POST['selected'])) {
 			
 			/*
 			foreach ($_POST as $field => $value) {   
@@ -66,27 +68,32 @@ if (!$error) {
 			
 				
 				$q_assign_reviewer = " CALL spReviewerAddToSubmission($reviewer_ID, $caseID) ;" ;
+				
 				if ($r_assign_reviewer = mysqli_query ($dbc, $q_assign_reviewer)) {
 					
 				
 				while($row_assign_reviewer = mysqli_fetch_array($r_assign_reviewer, MYSQLI_ASSOC)) {
-					array_push($assign_list, $row_assign_reviewer);
 					
-					foreach($assign_list as $case_assign_row) {
+					
+					
+						/*
 						if (isset($case_assign_row['Error'])) {
 							echo $case_assign_row['Error'] ;
 						}
-						$title = $case_assign_row['IncidentTitle']; 
-						$case_reviewer_name = $case_assign_row['ReviewerFullName'];
+						*/
+						$title = $row_assign_reviewer['IncidentTitle']; 
+						$case_reviewer_name = $row_assign_reviewer['ReviewerFullName'];
 						echo "The Critical Incident $title has been assigned to the Reviewer $case_reviewer_name <br>" ;
-					}
+					
 					
 				}
 				}
+				/*
 				else {
 					echo $dbc->error;
 					// echo 'ERReR!';
 				}
+				*/
 				
 					/*
 					if ($r_assign_case !== true) {
@@ -186,6 +193,7 @@ if (!$error) {
         
 		?>
 		<form action="assign_reviewer.php" method="post">
+		<h3 class = "editor">In Each row check the Critical Incident that you want Assigned to the corresponding Reviewers in the same Row. <h3>
 		<table style="border: 1px solid black">
 		<?php
 		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box

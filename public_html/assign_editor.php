@@ -17,7 +17,7 @@ $errors = array();
 $submission_list = array();
 $case_list = array();
 $editor_list = array();
-$assign_list = array();
+
 
 // this code was taken from Mitch
 $is_editor = false;
@@ -51,6 +51,12 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
 	if ($is_editor) {
 		
+		/*
+		if (empty($_POST['selected'])) {
+			$errors[] = 'You forgot to check a critical incident';
+		}
+		*/
+		
 		if(isset($_POST['submit']) && !isset($_POST['selected'])) {
 			$errors[] = 'Incomplete form.';
 		}
@@ -70,25 +76,21 @@ if (!$error) {
 				
 					
 					$editor_id = $_POST['selected-'.$caseID];
-					
-				// if((!isset($caseID)) && (isset($editor_ID)))
-					/*
-				if ((!empty($caseID)) && (empty($editor_ID)))	{
-				$errors[] = 'You have selected an editor without checking the case';`
-				}
-				*/
 				
 					
 					$q_assign_case = " CALL spSubmissionAssignEditor($caseID ,$editor_id) ;" ;
 					$r_assign_case = mysqli_query ($dbc, $q_assign_case);
+					
 					while($row_assign_case = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC)) {
-						array_push($assign_list, $row_assign_case);
 						
-						foreach($assign_list as $case_assign_row) {
-							$title = $case_assign_row['IncidentTitle'];
-							$case_editor_name = $case_assign_row['EditorFullName'];
+						
+						//echo $r_assign_case->num_rows; For testing
+						
+						
+							$title = $row_assign_case['IncidentTitle'];
+							$case_editor_name = $row_assign_case['EditorFullName'];
 							echo "The Critical Incident $title has been assigned to the editor $case_editor_name <br>" ;
-						}
+						
 						
 					}
 					
@@ -190,6 +192,7 @@ if (!$error) {
         
 		?>
 		<form action="assign_editor.php" method="post">
+		<h3 class = "editor">In Each row check the Critical Incident that you want Assigned to the corresponding Editor in the same Row. </h3>
 		<table style="border: 1px solid black">
 		<?php
 		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
@@ -225,8 +228,7 @@ if (!$error) {
                 $filename = $submission_file_row['FileName'] ;
                 $filesize = $submission_file_row['FileSize'] ;
                 echo '<td>';
-				echo "<td><a target=\"_blank\" href=\"download.php?fid=$file_id\">Download</a></td>";
-                //create_download_link ($file_id, $filename, $filesize);
+                create_download_link ($file_id, $filename, $filesize);
                 echo '</td>';
                 // download link goes here create_download_link($file_id, $filename, $filesize)
             }
