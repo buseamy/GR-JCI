@@ -21,7 +21,7 @@ require ('../mysqli_connect.php');
 // Make the query:
 $q = "CALL spRemoveAnnouncement('$id')";		
 if (mysqli_query ($dbc, $q)) { // If it ran OK.	
-	redirect_user('index.php'); //-------------------------------------------------------------------------------------------------------------------------------
+	redirect_user('manage_announcements.php');
 } else { // If the query did not run OK.
 	echo '<p class="error">The user could not be deleted due to a system error.</p>'; // Public message.
 	echo '<p>' . mysqli_error($dbc) . '</p>'; // Debugging message.

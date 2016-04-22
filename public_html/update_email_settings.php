@@ -28,7 +28,7 @@
           $errors[] = 'Please provide a name';
       }
 	  
-	  if  (is_string($AuthorNagEmailDays) || empty($AuthorNagEmailDays) {
+	  if  (is_string($AuthorNagEmailDays) || empty($AuthorNagEmailDays)) {
           $errors[] = 'Please provide the author reminder interval in days';
       }
       
@@ -40,7 +40,7 @@
           $errors[] = 'Please provide a message to the author';
       }
 	  
-	  if  (is_string($ReviewerNagEmailDays) || empty($ReviewerNagEmailDays) {
+	  if  (is_string($ReviewerNagEmailDays) || empty($ReviewerNagEmailDays)) {
           $errors[] = 'Please provide the author reminder interval in days';
       }
       
@@ -113,29 +113,22 @@ if ($r_settings = mysqli_query ($dbc, $q_settings)) { // If it ran OK.
                 </div>
                 <div class="box editor_alt">
                     <form method="post">
-						<label for="name">Setting Name: </label>
-                        <input type="text" class="regular inputForm" name="name" maxlength="200" width="100%" value="<?php echo $SettingName; ?>">
-						<h5> Author: </h5>
-						<label for="authordays">Author Reminder Interval (days): </label>
-						<input type="text" class="regular inputForm" name="authordays" width="100%" value="<?php echo $AuthorNagEmailDays; ?>">
+                        Setting Name: <input type="text" class="regular" name="name" maxlength="200" width="100%" value="<?php echo $SettingName; ?>">
+						<h3> Author: </h3>
+						Author Reminder Interval (days): <input type="text" class="regular" name="authordays" width="100%" value="<?php echo $AuthorNagEmailDays; ?>">
 						<br>
-						<label for="authorsubject">Subject: </label>
-						<input type="text" class="regular inputForm" name="authorsubject" maxlength="50" width="100%" value="<?php echo $AuthorSubjectTemplate; ?>">
+						Subject: <input type="text" class="regular" name="authorsubject" maxlength="50" width="100%" value="<?php echo $AuthorSubjectTemplate; ?>">
 						<br>
-						<label for="authorbody">Message: </label>
-						<textarea rows="10" maxlength="10000" name="authorbody"><?php echo $AuthorBodyTemplate; ?></textarea>
-						<h5> Reviewer: </h5>
-						<label for="reviewerdays">Reviewer Reminder Interval (days): </label>
-						<input type="text" class="regular inputForm" name="reviewerdays" width="100%" value="<?php echo $ReviewerNagEmailDays; ?>">
+						Message: <textarea rows="10" maxlength="10000" class="regular" name="authorbody"><?php echo $AuthorBodyTemplate; ?></textarea>
+						<h3> Reviewer: </h3>
+						Reviewer Reminder Interval (days): <input type="text" class="regular" name="reviewerdays" width="100%" value="<?php echo $ReviewerNagEmailDays; ?>">
 						<br>
-						<label for="reviewersubject">Subject: </label>
-						<input type="text" class="regular inputForm" name="reviewersubject" maxlength="50" width="100%" value="<?php echo $ReviewerSubjectTemplate; ?>">
+						Subject: <input type="text" class="regular" name="reviewersubject" maxlength="50" width="100%" value="<?php echo $ReviewerSubjectTemplate; ?>">
 						<br>
-						<label for="reviewerbody">Message: </label>
-						<textarea rows="10" maxlength="10000" name="reviewerbody"><?php echo $ReviewerBodyTemplate; ?></textarea>
+						Message: <textarea rows="10" maxlength="10000" class="regular" name="reviewerbody"><?php echo $ReviewerBodyTemplate; ?></textarea>
 						<br>
 						<br>
-						<button class="alert buttonform" onclick="location.href=' '">Cancel</button>
+						<button class="alert buttonform" onclick="location.href='editor_system_settings.php'">Cancel</button>
                         <button class="editor buttonform" type="submit">Create</button>
 						<br>
                     </form>

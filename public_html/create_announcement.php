@@ -76,7 +76,7 @@
         
 	  if (empty($errors)) {
       // Redirect:
-      redirect_user('index.php'); //-------------------------------------------------------------------------------------------------------------------------------
+      redirect_user('manage_announcements.php');
 	  }
  }
 ?>
@@ -122,7 +122,7 @@
 						</div>
 						<br>
 						<br>
-						<button class="alert buttonform" onclick="location.href=' '">Cancel</button>
+						<button class="alert buttonform" onclick="location.href='manage_announcements.php'">Cancel</button>
                         <button class="editor buttonform" type="submit">Create</button>
 						<br>
                     </form>

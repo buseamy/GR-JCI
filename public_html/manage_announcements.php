@@ -73,12 +73,15 @@ echo "\t<div class=\"contentwidth row flush col s8\">\r\n";
 				echo "<td>$announcement_message</td>";
 				echo "<td>$create_date</td>";
 				echo "<td>$expire_date</td>";
-				echo "<td><a target=\"_blank\" href=\"remove_announcement.php?id=$announcement_ID\">Action</a></td>"; 
+				echo "<td><a href=\"remove_announcement.php?id=$announcement_ID\">Remove</a></td>"; 
 				echo "</tr>";
 			}
 			}
 		
-		
+		?>
+		<button class="editor buttonform" onclick="location.href='create_announcement.php'">Create Announcement</button>
+		<br>
+		<?php
 		
 		
 		
