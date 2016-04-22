@@ -27,7 +27,7 @@ $announcement_message_array = array();
 include('./includes/header.php');
 include('./includes/subnav.php');
 echo "<div class=\"contentwidth row flush\">\r\n";
-echo "\t<div class=\"contentwidth row flush col s8\">\r\n";
+echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 
 	if ($is_editor) {
 		
@@ -56,7 +56,6 @@ echo "\t<div class=\"contentwidth row flush col s8\">\r\n";
 			echo '<th>Expire Date Date</th>';
 			echo '<th>Action</th>';
 			echo '</tr>';
-			// echo '</table>' ;
 		
 		foreach($announcement_array as $annoucement_row) {
 			$announcement_ID = $annoucement_row['AnnouncementID'];
@@ -78,6 +77,7 @@ echo "\t<div class=\"contentwidth row flush col s8\">\r\n";
 			}
 			}
 		
+			 echo '</table>' ;
 		?>
 		<button class="editor buttonform" onclick="location.href='create_announcement.php'">Create Announcement</button>
 		<br>
