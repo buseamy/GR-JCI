@@ -2402,8 +2402,8 @@ BEGIN
         On pc.CategoryID = pcic.CategoryID
     Where pci.IncidentTitle Like _Title
       And pci.Keywords Like _Keyword
-      And pa.LastName Like _Author
-      And pa.FirstName Like _Author
+      And (pa.LastName Like _Author
+        Or pa.FirstName Like _Author)
       And pc.Category Like _Category
     Group By pci.CriticalIncidentID,
              p.Year,
