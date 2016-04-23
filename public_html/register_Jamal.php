@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	// for check for numeric value refer to http://php.net/manual/en/function.is-numeric.php
 	// check for first name
-	if (empty($_POST['first_name'])) {
+	if (empty trim($_POST['first_name'])) {
 		$errors[] = 'You forgot to enter your first name.';
 	} else if (Is_numeric($_POST['first_name'])) {
 		$errors[] = 'Your name should not contain numbers.';

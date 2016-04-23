@@ -3,6 +3,8 @@
 /* Created By: Jeff Ballard
  * On: 9-Apr-2016
  * The purpose of this file is allow a guest to the site create an account
+ * Originally written by Jamal Ahmed but Rewritten by Jeff Ballard
+ * On: 4/23/16 Jamal Ahmed fixed bugs found by QA
  */
 
 $page_title = 'Register - SFCI - Journal for Critical Indicents';
@@ -37,17 +39,32 @@ $UserID = -1;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Verify inputs
+	/*
     if (!empty($_POST['FirstName'])) {
-        $FirstName = $_POST['FirstName'];
-    } else {
+        $FirstName = mysqli_real_escape_string($dbc, trim($_POST['FirstName']));
+    } else if (Is_numeric($_POST['FirstName'])) {
+		$errors[] = 'Your name should not contain numbers.';
+	} else {
         $errors[] = 'Please provide a first name';
     }
+	*/
+	
+	if (empty(trim($_POST['FirstName']))) {
+		$errors[] = 'Please provide a First Name';
+	} else if (Is_numeric($_POST['FirstName'])) {
+		$errors[] = 'Please provide a First Name';
+	}  else {
+		$FirstName = mysqli_real_escape_string($dbc, trim($_POST['FirstName']));
+	}
+	
+	if (empty(trim($_POST['LastName']))) {
+		$errors[] = 'Please provide a Last Name';
+	} else if (Is_numeric($_POST['LastName'])) {
+		$errors[] = 'Please provide a Last Name';
+	}  else {
+		$LastName = mysqli_real_escape_string($dbc, trim($_POST['LastName']));
+	}
     
-    if (!empty($_POST['LastName'])) {
-        $LastName = $_POST['LastName'];
-    } else {
-        $errors[] = 'Please provide a last name';
-    }
     
     if (!empty($_POST['Email1'])) {
         $Email1 = strtolower($_POST['Email1']);
@@ -92,11 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if (!empty($_POST['Address1'])) {
-        $Address1 = $_POST['Address1'];
+        $Address1 = mysqli_real_escape_string($dbc, trim($_POST['Address1']));
     }
     
     if (!empty($_POST['Address2'])) {
-        $Address2 = $_POST['Address2'];
+        $Address2 = mysqli_real_escape_string($dbc, trim($_POST['Address2']));
     }
     
     if ((strlen($Address1) == 0) && (strlen($Address2) == 0) ) {
@@ -106,12 +123,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $Address1 = $Address2;
         $Address2 = '';
     }
-    
-    if (!empty($_POST['City'])) {
-        $City = $_POST['City'];
-    } else {
-        $errors[] = 'Please provide a city name';
-    }
+	
+	if (empty(trim($_POST['City']))) {
+		$errors[] = 'Please provide a City';
+	} else if (Is_numeric($_POST['City'])) {
+		$errors[] = 'Please provide a City';
+	}  else {
+		$City = mysqli_real_escape_string($dbc, trim($_POST['City']));
+	}
     
     if (!empty($_POST['State'])) {
         $State = $_POST['State'];
@@ -120,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if (!empty($_POST['PostCode'])) {
-        $PostCode = $_POST['PostCode'];
+        $PostCode = mysqli_real_escape_string($dbc, trim($_POST['PostCode']));
         if (!Is_numeric($PostCode) || (strlen($PostCode) < 5)) {
            $errors[] = 'Please provide a 5 digit postal (zip) code'; 
         }
@@ -135,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if (!empty($_POST['PhoneNumber'])) {
-        $PhoneNumber = $_POST['PhoneNumber'];
+        $PhoneNumber = mysqli_real_escape_string($dbc, trim($_POST['PhoneNumber']));
         if (!Is_numeric($PhoneNumber) || (strlen($PhoneNumber) < 10)) {
            $errors[] = 'Please provide a 10 digit phone number'; 
         }
@@ -150,15 +169,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if (!empty($_POST['MemberCode'])) {
-        $MemberCode = $_POST['MemberCode'];
+        $MemberCode = mysqli_real_escape_string($dbc, trim($_POST['MemberCode']));
     }
     
     if (!empty($_POST['Association'])) {
-        $Association = $_POST['Association'];
+        $Association = mysqli_real_escape_string($dbc, trim($_POST['Association']));
     }
     
     if (empty($errors)) { // If everything's OK.
         //Escape all the strings for database insertion
+		
         $FirstName = mysqli_real_escape_string($dbc, $FirstName);
         $LastName = mysqli_real_escape_string($dbc, $LastName);
         $Email1 = mysqli_real_escape_string($dbc, $Email1);
@@ -168,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $City = mysqli_real_escape_string($dbc, $City);
         $MemberCode = mysqli_real_escape_string($dbc, $MemberCode);
         $Association = mysqli_real_escape_string($dbc, $Association);
+		
         
         // Add the user in the database...
         $r = mysqli_query($dbc, "Call spCreateUser('$Email1', '$Password1', '$FirstName', '$LastName');");
@@ -227,10 +248,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="box_guest guest_alt account">
                 <form method="post">
                     <label for="FirstName"><span class="required">*</span> First Name:</label>
-                    <input type="text" class="regular" name="FirstName" maxlength="15" value="<?php if ($UserID == -1) { echo $FirstName; } ?>" />
+                    <input type="text" class="regular" name="FirstName" maxlength="15" value="<?php if ($UserID == -1) { echo $FirstName; }?>" />
                     <br />
                     <label for="LastName"><span class="required">*</span> Last Name:</label>
                     <input type="text" class="regular" name="LastName" maxlength="30" value="<?php if ($UserID == -1) { echo $LastName; } ?>" />
+                    <br />
+					<label for="Association">Professional Association: (university, firm, etc.)</label>
+                    <input type="text" name="Association" class="regular" maxlength="100" value="<?php if ($UserID == -1) { echo $Association; } ?>" />
                     <br />
                     <label for="Email1"><span class="required">*</span> Email Address:</label>
                     <input type="text" class="regular" name="Email1" maxlength="200" value="<?php if ($UserID == -1) { echo $Email1; } ?>" />
@@ -304,9 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="MemberCode">SCR Member ID:</label>
                     <input type="text" name="MemberCode" class="regular" maxlength="20" value="<?php if ($UserID == -1) { echo $MemberCode; } ?>" />
                     <br />
-                    <label for="Association">Professional Association: (university, firm, etc.)</label>
-                    <input type="text" name="Association" class="regular" maxlength="100" value="<?php if ($UserID == -1) { echo $Association; } ?>" />
-                    <br />
+                    
                     <p>* indicates a required field</p>
                     <button class="guest" type="submit">Register</button>
                 </form>

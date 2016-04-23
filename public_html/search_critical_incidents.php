@@ -82,7 +82,7 @@ foreach($_POST as $key => $value){
 */
 
 //echo "$case_title', '$keyword', '$author', '$category";
-	$q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
+	// $q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
 	//echo "$q_search";
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	// $r_search = @mysqli_query ($dbc, $q_search); // Run the query.
@@ -143,18 +143,57 @@ if (!empty($errors)) {
 }
 ?>
 			<div class="guest frame1">
-				<h1 class="title">JCI 2014: INCIDENTS</h1>
+				<h1 class="title" align="center">JCI JOURNAL OF CRITICAL INCIDENTS</h1>
 			</div>
-			<div class="row flush">
-				<div class="side_nav col s2 guest_light">
-	             	<ul>
-			             <li class=""><a href="#/">2015</a></li>
+			<?php
+			/*
+			$q_publications = "CALL spGetPublicationsYearsList ; " ;
+			$r_publications  = mysqli_query($dbc, $q_publications);
+			while($row_publications = mysqli_fetch_array($r_publications, MYSQLI_ASSOC)) {
+				$years = $row_publications['Year'];
+				echo $years;
+			}
+			<li class=""><a href="#/">2015</a></li>
 			             <li class="active"><a href="#/">2014</a></li>
 			             <li class=""><a href="#/">2013</a></li>
 			             <li class=""><a href="#/">2012</a></li>
 			             <li class=""><a href="#/">2011</a></li>
 			             <li class=""><a href="#/">2010</a></li>
 			             <li class=""><a href="#/">Earlier</a></li>
+				*/
+				/*
+				$years = mysqli_query($dbc, "Call spGetPublicationsYearsList();");
+                        complete_procedure($dbc);
+                        
+                        //Dispay the list of states
+                        echo '<option value="$years">Select the Year</option>';
+                        while($row = $years->fetch_assoc()) {
+                            echo '<option value="'.$row["FileMetaDataID"].'"'.($row["Year"] == $years ? ' selected' : '').'>'.$row["Year"].'</option>';
+                        }
+					*/	
+						
+				
+			// }
+			?>
+			<div class="row flush">
+				<div class="side_nav col s2 guest_light">
+				<div class="guest">
+                		<h3 class="title">Download Published Journals By Year</h3>
+            		</div>
+	             	<ul>
+					<?php
+					$years = mysqli_query($dbc, "Call spGetPublicationsYearsList();");
+                        complete_procedure($dbc);
+                        
+                        //Dispay the list of states
+                      // echo '<option value="$years">Download a published journal</option>';
+					  // This was taken from Jeff's Register page drop down boxes
+                        while($row = $years->fetch_assoc()) {
+							$ID = $row["FileMetaDataID"];
+                            echo '<li class=""><a target=\"_blank\" href=\"download.php?fid='.$ID .'"><option value="'.$row["FileMetaDataID"].'">'.$row["Year"].'</a></li></option>';
+                        }
+					?>
+			             
 					</ul>
              		<div class="guest">
                 		<h3 class="title">Search</h3>
@@ -167,7 +206,7 @@ if (!empty($errors)) {
 						<input type="submit" name="submit" value="search" /></p>
 					</form>
 				</div>
-				<div class ="col s8"> <!-- The class may need to be changed -->
+				<div class ="col s8"> 
 				<?php
 				
 				if(sizeof($case_list) > 0) {
