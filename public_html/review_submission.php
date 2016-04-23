@@ -63,7 +63,7 @@ if (!$error && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $typeId = $filerow['FileTypeID'];
                     $typeName = $filerow['FileType'];
                     $inName = 'fileup-' . $typeId;
-                    if ($typeName != '' && isset($_FILES["$inName"]) && isset($_FILES["$inName"]["type"])) {
+                    if ($typeName != '' && isset($_FILES["$inName"]) && $_FILES["$inName"] != '' && isset($_FILES["$inName"]["type"]) && $_FILES["$inName"]["type"] != '') {
                         // adapted from prototyped file_upload_view_download
                         $DstFileName = $_FILES["$inName"]["name"];
                         $SrcFileType = $_FILES["$inName"]["type"];
