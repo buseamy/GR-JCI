@@ -771,7 +771,7 @@ BEGIN
 
   /* Make sure the email address doesn't already exist */
   If(Select Exists(Select 1 From Users Where EmailAddress = _EmailAddress)) Then
-    Select 'Email address already exists' As 'Error';
+    Select -1 As 'UserID', 'Email address already exists' As 'Error';
   Else
     /* Insert the new User record */
     Insert Into Users (EmailAddress,
