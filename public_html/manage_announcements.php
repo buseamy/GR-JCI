@@ -30,33 +30,50 @@ echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 
 	if ($is_editor) {
-		
 		$q_annoucements = " CALL spGetAllAnnouncementsList ;" ;
 		$r_annoucements = mysqli_query ($dbc, $q_annoucements);
-		while($row_annoucements = mysqli_fetch_array($r_annoucements, MYSQLI_ASSOC)) {
-			array_push($announcement_array, $row_annoucements);
-			
-			complete_procedure($dbc);
-			 
+		/*
+		if ($r_annoucements !== true) {
+			echo 'error';
 		}
-		foreach($announcement_array as $annoucement_row1) {
-			$announcement_ID = $annoucement_row1['AnnouncementID'];
+		*/
+		while($row_annoucements = mysqli_fetch_array($r_annoucements, MYSQLI_ASSOC)) {
+			
+			//array_push($announcement_array, $row_annoucements);
+			$announcement_ID = $row_annoucements['AnnouncementID'];
+			$announcement_title = $row_annoucements['Title'];
+			$create_date = $row_annoucements['CreateDate'];
+			$expire_date = $row_annoucements['ExpireDate'];
+			$message = $row_annoucements['Message'];
+			 complete_procedure($dbc);
+		
+		
+		// foreach($announcement_array as $annoucement_row1) {
+			// $announcement_ID = $annoucement_row1['AnnouncementID'];
+		/*
 		$q_annoucement_message = " CALL spGetAnnouncement($announcement_ID) ;" ;
 		$r_annoucement_message = mysqli_query ($dbc, $q_annoucement_message);
-		while($row_annoucements = mysqli_fetch_array($r_annoucement_message, MYSQLI_ASSOC)){
-			array_push($announcement_message_array, $row_annoucements);
+		if ($r_annoucement_message !== true) {
+			echo 'error2';
 		}
-		}
-		complete_procedure($dbc);
-		echo '<table>' ; 
-			echo '<tr>';
-			echo '<th>Title</th>';
-			echo '<th>Message</th>';
-			echo '<th>Create Date</th>';
-			echo '<th>Expire Date Date</th>';
-			echo '<th>Action</th>';
-			echo '</tr>';
-		
+		while($row_annoucements1 = mysqli_fetch_array($r_annoucement_message, MYSQLI_ASSOC)){
+			// array_push($announcement_message_array, $row_annoucements);
+			$message = $row_annoucements1['Message'];
+			*/
+		// echo $dbc->error;
+		// }
+		// complete_procedure($dbc);
+		?>
+		<table style= "border: 1px solid black"> 
+			<tr>
+			<th>Title</th>
+			<th>Message</th>
+			<th>Create Date</th>
+			<th>Expire Date Date</th>
+			<th>Action</th>
+			</tr>
+			<?php
+		/*
 		foreach($announcement_array as $annoucement_row) {
 			$announcement_ID = $annoucement_row['AnnouncementID'];
 			$announcement_title = $annoucement_row['Title'];
@@ -66,21 +83,25 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 			foreach($announcement_message_array as $message_row){
 				$announcement_message = $message_row['Message'];
 				
-				
+			*/	
 				echo "<tr>";
 				echo "<td>$announcement_title</td>";
-				echo "<td>$announcement_message</td>";
+				echo "<td>$message</td>";
 				echo "<td>$create_date</td>";
 				echo "<td>$expire_date</td>";
 				echo "<td><a href=\"remove_announcement.php?id=$announcement_ID\">Remove</a></td>"; 
 				echo "</tr>";
-			}
-			}
+			// }
+			// }
 		
 			 echo '</table>' ;
+			 // }
+		}
+		complete_procedure($dbc);
 		?>
+		<br />
 		<button class="editor buttonform" onclick="location.href='create_announcement.php'">Create Announcement</button>
-		<br>
+		<br />
 		<?php
 		
 		
@@ -94,7 +115,7 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 	
 	
 	
-	
+
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
 echo "</div>\r\n";

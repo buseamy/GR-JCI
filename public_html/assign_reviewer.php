@@ -191,7 +191,7 @@ if (!$error) {
         
 		?>
 		<form action="assign_reviewer.php" method="post">
-		<h3 class = "editor">In Each row check the Critical Incident that you want Assigned to the corresponding Reviewers in the same Row. <h3>
+		<h3 class = "editor">In Each row check the Critical Incident that you want Assigned to the corresponding Reviewers in the same Row. </h3>
 		<table style="border: 1px solid black">
 		<?php
 		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
