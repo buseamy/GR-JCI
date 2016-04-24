@@ -82,12 +82,12 @@ foreach($_POST as $key => $value){
 */
 
 //echo "$case_title', '$keyword', '$author', '$category";
-	// $q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
+	
 	//echo "$q_search";
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	// $r_search = @mysqli_query ($dbc, $q_search); // Run the query.
 	//  if results found
-	
+	$q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
 	$r_search = mysqli_query($dbc, $q_search);
 	
 		
