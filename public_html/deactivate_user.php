@@ -1,6 +1,14 @@
 <?php $page_title = 'User deactivated';
-
+/*
+* @File Name:		deactivate_user.php
+* @Description: 	This is the script for deactivating a user that'y only accessable by the editor.
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
 require ('./includes/header.php'); // Include the site header
+require ('./includes/subnav.php'); // Include subnav
 $display = true;
 		
 if (isset($_GET["UserID"])) {
@@ -23,8 +31,19 @@ if (isset($_GET["UserID"])) {
 if ($display) {
     
     // displays the message with a link to get back to the previous page
-    echo "<div><h1>The account has been has been deactivated</h1>\n";
-    echo "<p><a href='editor_user_account_management.php'>Back to user account management</a></div>";
+	echo "
+		<script type=\"text/javascript\"> $(\"#editor\" ).addClass(\"active\" ); </script>
+			<div class=\"contentwidth\">
+				<div class=\"row flush\">
+					<div class=\"col s7\">
+						<h1>The account has been has been deactivated</h1>
+						<p><button class=\"editor\" type=\"submit\"  name=\"back\" onClick=\"history.go(-1);return true;\" >Back to user account management</button></p>
+					</div>
+			</div>
+		<?php require 'includes/sidebar.php'; // Include sidebar ?>
+	</div>
+</div>
+<?php include ('includes/footer.php'); ?>";
 
 }
 

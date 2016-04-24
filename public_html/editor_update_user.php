@@ -1,4 +1,13 @@
 <?php 
+/*
+* @File Name:		editor_update_user.php
+* @Description: 	This page is displayed after an editor clicks 'update' from the user account management 
+					page. The editor can update user information on this page
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
 
 $page_title = 'Update User';
 
@@ -45,12 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$errors[] = 'There was an error.';
 	}
-	//if (isset( $_GET['UserID'])) {
-	//	$userid2 =(int)$_GET['UserID'];
-	//}
-	
-	//$userid2 = 8;
-	
+
 	
 	if (empty($errors)) { // If there are no errors
 	
@@ -99,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	require ('./includes/header.php');
 	require ('../mysqli_connect.php');
 	require('./include_utils/procedures.php');
+	require ('./includes/subnav.php'); // Include subnav
 	$userid = $_GET['UserID'];
 
 	$q_userinfo = "CALL spGetUserInfo($userid);";
@@ -116,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 ?>
 
+<script type="text/javascript"> $( "#editor" ).addClass( "active" ); </script>
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">

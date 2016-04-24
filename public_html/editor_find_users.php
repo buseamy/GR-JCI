@@ -1,5 +1,15 @@
 
 <?php  
+
+/*
+* @File Name:		editor_find_users.php
+* @Description: 	The find users page for the editor. The editor can search for users by email or
+					first/last name.
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
 	$page_title = 'Editor Find Users';
 	require ('./includes/header.php');
 	require ('./includes/subnav.php'); // Include subnav
@@ -131,6 +141,7 @@
 	
 }
 ?>
+<script type="text/javascript"> $( "#editor" ).addClass( "active" ); </script>
 <div class="contentwidth">
     <div class="row flush">
         <div class="col s7">

@@ -1,4 +1,14 @@
 <?php # Script 12.13 - loggedin.php #3
+
+/*
+* @File Name:		logged_in.php
+* @Description: 	This page is displayed after the user logs in successfully
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
+
 /* This page is based on the logged_in script
  * from 'PHP and MySQL for Dynamic Websites'. 
  * The user is redirected here from login.php.
@@ -28,9 +38,9 @@ echo "
 			<p>You are now logged in!</p>
 			<p><a href=\"logout.php\">Logout</a></p>
 		</div>";
+		
 require 'includes/sidebar.php'; // Include sidebar 		
 echo "</div></div>";
-
 include ('includes/footer.php');
 ?>
 

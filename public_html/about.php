@@ -8,9 +8,7 @@
 * @Last updated:    4/9/2016
 */
 
-
-
-//Title to be displayed for the page
+//Title of the page
 $page_title = 'About';
 
 // Call to the site header
@@ -34,20 +32,20 @@ include ('./includes/header.php');
 				SCR, publishing in one of the journals or contacting the Officers of the Society, go to <a href="www.sfcr.org">www.sfcr.org</a>. </p>
 			
 				
-				<h2>Letter from the Editor</h2>
+				<!--<h2>Letter from the Editor</h2>-->
 				
 				<h2>Policies</h2>
 				<li><a href="editorial_policy.php">Editorial Policy</a></li>
 				<li><a href="editorial_policy.php#ethics_malpractice">Publication Ethics Policy and User Responsibilities</a></li>
 
 				<h2>People</h2>
-				<li><a href="https://www.sfcr.org/docs/officers.pdf">Society for Case Research Officers and Editorial Board Members </a></li>
+				<li><a href="https://www.sfcr.org/docs/officers.pdf" target="_blank">Society for Case Research Officers and Editorial Board Members </a></li>
 				
 				<h2>Teaching Notes</h2>
 				<p>Please contact Joanne Tokle <b>(tokljoan@isu.edu)</b> to purchase copies of Teaching Notes.</p>
 				
 				<h2>Other resources</h2>
-				<li><a href="https://ssl2.cabells.com/">Cabell International's Site</a></li>
+				<li><a href="https://ssl2.cabells.com/" target="_blank">Cabell International's Site</a></li>
 				
 				
 				<p>Please <a href="contact.php">contact us</a> if you have any questions. </p>

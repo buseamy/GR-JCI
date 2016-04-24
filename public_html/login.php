@@ -1,9 +1,9 @@
 <?php
 /*
 * @File Name:       login.php
-* @Description:
+* @Description:		
 * @PHP version:     Currently Unknown
-* @Author(s):        Rui Takagi <takagir@ferris.edu>, Jacob Cole <colej28@ferris.edu>
+* @Author(s):       Rui Takagi <takagir@ferris.edu>, Jacob Cole <colej28@ferris.edu>
 * @Organization:    Ferris State University
 * @Last updated:    03/13/2016
 */

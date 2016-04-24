@@ -1,10 +1,19 @@
 <?php $page_title = 'Editor User Account Management';
+/*
+* @File Name:		editor_user_account_management.php
+* @Description: 	editor page that displays all users with links to update or disable those users
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
  require ('../mysqli_connect.php'); // Connect to the database
  require ('./includes/header.php'); // Include the site header
  require ('./includes/subnav.php'); // Include subnav
  require('./include_utils/procedures.php'); // complete_procedure()
  
 ?>
+<script type="text/javascript"> $( "#editor" ).addClass( "active" ); </script>
 
 <div class="contentwidth">
     <div class="row flush">

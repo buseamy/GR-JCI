@@ -1,9 +1,12 @@
 <?php 
-/**
- * Logout page based on isys288 logout page
- *
- **/
-
+/*
+* @File Name:		logout.php
+* @Description: 	Logout script that's based on the ISYS288 logout script, redirects the user after they logout 
+* @PHP version: 	Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:	Ferris State University
+* @Last updated:	
+*/
 
 session_start(); // Access the existing session.
 require('./include_utils/login_functions.php');
@@ -13,7 +16,7 @@ if (!isset($_SESSION['UserID'])) {
 
 	// Need the functions:
 	require ('include_utils/login_functions.php');
-	redirect_user();	
+	redirect_user('index.php');	
 	
 } else { // Cancel the session:
 
