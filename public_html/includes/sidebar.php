@@ -26,12 +26,16 @@ if (isset($_SESSION['UserID'])) {
 <aside class="col s3 side white">
     <?php
     if (isset($_SESSION['UserID']) && $_SESSION['isEditor'] == 1) {
-        echo '<div class="editor corner"><h3 class="title corner">Editor</h3></div>';
-        echo '<ul><li><a href="editor_create_user.php">Create User</a></li>';
-        echo '<li><a href="editor_find_users.php">Find User</a></li>';
-        echo '<li><a href="editor_user_account_management.php">User Account Management</a></li>';
+        echo '<div class="editor corner"><h3 class="title corner">Editor</h3></div><ul>';
+        echo '<li><a href="editor_system_settings.php">System Settings</a></li>';
         echo '<li><a href="editor_incident_management.php">Incident Management</a></li>';
-        echo '<li><a href="editor_system_settings.php">System Settings</a></li></ul><br>';
+        echo '<li><a href="assign_editor.php">Assign Submission Editors</a></li>';
+        echo '<li><a href="view_author_submissions.php?type=updsub">Manage Submission Uploads</a></li>';
+        echo '<li><a href="assign_reviewer.php">Assign Submission Reviewers</a></li>';
+        echo '<li><a href="editor_user_account_management.php">User Account Management</a></li>';
+        echo '<li><a href="editor_create_user.php">Create User</a></li>';
+        echo '<li><a href="editor_find_users.php">Find User</a></li>';
+        echo '</ul><br>';
     }
 
 	if (isset($_SESSION['UserID']) && $_SESSION['isAuthor'] == 1) {
