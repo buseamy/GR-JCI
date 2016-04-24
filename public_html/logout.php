@@ -6,6 +6,7 @@
 
 
 session_start(); // Access the existing session.
+require('./include_utils/login_functions.php');
 
 // If no session variable exists, redirect the user:
 if (!isset($_SESSION['UserID'])) {
@@ -21,6 +22,8 @@ if (!isset($_SESSION['UserID'])) {
 	setcookie ('PHPSESSID', '', time()-3600, '/', '', 0, 0); // Destroy the cookie.
 
 }
+       // Redirect:
+       redirect_user('index.php');
 
 // Set the page title and include the HTML header:
 $page_title = 'Logged Out!';
