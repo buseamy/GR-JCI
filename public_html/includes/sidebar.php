@@ -35,6 +35,7 @@ if (isset($_SESSION['UserID'])) {
         echo '<li><a href="editor_user_account_management.php">User Account Management</a></li>';
         echo '<li><a href="editor_create_user.php">Create User</a></li>';
         echo '<li><a href="editor_find_users.php">Find User</a></li>';
+		echo '<li><a href="manage_announcements.php">Manage Announcements</a></li>';
         echo '</ul><br>';
     }
 
