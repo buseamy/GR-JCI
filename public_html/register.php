@@ -196,26 +196,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($r) {
             $r = mysqli_fetch_array($r, MYSQLI_ASSOC);
-            
-            //Get the UserID from the query
-            $UserID = $r["UserID"];
-            
-            //Update user record with member code and association
-            mysqli_query($dbc, "Call spUpdateUserInfo($UserID, '$FirstName', '$LastName', '$MemberCode', '$Association');");
-            complete_procedure($dbc);
-            
-            //Create the address record
-            mysqli_query($dbc, "Call spCreateAddress($UserID, $AddressType, '$Address1', '$Address2', '$City', $State, '$PostCode', 1);");
-            complete_procedure($dbc);
-            
-            //Create the phone record
-            mysqli_query($dbc, "Call spCreatePhoneNumber($UserID, $PhoneType, '$PhoneNumber', 1);");
-            complete_procedure($dbc);
-            
-            // Send welcome E-mail for verification
-            sendVerificationEmail($dbc, $UserID, 1);
-            
-            $Registered = 1;
+            if (isset($r['UserID'])) {
+                //Get the UserID from the query
+                $UserID = $r["UserID"];
+                
+                //Update user record with member code and association
+                mysqli_query($dbc, "Call spUpdateUserInfo($UserID, '$FirstName', '$LastName', '$MemberCode', '$Association');");
+                complete_procedure($dbc);
+                
+                //Create the address record
+                mysqli_query($dbc, "Call spCreateAddress($UserID, $AddressType, '$Address1', '$Address2', '$City', $State, '$PostCode', 1);");
+                complete_procedure($dbc);
+                
+                //Create the phone record
+                mysqli_query($dbc, "Call spCreatePhoneNumber($UserID, $PhoneType, '$PhoneNumber', 1);");
+                complete_procedure($dbc);
+                
+                // Send welcome E-mail for verification
+                sendVerificationEmail($dbc, $UserID, 1);
+                
+                $Registered = 1;
+            }
+            else {
+                array_push($errors, $r['Error']);
+            }
         } else {
             $errors[] = 'System error, failed to create account: '.mysqli_error($dbc); 
         }
