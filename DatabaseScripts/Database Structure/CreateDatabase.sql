@@ -519,7 +519,7 @@ Insert Into SubmissionStatus (SubmissionStatus)
 Values ('Submitted'),
        ('Editor Assigned'),
        ('Editor Updated'),
-       ('Reviwers Assigned'),
+       ('Reviewers Assigned'),
 	   ('Reviews Completed'),
        ('Editor Reviewed'),
        ('Ready for Publish'),
