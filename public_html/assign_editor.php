@@ -17,6 +17,7 @@ $errors = array();
 $submission_list = array();
 $case_list = array();
 $editor_list = array();
+$submission_file_list = array();
 
 
 // this code was taken from Mitch
@@ -166,10 +167,6 @@ if (!$error) {
                 //echo '</tr>';
 				 
                 array_push($submission_fileIDs, $row_submission_file);
-				
-                foreach($submission_file_list as $submission_file_row) {
-                    $file_id = $submission_file_row['FileMetaDataID'] ;
-                }
 			}
             complete_procedure($dbc);
 			$submission_file_list[$caseID] = $submission_fileIDs;
@@ -224,11 +221,12 @@ if (!$error) {
                 // case name editors file download
             }
             foreach($submission_file_list[$caseID] as $submission_file_row) {
+                $filetype = $submission_file_row['FileType'];
                 $file_id = $submission_file_row['FileMetaDataID'] ;
                 $filename = $submission_file_row['FileName'] ;
                 $filesize = $submission_file_row['FileSize'] ;
                 echo '<td>';
-                create_download_link ($file_id, $filename, $filesize);
+                create_download_link ($file_id, $filetype . ': ' . $filename, $filesize);
                 echo '</td>';
                 // download link goes here create_download_link($file_id, $filename, $filesize)
             }
