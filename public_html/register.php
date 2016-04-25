@@ -3,6 +3,8 @@
 /* Created By: Jeff Ballard
  * On: 9-Apr-2016
  * The purpose of this file is allow a guest to the site create an account
+ * Originally written by Jamal Ahmed but Rewritten by Jeff Ballard
+ * On: 4/23/16 Jamal Ahmed fixed bugs found by QA
  */
 
 $page_title = 'Register - SFCI - Journal for Critical Indicents';
