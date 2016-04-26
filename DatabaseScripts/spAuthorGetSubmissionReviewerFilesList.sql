@@ -22,8 +22,7 @@ BEGIN
 	  On fmd.FileMetaDataID = rf.FileMetaDataID
 	Inner Join FileTypes ft
 	  On ft.FileTypeID = fmd.FileTypeID
-  Where rf.SubmissionID = _SubmissionID
-    And r.ReviewCompletionDate Is Not Null;
+  Where rf.SubmissionID = _SubmissionID;
 END$$
 
 DELIMITER ;
