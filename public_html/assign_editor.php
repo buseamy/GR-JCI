@@ -1,4 +1,4 @@
-<?php // assign_editor created by Jamal Ahmed
+<?php // assign_editor created by Jamal Ahmed and Mitch Spencer helped review and finish
 
 
 
@@ -37,13 +37,14 @@ foreach ($_SESSION as $key => $value)
 {    
 echo "<p>Key-$key, Val-$value</p>";
 }
+Notes on Arrays
 In PHP, there are three kind of arrays:
 
 Numeric array - An array with a numeric index
 Associative array - An array where each ID key is associated with a value
 Multidimensional array - An array containing one or more arrays
 */                   
-
+// Mitch added CSS
 include('./includes/header.php');
 include('./includes/subnav.php');
 echo "<div class=\"contentwidth row flush\">\r\n";
@@ -57,7 +58,7 @@ if (!$error) {
 			$errors[] = 'You forgot to check a critical incident';
 		}
 		*/
-		
+		// Mitch helped with this to ensure both values are entered for stored procedure
 		if(isset($_POST['submit']) && !isset($_POST['selected'])) {
 			$errors[] = 'Incomplete form.';
 		}
@@ -71,6 +72,7 @@ if (!$error) {
 			
                 $val = $_POST['selected-'.$caseID];
 			*/ 
+			// Mitch helped me too loop through for every checkbox checked
 			foreach($_POST['selected'] as $caseID) {
 				if(isset($_POST['selected-'.$caseID])) {
 					
@@ -97,6 +99,7 @@ if (!$error) {
 					
 					
 						/*
+						error checking
 						if ($r_assign_case !== true) {
 							$row_err = mysqli_fetch_array($r_assign_case, MYSQLI_ASSOC);
 							$ret_err = $row_err['Error'];
@@ -192,8 +195,9 @@ if (!$error) {
 		<h3 class = "editor">In Each row check the Critical Incident that you want Assigned to the corresponding Editor in the same Row. </h3>
 		<table style="border: 1px solid black">
 		<?php
+		// Learned how to make tables from CIS 148 HTML & CSS book
 		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
-		
+		// Mitch helped with naming of checkboxes and radio buttons
 		foreach($submission_list as $submission_row) {
             $caseID = $submission_row['SubmissionID'] ;
             $case_name = $submission_row['IncidentTitle'] ;
@@ -267,6 +271,7 @@ if (!$error) {
 	
 	
 // copied from review_submission
+// mitch's code
 $errorloc = '';
 $incomplete = false;
 // Handle error messages

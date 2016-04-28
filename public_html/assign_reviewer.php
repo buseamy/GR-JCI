@@ -1,4 +1,4 @@
-<?php // assign_editor created by Jamal Ahmed
+<?php // assign_editor created by Jamal Ahmed and Mitch Spencer helped review and finish
 $page_title = 'assign_reviewer' ;
 if (session_status() == PHP_SESSION_NONE) {
     // Only start the session if one doesn't exist
@@ -41,7 +41,7 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
 	if ($is_editor) {
 		
-		
+		// // Mitch helped with this to ensure both values are entered for stored procedure
 		if(isset($_POST['submit']) && isset($_POST['selected'])) {
 			
 			/*
@@ -55,6 +55,7 @@ if (!$error) {
                 $val = $_POST['selected-'.$caseID];
 			
 			*/
+			// Mitch helped me too loop through 2 arrays at the same time
 			foreach($_POST['selected'] as $caseID) {
 				foreach($_POST['selected-'.$caseID] as $reviewer_ID) {	
 				
@@ -195,7 +196,8 @@ if (!$error) {
 		<table style="border: 1px solid black">
 		<?php
 		// table creation came from http://stackoverflow.com/questions/6112875/display-sql-data-in-a-list-with-check-box
-		
+		// Learned how to make tables from CIS 148 HTML & CSS book
+		// Mitch helped with naming of checkboxes
 		foreach($submission_list as $submission_row) {
             $caseID = $submission_row['SubmissionID'] ;
             $case_name = $submission_row['IncidentTitle'] ;
@@ -226,7 +228,7 @@ if (!$error) {
 				//echo "<td><a target=\"_blank\" href=\"download.php?fid=$meta_ID\">Download</a></td>";
                 create_download_link ($file_id, $filetype . ': ' . $filename, $filesize);
                 echo '</td>';
-                // download link goes here create_download_link($file_id, $filename, $filesize)
+                
             }
 			echo '</tr>';
 		}
@@ -255,6 +257,7 @@ if (!$error) {
 	
 	
 // copied from review_submission
+// mitch's code
 $errorloc = '';
 $incomplete = false;
 // Handle error messages

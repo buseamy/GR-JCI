@@ -1,5 +1,8 @@
 <?PHP
 
+/*
+Created By Jamal Ahmed
+*/
 $page_title = 'Manage Announcements' ;
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -44,6 +47,7 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 			$announcement_title = $row_annoucements['Title'];
 			$create_date = $row_annoucements['CreateDate'];
 			$expire_date = $row_annoucements['ExpireDate'];
+			// Jeff is going to add message to output of stored procedure
 			$message = $row_annoucements['Message'];
 			 complete_procedure($dbc);
 		
@@ -90,6 +94,7 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 				echo "<td>$create_date</td>";
 				echo "<td>$expire_date</td>";
 				echo "<td><a href=\"remove_announcement.php?id=$announcement_ID\">Remove</a></td>"; 
+				// view is not created yet will add when created
 				echo "</tr>";
 			// }
 			// }
@@ -98,8 +103,10 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 			 // }
 		}
 		complete_procedure($dbc);
+		// button created by Jon Sankey
 		?>
 		<br />
+		
 		<button class="editor buttonform" onclick="location.href='create_announcement.php'">Create Announcement</button>
 		<br />
 		<?php
@@ -115,7 +122,7 @@ echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 	
 	
 	
-
+// implemented CSS same as assign editor
 echo "\t</div>\r\n";
 include('./includes/sidebar.php');
 echo "</div>\r\n";

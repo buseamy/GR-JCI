@@ -1,4 +1,6 @@
-<?php $page_title = 'JCI Website - Search Critical Incidents'; // search cases.php Written by Jamal Ahmed
+<?php $page_title = 'JCI Website - Search Critical Incidents'; 
+// search critical incidents.php Written by Jamal Ahmed
+// Cards for this page include view published journal, download publish journal, search critical incidents
 	require ('./includes/header.php'); // Include the site header
 	$case_list = array();
 	$errors = array(); // Initialize an error array.
@@ -30,7 +32,7 @@ foreach($_POST as $key => $value){
 	echo"key:$key   value:$value  ";
 }
 */
-	// if nothing is entered in to the field put in a wildcard operator which allows any value to be selected
+	
 	/*
 	if (isset($_POST['case_ID'])) {
 		$case_ID = mysqli_real_escape_string($dbc, trim($_POST['case_ID']));
@@ -41,7 +43,8 @@ foreach($_POST as $key => $value){
 		$case_ID = '%';
 	}
 	*/
-
+	// if nothing is entered in to the field put in a wildcard operator which allows any value to be selected
+	// The query uses an AND operator so it will search on all fields at least one textfield need to be entered
 	if (empty($_POST['case_title'])) {
 		$case_title = '%';
 	} else {
@@ -72,6 +75,8 @@ foreach($_POST as $key => $value){
 	// run only if one or more fields has been entered
 	if (empty($errors)) {
 /*
+This was written in Sprint 1 and replaced by Stored procedure when created in Sprint 5
+
 	// select statement joining user table to submission and category table
 	// using like instead of = because it allows the wildcard to be used
 	$q = "select Abstract from Users u INNER JOIN AuthorsSubmission asub ON u.UserID = asub.UserID
@@ -87,11 +92,12 @@ foreach($_POST as $key => $value){
 	// http://stackoverflow.com/questions/20300582/display-sql-query-results-in-php source
 	// $r_search = @mysqli_query ($dbc, $q_search); // Run the query.
 	//  if results found
+	
 	$q_search = "CALL spSearchIncidents ('$case_title', '$keyword', '$author', '$category' ); " ;
 	$r_search = mysqli_query($dbc, $q_search);
 	
 		
-		
+		// if results are found
 		if (mysqli_num_rows($r_search) > 0) {
 			
 		
@@ -182,6 +188,7 @@ if (!empty($errors)) {
             		</div>
 	             	<ul>
 					<?php
+					// Storing value to variable in same line as query taken from jeff's register page
 					$years = mysqli_query($dbc, "Call spGetPublicationsYearsList();");
                         complete_procedure($dbc);
                         
@@ -208,7 +215,7 @@ if (!empty($errors)) {
 				</div>
 				<div class ="col s8"> 
 				<?php
-				
+				// Mitch suggested using sizeof to only display table if results are returned.
 				if(sizeof($case_list) > 0) {
 					echo '<table>';
 				echo '<tr>';
