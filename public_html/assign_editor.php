@@ -46,6 +46,7 @@ Multidimensional array - An array containing one or more arrays
 */                   
 // Mitch added CSS
 include('./includes/header.php');
+// Include the site header and subnav
 include('./includes/subnav.php');
 echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";

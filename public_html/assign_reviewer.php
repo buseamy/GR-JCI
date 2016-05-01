@@ -35,7 +35,9 @@ Associative array - An array where each ID key is associated with a value
 Multidimensional array - An array containing one or more arrays
 */                   
 include('./includes/header.php');
+// Include the site header and subnav
 include('./includes/subnav.php');
+// Mitch added CSS
 echo "<div class=\"contentwidth row flush\">\r\n";
 echo "\t<div class=\"contentwidth row flush col s7\">\r\n";
 if (!$error) {
