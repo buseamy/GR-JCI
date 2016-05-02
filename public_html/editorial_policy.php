@@ -1,5 +1,16 @@
 <?php
+/*
+* @File Name:       editorial_policy.php
+* @Description:     Editorial policy page, accessable from about page
+* @PHP version:     Currently Unknown
+* @Author(s):		Rui Takagi
+* @Organization:    Ferris State University
+* @Last updated:   
+*/
 
+/*
+ * Contains information about the editorial policies. Accesible from the about page links
+ */
 
 //Title to be displayed for the page
 $page_title = 'Editorial Policy';
