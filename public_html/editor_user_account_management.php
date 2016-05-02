@@ -23,12 +23,10 @@
             <div class="User List">
                 <?php
 
-                //$q = "Call spGetUsersAuthorsList();"; // Call to stored procedure
-				$q = "Call spGetUsersList();";
-				
-                $result = $dbc->query($q); // Run procedure
+				$q = "Call spGetUsersList();"; // Call to stored procedure
+                $result = $dbc->query($q); // Run the stored procedure
 
-                //if something is returned
+                //if there are results
                 if ($result->num_rows > 0) { ?>
                     <table class="usersTable">
                         <tr>
@@ -37,7 +35,6 @@
 							<th class="roles">Roles</th>
 							<th class="update">Update?</th>
 							<th class="deactivate">Deactivate?</th>							
-							<!--<th class="span2">Active</th> <td class="span2">' . $row["isActive"]. '</td> -->
                         </tr>
                     <?php
                     // output data of each row
@@ -51,7 +48,7 @@
 					}
                     echo "</table>";
                 } else {
-                    //if no results found
+                    //if no results are returned
                     echo "<tr><td>No results</td></tr>";
                 }
                 complete_procedure($dbc);?>

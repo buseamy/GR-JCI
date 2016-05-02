@@ -2,7 +2,7 @@
 
 /*
 * @File Name:       login_page.php
-* @Description:     
+* @Description:     The login page that the user is redirected to if the user types in incorrect credentials in the header 
 * @PHP version:     Currently Unknown
 * @Author(s):	    Rui Takagi <takagir@ferris.edu>, Jacob Cole <colej28@ferris.edu>
 * @Organization:    Ferris State University

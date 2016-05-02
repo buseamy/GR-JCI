@@ -128,7 +128,7 @@
                 complete_procedure($dbc);
 			} 
 		
-		} else { // Report the errors.
+		} else { // print out errors
 	
 			echo '<h1>Error!</h1>
 			<p class="error">The following error(s) occurred:<br />';

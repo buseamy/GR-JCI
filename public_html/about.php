@@ -1,7 +1,7 @@
 <?php
 /*
 * @File Name:       about.php
-* @Description:     About page for JCI website
+* @Description:     About page for JCI website, Information taken from https://www.sfcr.org/jci/
 * @PHP version:     Currently Unknown
 * @Author(s):		Rui Takagi
 * @Organization:    Ferris State University

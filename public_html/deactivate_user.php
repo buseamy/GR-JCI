@@ -13,15 +13,14 @@ $display = true;
 		
 if (isset($_GET["UserID"])) {
 	
-    // $dbc defined and initialized
-    require('../mysqli_connect.php');
-    // functions complete_procedure and ignore_remaining_output defined
+    
+    require('../mysqli_connect.php'); // The database connection
     require('./include_utils/procedures.php');
     
     $UserID = mysqli_real_escape_string($dbc, $_GET["UserID"]);
 	$defaultString = "Deactivated"; //Generic message for NonActiveNote
  
-    $q = "CALL spDisableUser('$UserID', '$defaultString');";		
+    $q = "CALL spDisableUser('$UserID', '$defaultString');"; //Stored Procedure		
 	$r = $dbc->query($q); //Runs the stored procedure
 
     complete_procedure($dbc);

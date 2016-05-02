@@ -84,9 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} // End of if ($r) IF.
 		
 		mysqli_close($dbc); // Close the database connection.
-
-        //quit the script:
-		//exit();
 	
 	} else { // Report the errors.
 		echo "<script type='text/javascript'>alert('Error, please make sure first and last name are not empty.')</script>";
@@ -106,9 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	require ('./includes/subnav.php'); // Include subnav
 	$userid = $_GET['UserID'];
 
-	$q_userinfo = "CALL spGetUserInfo($userid);";
+	
+	$q_userinfo = "CALL spGetUserInfo($userid);"; //Storec procedure
     $r_userinfo = @mysqli_query ($dbc, $q_userinfo); // Run stored procedure
 
+	//Sets user values into variables
 	while($userid_row = mysqli_fetch_array($r_userinfo)) { 
 		$email = $userid_row["EmailAddress"];
 		$firstname = $userid_row["FirstName"];
